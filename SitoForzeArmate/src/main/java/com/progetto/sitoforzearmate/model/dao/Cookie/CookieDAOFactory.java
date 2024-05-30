@@ -1,40 +1,33 @@
 package com.progetto.sitoforzearmate.model.dao.Cookie;
 
-import com.example.sitoforzaarmata.model.dao.*;
-import com.example.sitoforzaarmata.model.dao.Bando.BandoDAO;
-import com.example.sitoforzaarmata.model.dao.Base.BaseDAO;
-import com.example.sitoforzaarmata.model.dao.Base.PastoDAO;
-import com.example.sitoforzaarmata.model.dao.Base.PostoLettoDAO;
-import com.example.sitoforzaarmata.model.dao.Cookie.Utente.AmministratoreDAOcookie;
-import com.example.sitoforzaarmata.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
-import com.example.sitoforzaarmata.model.dao.DAOFactory;
-import com.example.sitoforzaarmata.model.dao.Notizie.AvvisoDAO;
-import com.example.sitoforzaarmata.model.dao.Notizie.NewsletterDAO;
-import com.example.sitoforzaarmata.model.dao.Notizie.NotizieDAO;
-import com.example.sitoforzaarmata.model.dao.Utente.AmministratoreDAO;
-import com.example.sitoforzaarmata.model.dao.Utente.UtenteRegistratoDAO;
+import com.progetto.sitoforzearmate.model.dao.*;
+import com.progetto.sitoforzearmate.model.dao.Bando.BandoDAO;
+import com.progetto.sitoforzearmate.model.dao.Base.BaseDAO;
+import com.progetto.sitoforzearmate.model.dao.Base.PastoDAO;
+import com.progetto.sitoforzearmate.model.dao.Base.PostoLettoDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.DAOFactory;
+import com.progetto.sitoforzearmate.model.dao.Notizie.AvvisoDAO;
+import com.progetto.sitoforzearmate.model.dao.Notizie.NewsletterDAO;
+import com.progetto.sitoforzearmate.model.dao.Notizie.NotizieDAO;
+import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
+import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
 
 public class CookieDAOFactory extends DAOFactory {
-    private Map factoryParams;
-    private HttpServletRequest request;
     private HttpServletResponse response;
 
-    public CookieDAOFactory(Map factoryParams){
-        this.factoryParams = factoryParams;
+    public CookieDAOFactory(HttpServletResponse response){
+        this.response = response;
     }
 
     @Override
     public void beginTransaction() {
-        try {
-            this.request = (HttpServletRequest) factoryParams.get("request");
-            this.response = (HttpServletResponse) factoryParams.get("response");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            this.response = response;
     }
 
     @Override

@@ -15,9 +15,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,29 +30,30 @@ import java.util.logging.Logger;
 @Controller
 public class Login {
     @GetMapping("/viewLogin")
-    public static void view(HttpServletRequest request, HttpServletResponse response){
-        request.setAttribute("viewUrl", "LoginCSS");
+    public ModelAndView view(){
+        ModelAndView page = new ModelAndView();
+        page.setViewName("LoginCSS");
+
+        return page;
     }
 
-    @PostMapping(path = "/login", params = {""})
-    public static void login(
-            @RequestParam(value = "", required = false, defaultValue = "") String prova
-    ){
-        //request.setAttribute("loggedOn", true);
-        //request.setAttribute("viewUrl", "Pagina_Iniziale");
+    @PostMapping(path = "/login", params = {"Email", "Password"})
+    public ModelAndView login(
+            HttpServletResponse response,
 
+            @RequestParam(value = "Email", defaultValue = "") String Email,
+            @RequestParam(value = "Password", defaultValue = "") String Password
+    ){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
         UtenteRegistrato loggedUser;
         String applicationMessage = null;
 
+        ModelAndView page = new ModelAndView();
 
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
             sessionDAOFactory.beginTransaction();
 
             UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
@@ -59,15 +62,12 @@ public class Login {
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
 
-            String Email = request.getParameter("Email");
-            String Password = request.getParameter("Password");
-
             UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();
             UtenteRegistrato user = userDAO.findByMail(Email);
 
             if (user == null || !user.getPassword().equals(Password)) {
                 sessionUserDAO.delete(null);
-                applicationMessage = "Email e password errati";
+                applicationMessage = "Email o password errati";
                 loggedUser=null;
             } else {
                 loggedUser = sessionUserDAO.create(user.getNome(), user.getCognome(),user.getCF(), user.getMail(), user.getTelefono(),user.getPassword(),
@@ -80,31 +80,24 @@ public class Login {
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
 
-            request.setAttribute("loggedOn",loggedUser!=null);
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("applicationMessage", applicationMessage);
+            page.addObject("loggedOn", loggedUser != null);
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("applicationMessage", applicationMessage);
 
             if(loggedUser != null){
-                RequestDispatcher view = request.getRequestDispatcher("index.jsp");
-                view.forward(request, response);
+                page.setViewName("index");
             }
-            else request.setAttribute("viewUrl", "LoginCSS");
+            else page.setViewName("LoginCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (daoFactory != null) daoFactory.rollbackTransaction();
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (daoFactory != null) daoFactory.rollbackTransaction();
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+
+            e.printStackTrace();
 
         } finally {
-            try {
-                if (daoFactory != null) daoFactory.closeTransaction();
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            page.setViewName("Pagina_InizialeCSS");
+            return page;
         }
     }
 
