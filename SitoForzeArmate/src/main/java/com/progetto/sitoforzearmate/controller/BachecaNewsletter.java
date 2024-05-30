@@ -1,14 +1,14 @@
 package com.progetto.sitoforzearmate.controller;
 
-import com.example.sitoforzaarmata.model.dao.DAOFactory;
-import com.example.sitoforzaarmata.model.dao.Notizie.NewsletterDAO;
-import com.example.sitoforzaarmata.model.dao.Utente.AmministratoreDAO;
-import com.example.sitoforzaarmata.model.dao.Utente.UtenteRegistratoDAO;
-import com.example.sitoforzaarmata.model.mo.Notizie.Newsletter;
-import com.example.sitoforzaarmata.model.mo.Utente.Amministratore;
-import com.example.sitoforzaarmata.model.mo.Utente.UtenteRegistrato;
-import com.example.sitoforzaarmata.services.configuration.Configuration;
-import com.example.sitoforzaarmata.services.logservice.LogService;
+import com.progetto.sitoforzearmate.model.dao.DAOFactory;
+import com.progetto.sitoforzearmate.model.dao.Notizie.NewsletterDAO;
+import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
+import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
+import com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter;
+import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
+import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
+import com.progetto.sitoforzearmate.services.configuration.Configuration;
+import com.progetto.sitoforzearmate.services.logservice.LogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -22,10 +22,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Controller
 public class BachecaNewsletter {
-    private BachecaNewsletter(){}
 
-    public static void view(HttpServletRequest request, HttpServletResponse response){
+    @GetMapping("/viewBachecaNewsletter")
+    public void view(HttpServletRequest request, HttpServletResponse response){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
         String applicationMessage = null;
@@ -34,14 +35,9 @@ public class BachecaNewsletter {
         Amministratore loggedAdmin;
         List<Newsletter> newsletterList = new ArrayList<>();
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
-
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
             sessionDAOFactory.beginTransaction();
 
             UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
@@ -70,7 +66,6 @@ public class BachecaNewsletter {
             request.setAttribute("viewUrl", "Bacheca/NewsletterCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             } catch (Throwable t) {
@@ -85,24 +80,18 @@ public class BachecaNewsletter {
         }
     }
 
-    public static void viewNewsletter(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping(path = "/viewNewsletter", params = {"Newsletter"})
+    public void viewNewsletter(HttpServletRequest request, HttpServletResponse response) {
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
-
 
         UtenteRegistrato loggedUser;
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
             sessionDAOFactory.beginTransaction();
 
             UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
@@ -128,7 +117,6 @@ public class BachecaNewsletter {
             request.setAttribute("viewUrl", "Bacheca/viewNewsletterCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             } catch (Throwable t) {
@@ -143,7 +131,8 @@ public class BachecaNewsletter {
         }
     }
 
-    public static void deleteNewsletter(HttpServletRequest request, HttpServletResponse response){
+    @PostMapping(path = "/deleteNewsletter", params = {"Newsletter"})
+    public void deleteNewsletter(HttpServletRequest request, HttpServletResponse response){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
@@ -151,15 +140,9 @@ public class BachecaNewsletter {
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
             sessionDAOFactory.beginTransaction();
 
             UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
@@ -190,7 +173,6 @@ public class BachecaNewsletter {
             /* Da aggiungere pagina che ricarica la view di bacheca */
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             } catch (Throwable t) {
@@ -205,7 +187,8 @@ public class BachecaNewsletter {
         }
     }
 
-    public static void inviaNewsletter(HttpServletRequest request, HttpServletResponse response){
+    @PostMapping(path = "/inviaNewsletter", params = {""})
+    public void inviaNewsletter(HttpServletRequest request, HttpServletResponse response){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
@@ -213,15 +196,9 @@ public class BachecaNewsletter {
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
             sessionDAOFactory.beginTransaction();
 
             AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
@@ -274,7 +251,6 @@ public class BachecaNewsletter {
             request.setAttribute("viewUrl", "Bacheca/reload");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
             try {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             } catch (Throwable t) {
