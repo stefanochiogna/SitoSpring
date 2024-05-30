@@ -12,6 +12,7 @@ import com.progetto.sitoforzearmate.model.dao.Notizie.NewsletterDAO;
 import com.progetto.sitoforzearmate.model.dao.Notizie.NotizieDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
 
@@ -37,14 +38,14 @@ public abstract class DAOFactory {
     public abstract PastoDAO getPastoDAO();
     public abstract PostoLettoDAO getPostoLettoDAO();
 
-    public static DAOFactory getDAOFactory(String whichFactory,Map factoryParameters) {
+    public static DAOFactory getDAOFactory(String whichFactory, HttpServletResponse response) {
         /* A seconda della factory richiesta restituisce la factory mysql o cookie */
         /* Ritorna DAOFactory in quanto le factory sono figlie di DAOFactory */
 
         if (whichFactory.equals(MYSQLJDBCIMPL)) {
-            return new MySQLdao(factoryParameters);
+            return new MySQLdao();
         } else if (whichFactory.equals(COOKIEIMPL)) {
-            return new CookieDAOFactory(factoryParameters);
+            return new CookieDAOFactory(response);
         } else {
             return null;
         }
