@@ -1,5 +1,7 @@
 package com.progetto.sitoforzearmate.controller;
 
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Notizie.NewsletterDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
@@ -8,9 +10,15 @@ import com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter;
 import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
-import com.progetto.sitoforzearmate.services.logservice.LogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +34,7 @@ import java.util.logging.Logger;
 public class BachecaNewsletter {
 
     @GetMapping("/viewBachecaNewsletter")
-    public void view(
+    public ModelAndView view(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
@@ -84,7 +92,7 @@ public class BachecaNewsletter {
         }
 
         @PostMapping(path = "/viewNewsletter", params = {"newsletterId"})
-        public void viewNewsletter(
+        public ModelAndView viewNewsletter(
             HttpServletResponse response,
             
             @CookieValue(value  = "loggedUser", defaultValue = "") String cookieUser,
@@ -136,7 +144,7 @@ public class BachecaNewsletter {
             }
 
     @PostMapping(path = "/deleteNewsletter", params = {"newsletterId"})
-    public void deleteNewsletter(
+    public ModelAndView deleteNewsletter(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
@@ -193,7 +201,7 @@ public class BachecaNewsletter {
         }
 
     @PostMapping(path = "/inviaNewsletter", params = {""})
-    public void inviaNewsletter(
+    public ModelAndView inviaNewsletter(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,

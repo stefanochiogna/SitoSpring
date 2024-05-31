@@ -1,6 +1,7 @@
 package com.progetto.sitoforzearmate.controller;
 
 import com.progetto.sitoforzearmate.model.dao.Base.PostoLettoDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Data;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +28,8 @@ import java.util.logging.Logger;
 @Controller
 public class PrenotaAlloggio {
 
-    @PostMapping("/viewAlloggi")
-    public static void view(
+    @GetMapping("/viewAlloggi")
+    public ModelAndView view(
             HttpServletResponse response,
             @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
             @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
@@ -36,7 +38,7 @@ public class PrenotaAlloggio {
     ){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
-
+        ModelAndView page = new ModelAndView();
         UtenteRegistrato loggedUser = null;
         Amministratore loggedAdmin = null;
 
@@ -46,56 +48,57 @@ public class PrenotaAlloggio {
             sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
             if(!cookieUser.equals("")) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("locazioneAlloggio", locazione);
-            request.setAttribute("viewUrl", "ListaBasi/PrenotaAlloggioCSS");
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("locazioneAlloggio", locazione);
+            page.setViewName("ListaBasi/PrenotaAlloggioCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+            e.printStackTrace();
+            page.setViewName("PaginaInizialeCSS");
         }
+
+        return page;
     }
 
+    @PostMapping(value = "/confermaIscrizione", params = {"locazioneAlloggio"})
+    public ModelAndView conferma (
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
 
-    public static void conferma (HttpServletRequest request, HttpServletResponse response) {
+            @RequestParam(value = "logazioneAlloggio") String locazione,
+            @RequestParam(value = "NumeroPersone") String NumPersone,
+            @RequestParam(value = "NumeroNotti") String NumNotti,
+            @RequestParam(value = "DataArrivo") String data_arrivo
+            ) {
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
+        ModelAndView page = new ModelAndView();
 
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
             /* SESSIONE COOKIE */
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
 
             UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
             AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
+            if(!cookieAdmin.equals(""))
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             sessionDAOFactory.commitTransaction();
 
@@ -105,11 +108,6 @@ public class PrenotaAlloggio {
 
             PostoLettoDAO alloggioDAO = daoFactory.getPostoLettoDAO();
 
-            String locazione = request.getParameter("locazioneAlloggio");
-            String NumPersone = request.getParameter("NumeroPersone");
-            String NumNotti = request.getParameter("NumeroNotti");
-            String data_arrivo = request.getParameter("DataArrivo");
-
             PostoLetto alloggio;
 
             Data dataArrivo = new Data(data_arrivo);
@@ -118,28 +116,21 @@ public class PrenotaAlloggio {
 
             daoFactory.commitTransaction();
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("luogoBase", locazione);
-            request.setAttribute("PostoLetto", alloggio);
-            request.setAttribute("viewUrl", "ListaBasi/ConfermaCSS");
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("luogoBase", locazione);
+            page.addObject("PostoLetto", alloggio);
+            page.setViewName("ListaBasi/ConfermaCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("PaginaInizialeCSS");
         }
+        return page;
     }
     // TODO: quando utente prenota un alloggio viene considerato in trasferta -> aggiornare tabella "inTrasferta"
     // TODO: Aggiungere metodo annulla prenotazione alloggio

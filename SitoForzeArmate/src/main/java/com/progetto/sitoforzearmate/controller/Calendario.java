@@ -2,6 +2,8 @@ package com.progetto.sitoforzearmate.controller;
 
 import com.progetto.sitoforzearmate.model.dao.Bando.BandoDAO;
 import com.progetto.sitoforzearmate.model.dao.Base.BaseDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Data;
 import com.progetto.sitoforzearmate.model.dao.Notizie.AvvisoDAO;
@@ -12,10 +14,16 @@ import com.progetto.sitoforzearmate.model.mo.Base.Base;
 import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
-import com.progetto.sitoforzearmate.services.logservice.LogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -31,11 +39,11 @@ import java.util.logging.Logger;
 public class Calendario {
 
     @GetMapping("/viewCalendario")
-    public void view(
+    public ModelAndView view(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
-        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
@@ -91,7 +99,7 @@ public class Calendario {
         }
 
     @PostMapping(path = "/viewBando", params = {"bandoId"})
-    public void viewBando( 
+    public ModelAndView viewBando(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
@@ -245,7 +253,7 @@ public class Calendario {
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
-        @RequestParam(value = "")
+        @RequestParam(value = "bandoId") String bandoId
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
@@ -256,10 +264,8 @@ public class Calendario {
 
             String applicationMessage = null;
 
-            Logger logger = LogService.getApplicationLogger();
-
             try {
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
                 sessionDAOFactory.beginTransaction();
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
@@ -307,7 +313,7 @@ public class Calendario {
         @RequestParam(value = "oggettoBando") String oggettoBando,
         @RequestParam(value = "numMaxIscritti") String numMaxIscritti,
         @RequestParam(value = "dataScadenza") String dataScadenza,
-        @RequestParam(value = "dataBando") String dataBando,
+        @RequestParam(value = "dataBando") String data,
         @RequestParam(value = "locazione") String locazione,
         @RequestParam(value = "testoBando") String testoBando
         ){
@@ -316,12 +322,13 @@ public class Calendario {
 
         Amministratore loggedAdmin = null;
 
+        ModelAndView page = new ModelAndView();
+
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
 
         try {
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
 
             AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
@@ -340,7 +347,7 @@ public class Calendario {
             Data dataBando = new Data(data);
             Data dataScadenzaBando = new Data(dataScadenza);
 
-            bandoDAO.update(dataBando, bandoId, oggetto, locazione, numMaxIscritti, dataScadenzaBando, loggedAdmin.getIdAdministrator());
+            bandoDAO.update(dataBando, bandoId, oggettoBando, locazione, Integer.parseInt(numMaxIscritti), dataScadenzaBando, loggedAdmin.getIdAdministrator());
                     // vado a modificare il bando selezionato tramite Id
 
             daoFactory.commitTransaction();
@@ -373,7 +380,8 @@ public class Calendario {
         @RequestParam(value = "oggettoBando") String oggettoBando,
         @RequestParam(value = "numMaxIscritti") String numMaxIscritti,
         @RequestParam(value = "dataScadenza") String dataScadenza,
-        @RequestParam(value = "locazione") String locazione
+        @RequestParam(value = "locazione") String locazione,
+        @RequestParam(value = "insBando") Part insBando
         ){
                 ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
@@ -403,18 +411,17 @@ public class Calendario {
                 }
                 bandoId = caratteriRestanti + bandoId;
 
-                Part insBando = request.getPart("insBando");                               // recupero il file
                 String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";   // directory dove salvo i file
                 File file = new File(DirectoryDest + 'B' + bandoId);                  // vado a creare un file in quella directory con il nome 'B' + Id
                 insBando.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file
                 String RiferimentoTesto = file.getAbsolutePath();                               // recupero il riferimento al testo
 
                 Data data = new Data(dataBando);
-                Data dataScadenza = new Data(dataScadenza);
+                Data dataScadenzaBando = new Data(dataScadenza);
 
 
-                Bando bando = bandoDAO.create(data, bandoId, oggetto, Paths.get(RiferimentoTesto),
-                        Base, Integer.parseInt(numMaxIscritti), dataScadenza, loggedAdmin.getIdAdministrator());
+                Bando bando = bandoDAO.create(data, bandoId, oggettoBando, Paths.get(RiferimentoTesto),
+                        locazione, Integer.parseInt(numMaxIscritti), dataScadenzaBando, loggedAdmin.getIdAdministrator());
 
 
                 BaseDAO baseDAO = daoFactory.getBaseDAO();
@@ -529,8 +536,8 @@ public class Calendario {
     public ModelAndView annullaIscrizione(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultValue = "") String loggedAdmin,
-        @CookieValue(value = "loggedUser", defaultValue = "") String loggedUser,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
         
         @RequestParam(value = "bandoId") String bandoId
         ){
@@ -605,7 +612,7 @@ public class Calendario {
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "utenteSelezionato") String utenteSelezionato,
-        @RequestParam(value = "inAttesa") String esito,
+        @RequestParam(value = "inAttesa") String Esito,
         @RequestParam(value = "bandoId") String bandoId
         ){
             ModelAndView page = new ModelAndView();
@@ -621,7 +628,7 @@ public class Calendario {
                 sessionDAOFactory.beginTransaction();
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-                if( ! cookieAdmin.equals("") )    
+                if( !cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
@@ -631,22 +638,20 @@ public class Calendario {
 
                 UtenteRegistratoDAO userDao = daoFactory.getUtenteRegistratoDAO();
 
-                System.out.println(Esito);
-
                 BandoDAO bandoDAO = daoFactory.getBandoDAO();
-
-                String bandoId = request.getParameter("bandoId");
 
                 Bando bando = bandoDAO.findbyId(bandoId);
                 bando.updateEsito(Esito, utenteSelezionato);
-                bandoDAO.updateEsito(bandoId, utenteSelezionato, esito);
+                bandoDAO.updateEsito(bandoId, utenteSelezionato, Esito);
 
                 /* INVIO AVVISO */
                 AvvisoDAO avvisoDAO = daoFactory.getAvvisoDAO();
                 UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();
 
                 String Oggetto = "Esito bando: " + bandoId;
-                String Testo = "Gentile utente,\nLa informiamo che la sua domanda per il bando " + bandoId + " ha avuto esito: " + esito + ".\nPer ulteriori informazioni contattare il numero della Segreteria.";
+                String Testo = "Gentile utente," +
+                        "\nLa informiamo che la sua domanda per il bando " + bandoId + " ha avuto esito: " + Esito + "." +
+                        "\nPer ulteriori informazioni contattare il numero della Segreteria.";
 
                 Integer Id = Integer.parseInt(avvisoDAO.getID()) + 1;
                 String avvisoId = Id.toString();

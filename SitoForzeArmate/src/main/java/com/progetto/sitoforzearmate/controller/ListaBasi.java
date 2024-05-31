@@ -1,6 +1,8 @@
 package com.progetto.sitoforzearmate.controller;
 
 import com.progetto.sitoforzearmate.model.dao.Base.BaseDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
@@ -8,10 +10,17 @@ import com.progetto.sitoforzearmate.model.mo.Base.Base;
 import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
-import com.progetto.sitoforzearmate.services.logservice.LogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +38,7 @@ public class ListaBasi {
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -87,7 +96,7 @@ public class ListaBasi {
         
         @RequestParam(value = "luogoBase") String locazione
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -143,7 +152,7 @@ public class ListaBasi {
         
         @RequestParam(value = "luogoBase") String locazione 
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -195,9 +204,10 @@ public class ListaBasi {
 
     @GetMapping("/registraBase")
     public ModelAndView registraBase(HttpServletResponse response){
-        ModelAndView page = 
+        ModelAndView page = new ModelAndView();
 
         page.setViewName("ListaBasi/NewBaseCSS");
+        return page;
     }
 
     @PostMapping(path = "/newBase", params = {""})

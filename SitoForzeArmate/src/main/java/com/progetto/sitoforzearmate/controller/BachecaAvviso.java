@@ -1,5 +1,7 @@
 package com.progetto.sitoforzearmate.controller;
 
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Notizie.AvvisoDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
@@ -8,9 +10,14 @@ import com.progetto.sitoforzearmate.model.mo.Notizie.Avviso;
 import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
-import com.progetto.sitoforzearmate.services.logservice.LogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -51,6 +58,7 @@ public class BachecaAvviso {
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);;
 
+
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
@@ -83,9 +91,9 @@ public class BachecaAvviso {
             } catch (Exception e) {
                 
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-                
+                System.err.println();
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS")
+                page.setViewName("Pagina_InizialeCSS");
             }
 
             return page;
@@ -200,7 +208,7 @@ public class BachecaAvviso {
             return page;
         }
 
-    @PostMapping(path = "/inviaAvviso", params = {""})
+    @PostMapping(path = "/inviaAvviso")
     public ModelAndView inviaAvviso(
         HttpServletResponse response,
         
@@ -208,7 +216,9 @@ public class BachecaAvviso {
         
         @RequestParam(value = "Scelta") String scelta,
         @RequestParam(value = "Oggetto") String oggetto,
-        @RequestParam(value = "Testo") String testo 
+        @RequestParam(value = "Testo") String testo,
+        @RequestParam(value = "RuoloSelezionato", required = false) String[] Ruolo,
+        @RequestParam(value = "Matricola", required = false) String[] Matricola
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
@@ -267,8 +277,6 @@ public class BachecaAvviso {
                 }
                 else if(scelta.equals("Ruolo")){
 
-                    String[] Ruolo = request.getParameterValues("RuoloSelezionato");
-
                     for(int k=0; k<Ruolo.length; k++) {
                         listUser.addAll(userDAO.getUtentiRuolo(Ruolo[k]));
                         for (int i = 0; i < listUser.size(); i++) {
@@ -280,7 +288,6 @@ public class BachecaAvviso {
                     }
                 }
                 else if(scelta.equals("Utente")){
-                    String[] Matricola = request.getParameterValues("Matricola");
                     for(int k=0; k<Matricola.length; k++){
                         avvisoDAO.create(avvisoId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), Matricola[k]);
 
@@ -301,7 +308,7 @@ public class BachecaAvviso {
 
             } catch (Exception e) {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-
+                System.err.println("Errore invio avviso");
                 e.printStackTrace();
                 page.setViewName("Pagina_inzialeCSS");
             } 
