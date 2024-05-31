@@ -26,242 +26,248 @@ import java.util.logging.Logger;
 public class BachecaNewsletter {
 
     @GetMapping("/viewBachecaNewsletter")
-    public void view(HttpServletRequest request, HttpServletResponse response){
-        DAOFactory sessionDAOFactory= null;
-        DAOFactory daoFactory = null;
-        String applicationMessage = null;
+    public void view(
+        HttpServletResponse response,
+        
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser
+        ){
+            ModelAndView page = new ModelAndView();
+            DAOFactory sessionDAOFactory= null;
+            DAOFactory daoFactory = null;
+            String applicationMessage = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
-        List<Newsletter> newsletterList = new ArrayList<>();
+            UtenteRegistrato loggedUser = null;
+            Amministratore loggedAdmin = null;
+            List<Newsletter> newsletterList = new ArrayList<>();
 
-        try {
+            try {
+                
+                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                sessionDAOFactory.beginTransaction();
+
+                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                if( ! cookieUser.equals("") )
+                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+
+                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                if( ! cookieAdmin.equals("") )
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+
+                sessionDAOFactory.commitTransaction();
+
+                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
+                daoFactory.beginTransaction();
+
+                if(loggedAdmin == null) {
+                    NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();
+                    newsletterList.addAll(newsletterDAO.stampaNewsletter(loggedUser.getMail()));
+                }
+
+                daoFactory.commitTransaction();
+
+                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedUser", loggedUser);
+                page.addObject("loggedAdminOn", loggedAdmin!=null);
+                page.addObject("loggedAdmin", loggedAdmin);
+                page.addObject("Newsletter", newsletterList);
+                page.setViewName("Bacheca/NewsletterCSS");
+
+            } catch (Exception e) {
+                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+                
+                e.printStackTrace();
+                page.setViewName("Pagina_InizialeCSS");
+            }
+
+            return page;
+        }
+
+        @PostMapping(path = "/viewNewsletter", params = {"newsletterId"})
+        public void viewNewsletter(
+            HttpServletResponse response,
             
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-            sessionDAOFactory.beginTransaction();
+            @CookieValue(value  = "loggedUser", defaultValue = "") String cookieUser,
+            
+            @RequestParam(value = "newsletterId") String newsletterId
+            ) {
+                ModelAndView page = new ModelAndView();
+                DAOFactory sessionDAOFactory= null;
+                DAOFactory daoFactory = null;
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
+                UtenteRegistrato loggedUser = null;
 
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
+                String applicationMessage = null;
 
-            sessionDAOFactory.commitTransaction();
+                try {
 
-            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
-            daoFactory.beginTransaction();
+                    sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                    sessionDAOFactory.beginTransaction();
 
-            if(loggedAdmin == null) {
+                    UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                    if( ! cookieUser.equals("") )
+                        loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+
+                    sessionDAOFactory.commitTransaction();
+
+                    daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
+                    daoFactory.beginTransaction();
+
+                    NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();
+
+                    Newsletter newsletter = newsletterDAO.findById(newsletterId);
+
+                    daoFactory.commitTransaction();
+
+                    page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                    page.addObject("loggedUser", loggedUser);
+                    page.addObject("NewsletterSelezionata", newsletter);
+
+                    page.setViewName("Bacheca/viewNewsletterCSS");
+
+                } catch (Exception e) {
+                    if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+                    
+                    e.printStackTrace();
+                    page.setViewName("Pagina_InizialeCSS");
+                }
+
+                return page;
+            }
+
+    @PostMapping(path = "/deleteNewsletter", params = {"newsletterId"})
+    public void deleteNewsletter(
+        HttpServletResponse response,
+        
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+        
+        @RequestParam(value = "newsletterId") String newsletterId
+        ){
+            ModelAndView page = new ModelAndView();
+            DAOFactory sessionDAOFactory= null;
+            DAOFactory daoFactory = null;
+
+            UtenteRegistrato loggedUser = null;
+
+            String applicationMessage = null;
+
+            try {
+
+                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                sessionDAOFactory.beginTransaction();
+
+                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                if( ! cookieUser.equals("") )
+                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+
+                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
+                daoFactory.beginTransaction();
+
                 NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();
-                newsletterList.addAll(newsletterDAO.stampaNewsletter(loggedUser.getMail()));
-            }
 
-            daoFactory.commitTransaction();
+                Newsletter newsletter = newsletterDAO.findById(newsletterId);
+                newsletterDAO.delete(newsletter);                     // lo passo poi al metodo delete per cancellarlo
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin!=null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("Newsletter", newsletterList);
-            request.setAttribute("viewUrl", "Bacheca/NewsletterCSS");
+                loggedUser.deleteIdAvviso(newsletterId);
+                newsletter.removeMailDestinatario(loggedUser.getMail());
 
-        } catch (Exception e) {
-            try {
+                // sessionUserDAO.update(loggedUser);          dopo aver modificato il logged user effettuo aggiornamento cookie
+                sessionDAOFactory.commitTransaction();
+
+                daoFactory.commitTransaction();
+
+                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedUser", loggedUser);
+
+                page.setViewName("Bacheca/reload");
+                /* Da aggiungere pagina che ricarica la view di bacheca */
+
+            } catch (Exception e) {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
+                e.printStackTrace();
+                page.setViewName("Pagina_InizialeCSS");
             }
+            
+            return page;
         }
-    }
-
-    @PostMapping(path = "/viewNewsletter", params = {"Newsletter"})
-    public void viewNewsletter(HttpServletRequest request, HttpServletResponse response) {
-        DAOFactory sessionDAOFactory= null;
-        DAOFactory daoFactory = null;
-
-        UtenteRegistrato loggedUser;
-
-        String applicationMessage = null;
-
-        try {
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-            sessionDAOFactory.beginTransaction();
-
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
-
-            sessionDAOFactory.commitTransaction();
-
-            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
-            daoFactory.beginTransaction();
-
-            NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();
-
-            String newsletterId = request.getParameter("newsletterId");
-
-            Newsletter newsletter = newsletterDAO.findById(newsletterId);
-
-            daoFactory.commitTransaction();
-
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("NewsletterSelezionata", newsletter);
-
-            request.setAttribute("viewUrl", "Bacheca/viewNewsletterCSS");
-
-        } catch (Exception e) {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
-
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
-        }
-    }
-
-    @PostMapping(path = "/deleteNewsletter", params = {"Newsletter"})
-    public void deleteNewsletter(HttpServletRequest request, HttpServletResponse response){
-        DAOFactory sessionDAOFactory= null;
-        DAOFactory daoFactory = null;
-
-        UtenteRegistrato loggedUser;
-
-        String applicationMessage = null;
-
-        try {
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-            sessionDAOFactory.beginTransaction();
-
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
-
-            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
-            daoFactory.beginTransaction();
-
-            NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();
-
-            String newsletterId = request.getParameter("newsletterId");
-
-            Newsletter newsletter = newsletterDAO.findById(newsletterId);
-            newsletterDAO.delete(newsletter);                     // lo passo poi al metodo delete per cancellarlo
-
-            loggedUser.deleteIdAvviso(newsletterId);
-            newsletter.removeMailDestinatario(loggedUser.getMail());
-
-            // sessionUserDAO.update(loggedUser);          dopo aver modificato il logged user effettuo aggiornamento cookie
-            sessionDAOFactory.commitTransaction();
-
-            daoFactory.commitTransaction();
-
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-
-            request.setAttribute("viewUrl", "Bacheca/reload");
-            /* Da aggiungere pagina che ricarica la view di bacheca */
-
-        } catch (Exception e) {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
-
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
-        }
-    }
 
     @PostMapping(path = "/inviaNewsletter", params = {""})
-    public void inviaNewsletter(HttpServletRequest request, HttpServletResponse response){
-        DAOFactory sessionDAOFactory= null;
-        DAOFactory daoFactory = null;
+    public void inviaNewsletter(
+        HttpServletResponse response,
+        
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+        
+        @RequestParam(value = "oggetto") String oggetto, 
+        @RequestParam(value = "testo") String testo
+        ){
+            ModelAndView page = new ModelAndView();
+            DAOFactory sessionDAOFactory= null;
+            DAOFactory daoFactory = null;
 
-        Amministratore loggedAdmin;
+            Amministratore loggedAdmin = null;
 
-        String applicationMessage = null;
+            String applicationMessage = null;
 
-        try {
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-            sessionDAOFactory.beginTransaction();
-
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
-
-            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
-            daoFactory.beginTransaction();
-
-            NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();
-            UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();
-
-            List<UtenteRegistrato> listUser = new ArrayList<>();
-
-            String Oggetto = request.getParameter("Oggetto");
-            String Testo = request.getParameter("Testo");
-
-            Integer Id = Integer.parseInt(newsletterDAO.getID()) + 1;
-            String NewsId = Id.toString();
-
-            String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";
-            File file = new File(DirectoryDest + 'N' + NewsId);
-
-            try{
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
-                bw.write(Testo);
-                bw.close();
-            }
-            catch(IOException e){
-                throw new RuntimeException(e);
-            }
-
-            String RiferimentoTesto = file.getAbsolutePath();
-
-            listUser.addAll(userDAO.getUtentiNewsletter());
-            for(int i=0; i<listUser.size(); i++){
-                newsletterDAO.create(NewsId, Oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), listUser.get(i).getMail(), listUser.get(i).getMatricola());
-
-                Id = Integer.parseInt(newsletterDAO.getID()) + 1;
-                NewsId = Id.toString();
-            }
-
-            sessionDAOFactory.commitTransaction();
-
-            daoFactory.commitTransaction();
-
-            request.setAttribute("loggedAdminOn",loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedAdmin", loggedAdmin);
-
-
-            request.setAttribute("viewUrl", "Bacheca/reload");
-
-        } catch (Exception e) {
             try {
+
+                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                sessionDAOFactory.beginTransaction();
+
+                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                if( ! cookieAdmin.equals("") )
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+
+                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
+                daoFactory.beginTransaction();
+
+                NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();
+                UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();
+
+                List<UtenteRegistrato> listUser = new ArrayList<>();
+
+                Integer Id = Integer.parseInt(newsletterDAO.getID()) + 1;
+                String NewsId = Id.toString();
+
+                String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";
+                File file = new File(DirectoryDest + 'N' + NewsId);
+
+                try{
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
+                    bw.write(testo);
+                    bw.close();
+                }
+                catch(IOException e){
+                    throw new RuntimeException(e);
+                }
+
+                String RiferimentoTesto = file.getAbsolutePath();
+
+                listUser.addAll(userDAO.getUtentiNewsletter());
+                for(int i=0; i<listUser.size(); i++){
+                    newsletterDAO.create(NewsId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), listUser.get(i).getMail(), listUser.get(i).getMatricola());
+
+                    Id = Integer.parseInt(newsletterDAO.getID()) + 1;
+                    NewsId = Id.toString();
+                }
+
+                sessionDAOFactory.commitTransaction();
+
+                daoFactory.commitTransaction();
+
+                page.addObject("loggedAdminOn",loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedAdmin", loggedAdmin);
+
+
+                page.setViewName("Bacheca/reload");
+
+            } catch (Exception e) {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
+                e.printStackTrace();
+                page.setViewName("Pagina_InizialeCSS");
             }
+
+            return page;
         }
-    }
 }
