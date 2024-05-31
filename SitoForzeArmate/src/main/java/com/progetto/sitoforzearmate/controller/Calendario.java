@@ -34,8 +34,8 @@ public class Calendario {
     public void view(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
-        @CookieValue(value = "loggedUser", defaultvalue = "") String cookieUser,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
@@ -58,7 +58,7 @@ public class Calendario {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
 
@@ -94,8 +94,8 @@ public class Calendario {
     public void viewBando( 
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
-        @CookieValue(value = "loggedUser", defaultvalue = "") String cookieUser,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
         
         @RequestParam(value = "bandoId") String bandoId 
         ) {
@@ -121,7 +121,7 @@ public class Calendario {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if ( ! cookieAdmin.equals("") )
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
 
@@ -178,11 +178,11 @@ public class Calendario {
     public ModelAndView deleteBando(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "bandoId") String bandoId
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -197,7 +197,7 @@ public class Calendario {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
 
@@ -243,11 +243,11 @@ public class Calendario {
     public ModelAndView modificaBandoView(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "")
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -264,7 +264,7 @@ public class Calendario {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )    
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
 
@@ -301,7 +301,7 @@ public class Calendario {
     public ModelAndView modificaBando(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "bandoId") String bandoId,
         @RequestParam(value = "oggettoBando") String oggettoBando,
@@ -326,7 +326,7 @@ public class Calendario {
 
             AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
             if( ! cookieAdmin.equals("") )    
-                loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             sessionDAOFactory.commitTransaction();
 
@@ -367,7 +367,7 @@ public class Calendario {
     public ModelAndView inserisciBando(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "dataBando") String dataBando,
         @RequestParam(value = "oggettoBando") String oggettoBando,
@@ -375,7 +375,7 @@ public class Calendario {
         @RequestParam(value = "dataScadenza") String dataScadenza,
         @RequestParam(value = "locazione") String locazione
         ){
-                ModelAndView page = ModelAndView();
+                ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
             Amministratore loggedAdmin = null;
@@ -387,7 +387,7 @@ public class Calendario {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -449,13 +449,13 @@ public class Calendario {
     public ModelAndView iscrizione(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedUser", defaultvalue = "") String cookieUser,
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "bandoId") String bandoId,
         @RequestParam(value = "iscritto") String iscrizione 
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -529,8 +529,8 @@ public class Calendario {
     public ModelAndView annullaIscrizione(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String loggedAdmin,
-        @CookieValue(value = "loggedUser", defaultvalue = "") String loggedUser,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String loggedAdmin,
+        @CookieValue(value = "loggedUser", defaultValue = "") String loggedUser,
         
         @RequestParam(value = "bandoId") String bandoId
         ){
@@ -554,7 +554,7 @@ public class Calendario {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )    
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
 
@@ -602,13 +602,13 @@ public class Calendario {
     public ModelAndView esitoPartecipante(
         HttpServletResponse response, 
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "utenteSelezionato") String utenteSelezionato,
         @RequestParam(value = "inAttesa") String esito,
         @RequestParam(value = "bandoId") String bandoId
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -622,7 +622,7 @@ public class Calendario {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )    
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser);
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
 

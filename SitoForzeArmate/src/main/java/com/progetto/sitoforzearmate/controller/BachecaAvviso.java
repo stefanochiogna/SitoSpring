@@ -29,8 +29,8 @@ public class BachecaAvviso {
     public ModelAndView view(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
-        @CookieValue(value = "loggedUser", defaultvalue = "") String cookieUser
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
@@ -49,11 +49,11 @@ public class BachecaAvviso {
 
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
-                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);;
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-                if( !cookieAdmin.equals("") )
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser)
+                if( ! cookieAdmin.equals("") )
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 sessionDAOFactory.commitTransaction();
 
@@ -95,11 +95,11 @@ public class BachecaAvviso {
     public ModelAndView viewAvviso(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedUser", defaultvalue = ""), String cookieUser,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
         
         @RequestParam(value = "avvisoId") String avvisoId
         ) {
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -114,7 +114,7 @@ public class BachecaAvviso {
 
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
-                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser)
+                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
                 sessionDAOFactory.commitTransaction();
 
@@ -147,7 +147,7 @@ public class BachecaAvviso {
     public ModelAndView deleteAvviso(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedUser", defaultvalue = "") String cookieUser,
+        @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
         
         @RequestParam(value = "avvisoId") String avvisoId
         ){
@@ -166,7 +166,7 @@ public class BachecaAvviso {
 
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
-                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser)
+                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -204,13 +204,13 @@ public class BachecaAvviso {
     public ModelAndView inviaAvviso(
         HttpServletResponse response,
         
-        @CookieValue(value = "loggedAdmin", defaultvalue = "") String cookieAdmin,
+        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "Scelta") String scelta,
         @RequestParam(value = "Oggetto") String oggetto,
         @RequestParam(value = "Testo") String testo 
         ){
-            ModelAndView page = ModelAndView();
+            ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
@@ -225,7 +225,7 @@ public class BachecaAvviso {
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieUser)
+                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
