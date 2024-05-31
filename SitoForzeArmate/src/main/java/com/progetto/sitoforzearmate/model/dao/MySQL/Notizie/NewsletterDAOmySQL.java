@@ -1,7 +1,7 @@
 package com.progetto.sitoforzearmate.model.dao.MySQL.Notizie;
 
-import com.example.sitoforzaarmata.model.dao.Notizie.NewsletterDAO;
-import com.example.sitoforzaarmata.model.mo.Notizie.Newsletter;
+import com.progetto.sitoforzearmate.model.dao.Notizie.NewsletterDAO;
+import com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

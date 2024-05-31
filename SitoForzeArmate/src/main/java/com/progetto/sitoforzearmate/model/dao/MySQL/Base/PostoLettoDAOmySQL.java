@@ -1,8 +1,8 @@
 package com.progetto.sitoforzearmate.model.dao.MySQL.Base;
 
-import com.example.sitoforzaarmata.model.dao.Base.PostoLettoDAO;
-import com.example.sitoforzaarmata.model.dao.Data;
-import com.example.sitoforzaarmata.model.mo.Base.PostoLetto;
+import com.progetto.sitoforzearmate.model.dao.Base.PostoLettoDAO;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.mo.Base.PostoLetto;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,18 +1,16 @@
 package com.progetto.sitoforzearmate.model.dao.Cookie.Utente;
 
-import com.example.sitoforzaarmata.model.dao.Data;
-import com.example.sitoforzaarmata.model.dao.Utente.AmministratoreDAO;
-import com.example.sitoforzaarmata.model.mo.Utente.Amministratore;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
+import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class AmministratoreDAOcookie implements AmministratoreDAO {
-    HttpServletRequest request;
     HttpServletResponse response;
 
-    public AmministratoreDAOcookie(HttpServletRequest request, HttpServletResponse response){
-        this.request = request;
+    public AmministratoreDAOcookie(HttpServletResponse response){
         this.response = response;
     }
 
@@ -83,10 +81,11 @@ public class AmministratoreDAOcookie implements AmministratoreDAO {
         throw new RuntimeException("Non supportato");
     }
 
+    /*
     @Override
     public Amministratore findLoggedAdmin(){
         Cookie[] cookies = request.getCookies();
-        /* Recupero lista cookies */
+        // Recupero lista cookies //
 
         Amministratore admin = null;
 
@@ -100,6 +99,7 @@ public class AmministratoreDAOcookie implements AmministratoreDAO {
 
         return admin;
     }
+    */
 
     private String encode(Amministratore admin){
         String encodeText;
@@ -107,7 +107,7 @@ public class AmministratoreDAOcookie implements AmministratoreDAO {
 
         return encodeText;
     }
-    private Amministratore decode(String encodeText){
+    public static Amministratore decode(String encodeText){
         Amministratore admin = new Amministratore();
 
         String[] info = encodeText.split("#");

@@ -1,7 +1,7 @@
 package com.progetto.sitoforzearmate.model.dao.Base;
 
-import com.example.sitoforzaarmata.model.dao.Data;
-import com.example.sitoforzaarmata.model.mo.Base.Pasto;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.mo.Base.Pasto;
 
 import java.util.List;
 

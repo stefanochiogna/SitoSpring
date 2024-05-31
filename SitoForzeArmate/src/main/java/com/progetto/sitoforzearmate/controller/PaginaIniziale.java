@@ -1,5 +1,7 @@
 package com.progetto.sitoforzearmate.controller;
 
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Notizie.NotizieDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.*;
@@ -11,7 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
@@ -23,10 +28,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 @Controller
 public class PaginaIniziale {
-    private PaginaIniziale(){}
 
     @GetMapping("/homepage")
-    public ModelAndView view(){
+    public ModelAndView view(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUtente,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin
+    ){
 
         ModelAndView page = new ModelAndView();
         page.setViewName("PaginaInizialeCSS");
@@ -36,25 +44,17 @@ public class PaginaIniziale {
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
 
         ArrayList<Notizie> notizie = new ArrayList<>();
 
-        String applicationMessage = null;
-
         try {
 
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,null);
-            sessionDAOFactory.beginTransaction();
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
-
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
-
-            sessionDAOFactory.commitTransaction();
+            if(!cookieUtente.equals("")) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUtente);
+            if(!cookieAdmin.equals(""))  loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
@@ -67,85 +67,76 @@ public class PaginaIniziale {
 
 
 
-            request.setAttribute("notizia1", notizie.get(0));
-            request.setAttribute("notizia2", notizie.get(1));
-            request.setAttribute("notizia3", notizie.get(2));
-            request.setAttribute("notizia4", notizie.get(3));
+            page.addObject("notizia1", notizie.get(0));
+            page.addObject("notizia2", notizie.get(1));
+            page.addObject("notizia3", notizie.get(2));
+            page.addObject("notizia4", notizie.get(3));
 
 
 
             daoFactory.commitTransaction();
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("viewUrl", "Pagina_InizialeCSS");
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.setViewName("Pagina_InizialeCSS");
 
         } catch (Exception e) {
+            if (daoFactory != null) daoFactory.rollbackTransaction();
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
-
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
         }
-        return page
+        return page;
+
     }
 
-    public static void sostituisciArticolo(HttpServletRequest request, HttpServletResponse response){
+    @PostMapping( path = "/modifyArticolo", params = {"Id"})
+    public ModelAndView sostituisciArticolo(
+            HttpServletResponse response,
+
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+
+            @RequestParam(value = "Id") String Id,
+            @RequestParam(value = "Oggetto") String Oggetto,
+            @RequestParam(value = "IdAdministrator") String IdAdmin,
+            @RequestParam(value = "Testo") Part Testo
+        ){
+
+        ModelAndView page = new ModelAndView();
+
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        Amministratore loggedAdmin;
+        Amministratore loggedAdmin = null;
 
         Notizie notizie;
 
-        String applicationMessage = null;
-
-        Logger logger = LogService.getApplicationLogger();
-
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
-            sessionDAOFactory.beginTransaction();
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
 
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
-
-            sessionDAOFactory.commitTransaction();
+            loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
 
-            String Id = request.getParameter("Id");
 
             NotizieDAO notizieDAO = daoFactory.getNotizieDAO();
             notizie = notizieDAO.findById(Id);
 
             /* Recupero Parametri */
-            String Oggetto = request.getParameter("Oggetto");
-            String IdAdministrator = request.getParameter("IdAdministrator");
 
             Integer IdArt = Integer.parseInt(Id);
 
-            Part Testo = request.getPart("Testo");                                   // recupero il file
             String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";// directory dove salvo i file
             File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id
             Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file
             String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo
 
             notizie.setOggetto(Oggetto);
-            notizie.setIdAdministrator(IdAdministrator);
+            notizie.setIdAdministrator(IdAdmin);
             notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));
 
             notizieDAO.update(notizie);
@@ -154,90 +145,65 @@ public class PaginaIniziale {
             daoFactory.commitTransaction();
 
             String notizia = "notizia" + Integer.parseInt(Id);
-            request.setAttribute(notizia, notizie);
+            page.addObject(notizia, notizie);
 
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
 
-            RequestDispatcher view = request.getRequestDispatcher("index.jsp");
-            view.forward(request, response);
+            page.setViewName("index");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+
         }
+        return page;
     }
 
-    public static void viewArt(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/viewArt")
+    public ModelAndView viewArt(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @RequestParam(value = "Id", defaultValue = "")  String NotiziaId
+    ) {
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
-
-        String applicationMessage = null;
-
-        Logger logger = LogService.getApplicationLogger();
+        ModelAndView page = new ModelAndView();
 
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
 
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
-            sessionDAOFactory.beginTransaction();
-
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
-
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
-
-            sessionDAOFactory.commitTransaction();
+            if(!cookieAdmin.equals("")) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+            if(!cookieUser.equals(""))  loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
 
             NotizieDAO notizieDAO = daoFactory.getNotizieDAO();
 
-            String NotiziaId = request.getParameter("Id");
-
             Notizie notizie = notizieDAO.findById(NotiziaId);
 
             daoFactory.commitTransaction();
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn",loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("NotiziaSelezionata", notizie);
-            request.setAttribute("viewUrl", "viewArticoloCSS");
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn",loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("NotiziaSelezionata", notizie);
+            page.setViewName("viewArticoloCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
         }
+
+        return page;
     }
 }

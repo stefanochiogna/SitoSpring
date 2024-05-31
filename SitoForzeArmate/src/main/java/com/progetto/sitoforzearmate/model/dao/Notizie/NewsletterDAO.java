@@ -1,6 +1,6 @@
 package com.progetto.sitoforzearmate.model.dao.Notizie;
 
-import com.example.sitoforzaarmata.model.mo.Notizie.Newsletter;
+import com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter;
 
 import java.nio.file.Path;
 import java.util.List;

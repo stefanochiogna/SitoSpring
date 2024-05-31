@@ -1,6 +1,6 @@
 package com.progetto.sitoforzearmate.model.mo;
 
-import com.example.sitoforzaarmata.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Data;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;

@@ -1,10 +1,10 @@
 package com.progetto.sitoforzearmate.model.dao.Cookie.Utente;
 
-import com.example.sitoforzaarmata.model.dao.Data;
-import com.example.sitoforzaarmata.model.dao.Utente.UtenteRegistratoDAO;
-import com.example.sitoforzaarmata.model.mo.Bando;
-import com.example.sitoforzaarmata.model.mo.Utente.Badge;
-import com.example.sitoforzaarmata.model.mo.Utente.UtenteRegistrato;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
+import com.progetto.sitoforzearmate.model.mo.Bando;
+import com.progetto.sitoforzearmate.model.mo.Utente.Badge;
+import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,14 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class UtenteRegistratoDAOcookie implements UtenteRegistratoDAO {
-    HttpServletRequest request;
     HttpServletResponse response;
 
     private Long Matricola = (long)0;
     private long StipendioBase = (long)1000;
 
-    public UtenteRegistratoDAOcookie(HttpServletRequest request, HttpServletResponse response){
-        this.request = request;
+    public UtenteRegistratoDAOcookie(HttpServletResponse response){
         this.response = response;
     }
 
@@ -122,11 +120,12 @@ public class UtenteRegistratoDAOcookie implements UtenteRegistratoDAO {
         cookie.setPath("/");
         response.addCookie(cookie);
     }
+    /*
     @Override
     public UtenteRegistrato findLoggedUser() {
 
         Cookie[] cookies = request.getCookies();
-        /* Recupero lista cookies */
+        // Recupero lista cookies //
 
         UtenteRegistrato user = null;
 
@@ -140,6 +139,7 @@ public class UtenteRegistratoDAOcookie implements UtenteRegistratoDAO {
 
         return user;
     }
+    */
 
     @Override
     public boolean isDeleted(UtenteRegistrato user){
@@ -217,7 +217,7 @@ public class UtenteRegistratoDAOcookie implements UtenteRegistratoDAO {
         encodeText = encodeInfo + "-" + encodeBandi;
         return encodeText;
     }
-    private UtenteRegistrato decode(String encodeText){
+    public static UtenteRegistrato decode(String encodeText){
         UtenteRegistrato user = new UtenteRegistrato();
         String[] campi = encodeText.split("-");
 

@@ -1,6 +1,7 @@
 package com.progetto.sitoforzearmate.controller;
 
 import com.progetto.sitoforzearmate.model.dao.Base.PostoLettoDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Data;
 import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
@@ -11,42 +12,39 @@ import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Controller
 public class PrenotaAlloggio {
-    private PrenotaAlloggio(){ }
-    public static void view(HttpServletRequest request, HttpServletResponse response){
+
+    @PostMapping("/viewAlloggi")
+    public static void view(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+
+            @RequestParam(value = "locazioneBase") String locazione
+    ){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
-
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
-            sessionDAOFactory.beginTransaction();
-
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
-
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
-
-            sessionDAOFactory.commitTransaction();
-
-            String locazione = request.getParameter("locazioneBase");
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+            if(!cookieUser.equals("")) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
             request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
             request.setAttribute("loggedUser", loggedUser);

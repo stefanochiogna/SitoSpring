@@ -39,7 +39,6 @@ public interface UtenteRegistratoDAO {
     public void annullaIscrizione(UtenteRegistrato user, Bando bando);
     public List<String> recuperaBandi(String Matricola);
     public boolean isDeleted(UtenteRegistrato user);
-    public UtenteRegistrato findLoggedUser();
     public UtenteRegistrato findByMatricola(String Matricola);
     public UtenteRegistrato findByMail(String mail);
     public String getLastMatricola();

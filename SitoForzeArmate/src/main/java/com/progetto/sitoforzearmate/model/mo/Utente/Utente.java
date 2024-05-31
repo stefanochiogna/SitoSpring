@@ -1,6 +1,6 @@
 package com.progetto.sitoforzearmate.model.mo.Utente;
 
-import com.example.sitoforzaarmata.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Data;
 
 public class Utente {
     /* Variabili */

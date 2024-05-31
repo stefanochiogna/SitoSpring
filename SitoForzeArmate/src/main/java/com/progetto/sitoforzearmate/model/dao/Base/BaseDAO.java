@@ -1,6 +1,6 @@
 package com.progetto.sitoforzearmate.model.dao.Base;
 
-import com.example.sitoforzaarmata.model.mo.Base.Base;
+import com.progetto.sitoforzearmate.model.mo.Base.Base;
 
 import java.util.List;
 

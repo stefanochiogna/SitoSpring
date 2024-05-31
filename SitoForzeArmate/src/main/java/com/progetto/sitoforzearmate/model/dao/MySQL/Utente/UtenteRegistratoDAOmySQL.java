@@ -1,9 +1,9 @@
 package com.progetto.sitoforzearmate.model.dao.MySQL.Utente;
 
-import com.example.sitoforzaarmata.model.dao.Data;
-import com.example.sitoforzaarmata.model.dao.Utente.UtenteRegistratoDAO;
-import com.example.sitoforzaarmata.model.mo.Bando;
-import com.example.sitoforzaarmata.model.mo.Utente.*;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
+import com.progetto.sitoforzearmate.model.mo.Bando;
+import com.progetto.sitoforzearmate.model.mo.Utente.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -178,11 +178,6 @@ public class UtenteRegistratoDAOmySQL implements UtenteRegistratoDAO {
             throw new RuntimeException(e);
         }
         return user;
-    }
-
-    @Override
-    public UtenteRegistrato findLoggedUser(){
-        throw new RuntimeException("Non supportato");
     }
 
     @Override

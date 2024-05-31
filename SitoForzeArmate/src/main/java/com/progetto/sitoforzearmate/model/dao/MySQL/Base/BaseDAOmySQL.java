@@ -1,7 +1,7 @@
 package com.progetto.sitoforzearmate.model.dao.MySQL.Base;
 
-import com.example.sitoforzaarmata.model.dao.Base.BaseDAO;
-import com.example.sitoforzaarmata.model.mo.Base.Base;
+import com.progetto.sitoforzearmate.model.dao.Base.BaseDAO;
+import com.progetto.sitoforzearmate.model.mo.Base.Base;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

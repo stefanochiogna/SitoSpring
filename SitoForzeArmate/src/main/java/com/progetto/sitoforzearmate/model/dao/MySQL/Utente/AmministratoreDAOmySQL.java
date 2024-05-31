@@ -1,12 +1,12 @@
 package com.progetto.sitoforzearmate.model.dao.MySQL.Utente;
 
-import com.example.sitoforzaarmata.model.dao.Data;
-import com.example.sitoforzaarmata.model.dao.Utente.AmministratoreDAO;
-import com.example.sitoforzaarmata.model.mo.Utente.*;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
+import com.progetto.sitoforzearmate.model.mo.Utente.*;
 
 import java.sql.*;
 
-public class AmministratoreDAOmySQL implements  AmministratoreDAO{
+public class AmministratoreDAOmySQL implements AmministratoreDAO{
     Connection connection;
     public AmministratoreDAOmySQL(Connection connection){
         this.connection = connection;

@@ -41,11 +41,11 @@ public class CookieDAOFactory extends DAOFactory {
 
     @Override
     public UtenteRegistratoDAO getUtenteRegistratoDAO(){
-        return new UtenteRegistratoDAOcookie(request, response);
+        return new UtenteRegistratoDAOcookie(response);
     }
     @Override
     public AmministratoreDAO getAmministratoreDAO(){
-        return new AmministratoreDAOcookie(request, response);
+        return new AmministratoreDAOcookie(response);
     }
     public NotizieDAO getNotizieDAO(){ throw new RuntimeException(); }
     public BandoDAO getBandoDAO(){

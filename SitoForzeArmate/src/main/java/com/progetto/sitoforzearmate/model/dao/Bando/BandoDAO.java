@@ -1,7 +1,7 @@
 package com.progetto.sitoforzearmate.model.dao.Bando;
 
-import com.example.sitoforzaarmata.model.dao.Data;
-import com.example.sitoforzaarmata.model.mo.Bando;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.mo.Bando;
 
 import java.nio.file.Path;
 import java.util.List;
