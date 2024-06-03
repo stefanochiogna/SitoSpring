@@ -1,0 +1,61 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    min-height: 110%;
+}
+main{
+    flex: 1;
+}
+/* NAVBAR */
+.topnav {
+    background-color: #113f67;
+    overflow: hidden;
+    position: relative;    /* menu fisso in alto */
+    width: 100%;
+    /* overflow hidden: non si ha scrollbar */
+}
+
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Colore quando si ha il puntatore sopra */
+.topnav a:hover {
+    background-color: #38598b;
+    color: antiquewhite;
+}
+
+/* Quando selezionato */
+.topnav a.active {
+    background-color: #658dc9;
+    color: white;
+}
+
+/* Tasto di login */
+.topnav a.login {
+    float: right;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.footer-link a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+.footer-link a:hover {
+    color: #63b3ed;
+}

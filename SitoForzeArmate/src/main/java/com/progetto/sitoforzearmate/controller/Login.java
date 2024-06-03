@@ -12,8 +12,6 @@ import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import org.springframework.stereotype.Controller;
@@ -23,11 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Controller
 public class Login {
@@ -320,7 +314,7 @@ public class Login {
             page.addObject("applicationMessage", applicationMessage);
 
             if(loggedAdmin != null){
-                page.setViewName("index.jsp");
+                page.setViewName("/jsp/index.jsp");
             }
             else page.setViewName("LoginAmministratoreCSS");
 

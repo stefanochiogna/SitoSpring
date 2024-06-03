@@ -13,10 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
@@ -29,6 +26,17 @@ import java.util.logging.Logger;
 @Controller
 public class PaginaIniziale {
 
+    @GetMapping("/")
+    public ModelAndView init(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUtente,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin
+    ){
+        ModelAndView page = new ModelAndView();
+        page.setViewName("index");
+        return page;
+    }
+
     @GetMapping("/homepage")
     public ModelAndView view(
             HttpServletResponse response,
@@ -37,7 +45,7 @@ public class PaginaIniziale {
     ){
 
         ModelAndView page = new ModelAndView();
-        page.setViewName("PaginaInizialeCSS");
+        page.setViewName("Pagina_InizialeCSS");
 
         // page.addObject("nome", oggetto) == request.addAttribute()
 

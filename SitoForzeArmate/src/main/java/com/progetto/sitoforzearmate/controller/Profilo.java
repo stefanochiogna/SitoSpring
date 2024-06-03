@@ -3,6 +3,8 @@ package com.progetto.sitoforzearmate.controller;
 import com.progetto.sitoforzearmate.model.dao.Bando.BandoDAO;
 import com.progetto.sitoforzearmate.model.dao.Base.PastoDAO;
 import com.progetto.sitoforzearmate.model.dao.Base.PostoLettoDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
@@ -33,16 +35,22 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Controller
 public class Profilo {
-    private Profilo(){}
-
-    public static void view(HttpServletRequest request, HttpServletResponse response){
-        DAOFactory sessionDAOFactory= null;
+    
+    @GetMapping("/viewProfilo")
+    public ModelAndView view( 
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin
+    ){
         DAOFactory daoFactory = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
-
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
+        
+        ModelAndView page = new ModelAndView();
+        
         UtenteRegistrato user = new UtenteRegistrato();
         Amministratore admin = new Amministratore();
 
@@ -50,23 +58,12 @@ public class Profilo {
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
-            sessionDAOFactory.beginTransaction();
-
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
-
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
-
-            sessionDAOFactory.commitTransaction();
+            if(!cookieAdmin.equals(""))
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
@@ -77,7 +74,7 @@ public class Profilo {
 
                 if(user.getRuolo() != null){
                     Badge badge = userDAO.getBadge(loggedUser.getMatricola());
-                    request.setAttribute("Badge", badge);
+                    page.addObject("Badge", badge);
                 }
             }
             else if(loggedAdmin != null){
@@ -87,60 +84,51 @@ public class Profilo {
 
             daoFactory.commitTransaction();
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
 
-            request.setAttribute("UtenteCorrente", user);
-            request.setAttribute("AdminCorrente", admin);
+            page.addObject("UtenteCorrente", user);
+            page.addObject("AdminCorrente", admin);
 
-            request.setAttribute("viewUrl", "Profilo/ProfiloCSS");
+            page.setViewName("Profilo/ProfiloCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
-
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("Pagina_InizialeCSS");
         }
+        return page;
     }
 
-    public static void modificaProfiloView(HttpServletRequest request, HttpServletResponse response){
+    @GetMapping(value = "/modificaBandoView")
+    public ModelAndView modificaProfiloView(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin
+    ){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        Amministratore loggedAdmin;
-        UtenteRegistrato loggedUser;
+        Amministratore loggedAdmin = null;
+        UtenteRegistrato loggedUser = null;
+
+        ModelAndView page = new ModelAndView();
 
         UtenteRegistrato user = null;
         Amministratore admin = null;
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
-
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
+            if(!cookieAdmin.equals(""))
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             sessionDAOFactory.commitTransaction();
 
@@ -158,53 +146,57 @@ public class Profilo {
 
             daoFactory.commitTransaction();
 
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("UserSelezionato", user);
-            request.setAttribute("AdminSelezionato", admin);
-            request.setAttribute("viewUrl", "Profilo/modificaProfiloCSS");
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("UserSelezionato", user);
+            page.addObject("AdminSelezionato", admin);
+            page.setViewName("Profilo/modificaProfiloCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("Pagina_InizialeCSS");
+
         }
+
+        return page;
     }
 
-    public static void modificaProfilo(HttpServletRequest request, HttpServletResponse response){
+    @PostMapping(value = "/modificaProfilo", params = {"userMail"})
+    public ModelAndView modificaProfilo(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+
+            @RequestParam(value = "userMail") String Mail,
+            @RequestParam(value = "userPassword") String password,
+            @RequestParam(value = "userTelefono") String telefono,
+            @RequestParam(value = "userIBAN") String IBAN,
+            @RequestParam(value = "userFoto") Part foto,
+            @RequestParam(value = "userDocumenti") Part documenti,
+            @RequestParam(value = "userIndirizzo") String indirizzo,
+            @RequestParam(value = "Newsletter", required = false) boolean Newsletter
+    ){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        Amministratore loggedAdmin;
-        UtenteRegistrato loggedUser;
+        ModelAndView page = new ModelAndView();
+
+        Amministratore loggedAdmin = null;
+        UtenteRegistrato loggedUser = null;
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
-
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
 
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
+            if(!cookieAdmin.equals(""))
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             sessionDAOFactory.commitTransaction();
 
@@ -213,17 +205,16 @@ public class Profilo {
 
             UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();
             AmministratoreDAO adminDAO = daoFactory.getAmministratoreDAO();
-            String Mail = request.getParameter("userMail");
-            String password = request.getParameter("userPassword");
-            String telefono = request.getParameter("userTelefono");
 
             UtenteRegistrato user = userDAO.findByMail(Mail);
             if(user != null){
+                /*
                 String IBAN = request.getParameter("userIBAN");
                 Part foto = request.getPart("userFoto");
                 Part documenti = request.getPart("userDocumenti");
                 String indirizzo = request.getParameter("userIndirizzo");
                 boolean Newsletter = (request.getParameter("Newsletter") != null);
+                 */
 
                 user.setIBAN(IBAN);
 
@@ -252,54 +243,47 @@ public class Profilo {
             daoFactory.commitTransaction();
 
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
 
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
 
-            request.setAttribute("viewUrl", "Profilo/reload");
+            page.setViewName("Profilo/reload");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("Pagina_InizialeCSS");
+
         }
+        return page;
     }
 
-    public static void prenotazioniView(HttpServletRequest request, HttpServletResponse response){
+    @GetMapping("/prenotazioniView")
+    public ModelAndView prenotazioniView(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser
+    ){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        UtenteRegistrato loggedUser;
+        UtenteRegistrato loggedUser = null;
 
         List<Pasto> pastoList = new ArrayList<>();
         List<PostoLetto> alloggioList = new ArrayList<>();
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
+        ModelAndView page = new ModelAndView();
 
         try {
-
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
             sessionDAOFactory.commitTransaction();
 
@@ -315,55 +299,52 @@ public class Profilo {
             daoFactory.commitTransaction();
 
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("listaPasti", pastoList);
-            request.setAttribute("listaAlloggi", alloggioList);
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("listaPasti", pastoList);
+            page.addObject("listaAlloggi", alloggioList);
 
-            request.setAttribute("viewUrl", "Profilo/prenotazioniCSS");
+            page.setViewName("Profilo/prenotazioniCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("Pagina_InizialeCSS");
         }
+        return page;
     }
 
-    public static void viewDoc(HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping(value = "/viewDoc", params = {"bandoId", "UtenteSelezionato"})
+    public ModelAndView viewDoc(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+
+            @RequestParam(value = "bandoId") String bandoId,
+            @RequestParam(value = "UtenteSelezionato") String matrSelezionata
+    ) {
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
+        ModelAndView page = new ModelAndView();
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
-
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
+            if(!cookieAdmin.equals(""))
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+
 
             sessionDAOFactory.commitTransaction();
 
@@ -373,37 +354,30 @@ public class Profilo {
             UtenteRegistratoDAO userDao = daoFactory.getUtenteRegistratoDAO();
             BandoDAO bandoDAO = daoFactory.getBandoDAO();
 
-            String matrSelezionata = request.getParameter("UtenteSelezionato");
             UtenteRegistrato utenteSelezionato = userDao.findByMatricola(matrSelezionata);
 
-            String bandoId = request.getParameter("bandoId");
             //System.out.println("Controller: "+bandoId);
             Bando bando = bandoDAO.findbyId(bandoId);
 
             daoFactory.commitTransaction();
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("BandoSelezionato", bando);
-            request.setAttribute("UtenteSelezionato", utenteSelezionato);
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("BandoSelezionato", bando);
+            page.addObject("UtenteSelezionato", utenteSelezionato);
 
-            request.setAttribute("viewUrl", "Profilo/viewDoc");
+            page.setViewName("Profilo/viewDoc");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("Pagina_InizialeCSS");
+
         }
+
+        return page;
     }
 }

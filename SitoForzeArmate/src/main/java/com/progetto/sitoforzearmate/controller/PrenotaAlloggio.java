@@ -59,7 +59,7 @@ public class PrenotaAlloggio {
 
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             e.printStackTrace();
-            page.setViewName("PaginaInizialeCSS");
+            page.setViewName("Pagina_InizialeCSS");
         }
 
         return page;
@@ -128,7 +128,7 @@ public class PrenotaAlloggio {
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
             e.printStackTrace();
-            page.setViewName("PaginaInizialeCSS");
+            page.setViewName("Pagina_InizialeCSS");
         }
         return page;
     }

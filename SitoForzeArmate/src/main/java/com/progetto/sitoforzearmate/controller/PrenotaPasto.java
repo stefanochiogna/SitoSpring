@@ -1,6 +1,8 @@
 package com.progetto.sitoforzearmate.controller;
 
 import com.progetto.sitoforzearmate.model.dao.Base.PastoDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
 import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
 import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
@@ -23,86 +25,84 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Controller
 public class PrenotaPasto {
-    private PrenotaPasto(){ }
-    public static void view(HttpServletRequest request, HttpServletResponse response){
+    @GetMapping("/viewPrenotaPasto")
+    public ModelAndView view(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+            @RequestParam(value = "locazioneBase") String locazione
+    ){
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
 
         String applicationMessage = null;
-
-        Logger logger = LogService.getApplicationLogger();
-
+        
+        ModelAndView page = new ModelAndView();
+        
         try {
-
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
+            
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
-
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
+            if(!cookieAdmin.equals(""))
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             sessionDAOFactory.commitTransaction();
-
-            String locazione = request.getParameter("locazioneBase");
-
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("locazionePasto", locazione);
-            request.setAttribute("viewUrl", "ListaBasi/PrenotaPastoCSS");
+            
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("locazionePasto", locazione);
+            page.setViewName("ListaBasi/PrenotaPastoCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("ListaBasi/Lista");
         }
+        return page;
     }
 
-    public static void conferma (HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/confermaPrenotaPasto")
+    public ModelAndView conferma (
+            HttpServletResponse response,
+            @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+
+            @RequestParam(value = "locazionePasto") String locazione,
+            @RequestParam(value = "Turno") String turno,
+            @RequestParam(value = "DataPrenotazione") String data_prenotazione
+    ) {
         DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
-        UtenteRegistrato loggedUser;
-        Amministratore loggedAdmin;
+        UtenteRegistrato loggedUser = null;
+        Amministratore loggedAdmin = null;
 
         String applicationMessage = null;
 
-        Logger logger = LogService.getApplicationLogger();
+        ModelAndView page = new ModelAndView();
 
         try {
 
-            Map sessionFactoryParameters=new HashMap<String,Object>();
-            sessionFactoryParameters.put("request",request);
-            sessionFactoryParameters.put("response",response);
-
             /* SESSIONE COOKIE */
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,sessionFactoryParameters);
+            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
             sessionDAOFactory.beginTransaction();
 
-            UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            loggedUser = sessionUserDAO.findLoggedUser();
+            if(!cookieUser.equals(""))
+                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-            loggedAdmin = sessionAdminDAO.findLoggedAdmin();
+            if(!cookieAdmin.equals(""))
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
             sessionDAOFactory.commitTransaction();
 
@@ -111,10 +111,6 @@ public class PrenotaPasto {
             daoFactory.beginTransaction();
 
             PastoDAO pastoDAO = daoFactory.getPastoDAO();
-
-            String locazione = request.getParameter("locazionePasto");
-            String turno = request.getParameter("Turno");
-            String data_prenotazione = request.getParameter("DataPrenotazione");
 
             Pasto pasto = new Pasto();
             pasto.setLocazione(locazione);
@@ -127,28 +123,23 @@ public class PrenotaPasto {
 
             daoFactory.commitTransaction();
 
-            request.setAttribute("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
-            request.setAttribute("loggedUser", loggedUser);
-            request.setAttribute("loggedAdminOn", loggedAdmin != null);
-            request.setAttribute("loggedAdmin", loggedAdmin);
-            request.setAttribute("luogoBase", locazione);
-            request.setAttribute("Pasto", pasto);
-            request.setAttribute("viewUrl", "ListaBasi/ConfermaCSS");
+            page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject("loggedUser", loggedUser);
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("luogoBase", locazione);
+            page.addObject("Pasto", pasto);
+            page.setViewName("ListaBasi/ConfermaCSS");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Controller Error", e);
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-            } catch (Throwable t) {
-            }
-            throw new RuntimeException(e);
+            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-        } finally {
-            try {
-                if (sessionDAOFactory != null) sessionDAOFactory.closeTransaction();
-            } catch (Throwable t) {
-            }
+            e.printStackTrace();
+            page.setViewName("ListaBasi/Lista");
+
         }
+
+        return page;
     }
 
     // TODO: metodo annulla prenotazione pasto

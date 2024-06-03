@@ -279,10 +279,6 @@ public class AmministratoreDAOmySQL implements AmministratoreDAO{
 
         return admin;
     }
-    @Override
-    public Amministratore findLoggedAdmin(){
-        throw new RuntimeException("Non supportato");
-    }
 
     private Amministratore readAdmin(ResultSet resultSet) {
         Amministratore admin = new Amministratore();
