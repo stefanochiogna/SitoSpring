@@ -34,7 +34,7 @@
 </head>
 <body style="background-color: #f7fafc;">
 <!-- Navbar -->
-<%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../static/html_daIncludere/navbar.inc"%>
 
 <main>
   <% if(loggedAdminOn){%>
@@ -97,6 +97,6 @@
   </ul>
   <%}%>
 </main>
-<%@include file="../../../../../static/html_daIncludere/footer.inc"%>
+<%@include file="../../../static/html_daIncludere/footer.inc"%>
 </body>
 </html>

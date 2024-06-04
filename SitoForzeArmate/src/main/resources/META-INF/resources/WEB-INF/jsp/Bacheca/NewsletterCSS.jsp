@@ -122,5 +122,5 @@
     </div>
 </section>
 </main>
-<%@include file="../../../../../static/html_daIncludere/footer.inc"%>
+<%@include file="../../../static/html_daIncludere/footer.inc"%>
 </html>
