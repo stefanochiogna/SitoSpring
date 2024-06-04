@@ -460,7 +460,7 @@ public class Calendario {
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "bandoId") String bandoId,
-        @RequestParam(value = "iscritto") String iscrizione 
+        @RequestParam(value = "Iscritto") String iscrizione 
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
