@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Base" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
 <%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: stef

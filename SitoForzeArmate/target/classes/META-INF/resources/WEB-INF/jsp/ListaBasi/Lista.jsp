@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Base" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -11,7 +11,7 @@
 
 <html>
 <head>
-    <%@include file="/html_daIncludere/Header.inc"%>
+    <%@include file="../../../static/html_daIncludere/Header.inc"%>
     <style>
         #cercaBase {
             width: 100%; /* Full-width */
@@ -72,16 +72,10 @@
 </head>
 <body>
 <!-- Navbar -->
-<%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../static/html_daIncludere/navbar.inc"%>
 <main>
     <% if(loggedAdminOn){%>
-        <form name="newBase" action="Dispatcher" method="post">
-            <input type="hidden" name="loggedAdmin" value="<%=loggedAdmin%>">
-
-            <input type="hidden" name="controllerAction" value="ListaBasi.registraBase"/>
-
-            <input type="submit" value="Registra Nuova Base">
-        </form>
+        <a href="/registraBase"> Registra Nuova Base </a>
     <%}%>
 
     <div class="container">
@@ -92,21 +86,17 @@
                 <%for(int i=0; i<baseList.size(); i++){%>
                 <li>
                     <p> Base militare di <%=baseList.get(i).getLocazione()%> </p>
-                    <form name="baseView<%=baseList.get(i).getLocazione()%>" action="Dispatcher" method="post">
+                    <form name="baseView<%=baseList.get(i).getLocazione()%>" action="/viewBase" method="post">
 
                         <input type="hidden" name="luogoBase" value="<%=baseList.get(i).getLocazione()%>">
-
-                        <input type="hidden" name="controllerAction" value="ListaBasi.viewBase"/>
 
                         <input type="submit" value="Seleziona">
                     </form>
 
                     <% if(loggedAdminOn){%>
-                    <form name="baseDelete<%=baseList.get(i).getLocazione()%>" action="Dispatcher" method="post">
+                    <form name="baseDelete<%=baseList.get(i).getLocazione()%>" action="/deleteBase" method="post">
 
                         <input type="hidden" name="luogoBase" value="<%=baseList.get(i).getLocazione()%>">
-
-                        <input type="hidden" name="controllerAction" value="ListaBasi.deleteBase"/>
 
                         <input type="submit" value="Elimina">
 
@@ -123,5 +113,5 @@
     </div>
 </main>
 </body>
-<%@include file="../../../../../static/html_daIncludere/footer.inc"%>
+<%@include file="../../../static/html_daIncludere/footer.inc"%>
 </html>

@@ -30,7 +30,7 @@ public class Rubrica {
     public ModelAndView view(
             HttpServletResponse response,
             @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
-            @RequestParam(value = "inizialeSelezionata") String inizialeSelezionata
+            @RequestParam(value = "inizialeSelezionata", defaultValue = "") String inizialeSelezionata
     ) {
 
         DAOFactory sessionDAOFactory = null;
@@ -58,7 +58,7 @@ public class Rubrica {
 
             Iniziali = userDAO.ElencoIniziali(user);
 
-            if (inizialeSelezionata == null) {
+            if (inizialeSelezionata.equals("")) {
                 inizialeSelezionata = "*";
             }
 

@@ -6,7 +6,7 @@
 <body style="background-color: #F3F4F6;">
 <h1 style="display: flex; justify-content: center;"> Inserimento base: </h1>
 <div style="display: flex; align-items: center; justify-content: center;">
-<form action="Dispatcher" method="post" enctype="multipart/form-data" style="max-width: 25rem; padding: 2rem; background-color: #FFF; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+<form action="/newBase" method="post" enctype="multipart/form-data" style="max-width: 25rem; padding: 2rem; background-color: #FFF; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
 
     <section style="margin-bottom: 1rem;">
         <label for="Foto" style="color: #4B5563; font-weight: 600;"style="color: #4B5563; font-weight: 600;"> Foto della Base: </label>
@@ -52,16 +52,10 @@
         <input id="Longitudine" name="Longitudine" type="text" required style="width: 100%; border: 1px solid #D1D5DB; border-radius: 0.25rem; padding: 0.5rem 0.75rem; margin-top: 0.25rem;">
     </section>
 
-    <input type="hidden" name="controllerAction" value="ListaBasi.newBase">
     <input type="submit" value="Conferma" style="width: 100%; background-color: #3B82F6; color: #FFF; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.25rem; margin-top: 1rem; cursor: pointer;">
 </form>
 </div>
 
-<form name="nuovaBaseAnnulla" action="Dispatcher" method="post" style="display: flex; justify-content: center;">
-
-    <input type="hidden" name="controllerAction" value="ListaBasi.view"/>
-
-    <input type="submit" value="Annulla" style="background-color: #9CA3AF; color: #fff; padding: 0.75rem 1rem; border-radius: 0.25rem; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s ease-in-out; width: 10%;" onmouseover="this.style.backgroundColor='#6B7280'" onmouseout="this.style.backgroundColor='#9CA3AF'">
-</form>
+<a href="/viewListaBasi"> Annulla </a>
 </body>
 </html>

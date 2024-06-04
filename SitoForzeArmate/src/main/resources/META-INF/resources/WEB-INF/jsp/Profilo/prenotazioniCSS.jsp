@@ -41,7 +41,7 @@
                 Data arrivo: <%=alloggiList.get(i).getData_arrivo().toStringSQL()%> per <%=alloggiList.get(i).getNum_notti()%> notti <br>
                 Id della prenotazione: <%=alloggiList.get(i).getId()%>
             </li>
-            <%}
+                <%}
             }%>
         </ul>
     </section>
@@ -56,6 +56,8 @@
                 Data: <%=pastiList.get(i).getData_prenotazione().toStringSQL()%> per turno <%=pastiList.get(i).getTurno()%> <br>
                 Id della prenotazione: <%=pastiList.get(i).getId()%>
             </li>
+                <%}%>
+            <%}%>
         </ul>
     </section>
 </div>

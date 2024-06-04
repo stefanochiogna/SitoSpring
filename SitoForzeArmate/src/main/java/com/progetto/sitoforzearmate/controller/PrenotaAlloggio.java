@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 @Controller
 public class PrenotaAlloggio {
 
-    @GetMapping("/viewPrenotaAlloggi")
+    @PostMapping("/viewPrenotaAlloggi")
     public ModelAndView view(
             HttpServletResponse response,
             @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,

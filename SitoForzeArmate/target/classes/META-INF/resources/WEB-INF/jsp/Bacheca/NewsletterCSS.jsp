@@ -12,7 +12,7 @@
 
 <html>
 <head>
-    <%@include file="/html_daIncludere/Header.inc"%>
+    <%@include file="../../../static/html_daIncludere/Header.inc"%>
 
     <style>
         div.divForm{
@@ -56,7 +56,7 @@
 </head>
 <body>
 <!-- Navbar -->
-<%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../static/html_daIncludere/navbar.inc"%>
 <main>
 <a href="/viewBachecaAvviso" class="Avvisi"> Avvisi </a>
 
@@ -122,5 +122,5 @@
     </div>
 </section>
 </main>
-<%@include file="../../../../../static/html_daIncludere/footer.inc"%>
+<%@include file="../../../static/html_daIncludere/footer.inc"%>
 </html>

@@ -100,7 +100,7 @@ public class Login {
 
     }
 
-    @PostMapping(path = "/logout")
+    @GetMapping(path = "/logout")
     public ModelAndView logout(
             HttpServletResponse response
     ){
@@ -313,7 +313,7 @@ public class Login {
             page.addObject("applicationMessage", applicationMessage);
 
             if(loggedAdmin != null){
-                page.setViewName("/jsp/index.jsp");
+                page.setViewName("index");
             }
             else page.setViewName("LoginAmministratoreCSS");
 

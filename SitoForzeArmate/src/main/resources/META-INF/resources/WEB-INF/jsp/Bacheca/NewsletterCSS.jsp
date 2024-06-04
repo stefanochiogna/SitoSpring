@@ -12,7 +12,7 @@
 
 <html>
 <head>
-    <%@include file="/html_daIncludere/Header.inc"%>
+    <%@include file="../../../static/html_daIncludere/Header.inc"%>
 
     <style>
         div.divForm{

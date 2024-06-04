@@ -1,10 +1,10 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Bando" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Bando" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.time.LocalDate" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="../../../../../static/html_daIncludere/Header.inc"%>
+<%@include file="../../../static/html_daIncludere/Header.inc"%>
 <%
   Bando bando = (Bando) request.getAttribute("BandoSelezionato");
   boolean Iscritto = false;
@@ -16,7 +16,6 @@
   if(loggedAdminOn){
     partecipanti.addAll( (List<UtenteRegistrato>) request.getAttribute("partecipanti") );
   }
-  // TODO: Quando l'utente si iscrive al bando deve passare il suo ID per ricevere informazione
 %>
 <html>
 <head>
@@ -90,15 +89,13 @@
 
 
   <% if(loggedOn && !Iscritto && (bando.getNumPartecipanti() < bando.getMaxNumPartecipanti())){ %>
-  <form name="bandoIscrizione<%=bando.getId()%>" action="Dispatcher" method="post" class="tasto">
+  <form name="bandoIscrizione<%=bando.getId()%>" action="/iscrizione" method="post" class="tasto">
 
     <input type="hidden" name="bandoId" value="<%=bando.getId()%>">
 
     <input type="hidden" name="Iscritto" value="True">
 
     <input type="hidden" name="inAttesa" value="True">
-
-    <input type="hidden" name="controllerAction" value="Calendario.iscrizione"/>
 
     <input type="submit" value="Iscriviti: <%=bando.getNumPartecipanti()%>/<%=bando.getMaxNumPartecipanti()%>">
 
@@ -108,13 +105,11 @@
   <button type="button" disabled style="margin: 10px 0px"> Massimo numero di partecipanti raggiunto </button>
   <%}%>
   <% if(loggedOn && Iscritto && !(inAttesa.equalsIgnoreCase("rifiutato"))){ %>
-  <form name="annullaIscrizione<%=bando.getId()%>" action="Dispatcher" method="post" class="tasto">
+  <form name="annullaIscrizione<%=bando.getId()%>" action="/annullaIscrizione" method="post" class="tasto">
 
     <input type="hidden" name="bandoId" value="<%=bando.getId()%>">
 
     <input type="hidden" name="Iscritto" value="False">
-
-    <input type="hidden" name="controllerAction" value="Calendario.annullaIscrizione"/>
     
     <input type="submit" value="Annulla Iscrizione">
 
@@ -126,12 +121,9 @@
 
   </button>
 
-  <%
-    // TODO: amministratore vede utenti iscritti. Può poi visualizzarne il profilo e i relativi documenti per decidere se accettare o meno
-  %>
   <%}%>
 
-  <a href="Dispatcher?controllerAction=Calendario.view" class="indietro"> Indietro </a>
+  <a href="/viewCalendario" class="indietro"> Indietro </a>
 </div>
 
 
@@ -143,18 +135,16 @@
         <%= partecipanti.get(i).getNome() %> <%= partecipanti.get(i).getCognome() %> - <%= partecipanti.get(i).getMatricola() %>
       </p>
       <p>
-      <form name="visualizzaDoc<%=partecipanti.get(i).getMatricola()%>" action="Dispatcher" method="post" class="tasto">
+      <form name="visualizzaDoc<%=partecipanti.get(i).getMatricola()%>" action="/viewDoc" method="post" class="tasto">
 
         <input type="hidden" name="UtenteSelezionato" value="<%=partecipanti.get(i).getMatricola()%>">
 
         <input type="hidden" name="bandoId" value="<%=bando.getId()%>">
 
-        <input type="hidden" name="controllerAction" value="Profilo.viewDoc"/>
-
         <input type="submit" value = "Visualizza documenti">
       </form>
 
-      <form name="rifiutaPartecipante<%=partecipanti.get(i).getMatricola()%>" action="Dispatcher" method="post" style="margin-bottom: 0; margin-left: 1rem; padding: 0; display: flex;">
+      <form name="rifiutaPartecipante<%=partecipanti.get(i).getMatricola()%>" action="/esitoPartecipante" method="post" style="margin-bottom: 0; margin-left: 1rem; padding: 0; display: flex;">
 
         <input type="hidden" name="UtenteSelezionato" value="<%=partecipanti.get(i).getMatricola()%>">
 
@@ -162,20 +152,16 @@
 
         <input type="hidden" name="inAttesa" value="rifiutato">
 
-        <input type="hidden" name="controllerAction" value="Calendario.esitoPartecipante"/>
-
         <input type="submit" value="Rifiuta" style="display: inline-block; background-color: #e53e3e; color: #fff; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: bold;">
 
       </form>
-      <form name="accettaPartecipante<%=partecipanti.get(i).getMatricola()%>" action="Dispatcher" method="post" style="margin-bottom: 0; margin-left: 1rem; padding: 0; display: flex;">
+      <form name="accettaPartecipante<%=partecipanti.get(i).getMatricola()%>" action="/esitoPartecipante" method="post" style="margin-bottom: 0; margin-left: 1rem; padding: 0; display: flex;">
 
         <input type="hidden" name="UtenteSelezionato" value="<%=partecipanti.get(i).getMatricola()%>">
 
         <input type="hidden" name="inAttesa" value="accettato">
 
         <input type="hidden" name="bandoId" value="<%=bando.getId()%>">
-
-        <input type="hidden" name="controllerAction" value="Calendario.esitoPartecipante"/>
 
         <input type="submit" value="Accetta" style="display: inline-block; background-color: #3182ce; color: #fff; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: bold;">
 

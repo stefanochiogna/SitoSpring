@@ -200,14 +200,14 @@ public class BachecaNewsletter {
             return page;
         }
 
-    @PostMapping(path = "/inviaNewsletter", params = {""})
+    @PostMapping(path = "/inviaNewsletter")
     public ModelAndView inviaNewsletter(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
-        @RequestParam(value = "oggetto") String oggetto, 
-        @RequestParam(value = "testo") String testo
+        @RequestParam(value = "Oggetto") String oggetto,
+        @RequestParam(value = "Testo") String testo
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;

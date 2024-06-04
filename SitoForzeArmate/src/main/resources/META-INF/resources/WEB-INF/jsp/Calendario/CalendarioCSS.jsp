@@ -40,7 +40,6 @@
   <% if(loggedAdminOn){%>
   <form name="newBando" action="/modificaBandoView" method="post" style="margin-bottom: 0;">
     <input type="hidden" name="loggedAdmin" value="<%=loggedAdmin%>">
-
     <input type="submit" value="Nuovo Bando" style="background-color: #4299e1; color: #fff; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer;">
   </form>
   <%}%>

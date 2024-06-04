@@ -1,5 +1,5 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Pasto" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.PostoLetto" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Pasto" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.PostoLetto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String contextPath=request.getContextPath();
@@ -8,7 +8,7 @@
 %>
 <html>
 <head>
-    <%@include file="../../../../../static/html_daIncludere/Header.inc"%>
+    <%@include file="../../../static/html_daIncludere/Header.inc"%>
 
     <style>
         body {

@@ -97,11 +97,7 @@
 
     </section>
 
-    <form name="baseAnnulla<%=base.getLocazione()%>" action="/viewListaBasi" method="post">
+    <a href="/viewListaBasi" class="indietro"> Indietro </a>
 
-        <input type="hidden" name="luogoBase" value="<%=base.getLocazione()%>">
-
-        <input type="submit" value="Indietro">
-    </form>
 </body>
 </html>

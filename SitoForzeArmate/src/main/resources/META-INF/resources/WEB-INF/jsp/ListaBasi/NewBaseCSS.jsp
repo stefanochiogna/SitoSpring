@@ -56,9 +56,6 @@
 </form>
 </div>
 
-<form name="nuovaBaseAnnulla" action="/viewListaBasi" method="post" style="display: flex; justify-content: center;">
-
-    <input type="submit" value="Annulla" style="background-color: #9CA3AF; color: #fff; padding: 0.75rem 1rem; border-radius: 0.25rem; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s ease-in-out; width: 10%;" onmouseover="this.style.backgroundColor='#6B7280'" onmouseout="this.style.backgroundColor='#9CA3AF'">
-</form>
+<a href="/viewListaBasi"> Annulla </a>
 </body>
 </html>

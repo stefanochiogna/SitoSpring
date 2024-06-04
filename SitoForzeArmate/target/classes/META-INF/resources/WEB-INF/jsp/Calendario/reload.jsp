@@ -6,7 +6,7 @@
     // text/javascript: specifica codice scritto in linguaggio javascript
 
     function onLoadHandler() {
-      window.location.href = "<%=contextPath%>/Dispatcher?controllerAction=Calendario.view";
+      window.location.href = "/viewCalendario";
       // permette di caricare la pagina fornita
       // si va a chiamare il dispatcher che poi fornisce la view adeguata
     }
@@ -16,6 +16,6 @@
   <title>Page Redirection</title>
 </head>
 <body>
-  If you are not redirected automatically, follow the <a href='<%=contextPath%>/Dispatcher?controllerAction=Calendario.view'>link</a>
+  If you are not redirected automatically, follow the <a href='/viewCalendario'>link</a>
 </body>
 </html>

@@ -1,10 +1,10 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Bando" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Bando" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.util.Base64" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="../../../../../static/html_daIncludere/Header.inc"%>
+<%@include file="../../../static/html_daIncludere/Header.inc"%>
 <%
     Bando bando = (Bando) request.getAttribute("BandoSelezionato");
 
@@ -50,12 +50,10 @@
 
     </div>
 
-    <form name="bandoView<%=bando%>" action="Dispatcher" method="post" style="margin-bottom: 0; width: 100%; display: flex; align-items: center; justify-content: center;">
+    <form name="bandoView<%=bando%>" action="/viewBando" method="post" style="margin-bottom: 0; width: 100%; display: flex; align-items: center; justify-content: center;">
 
         <input type="hidden" name="bandoId" value="<%=bando.getId()%>">
         <!-- type hidden: usato per inviare parametri con la form specificandone il nome -->
-
-        <input type="hidden" name="controllerAction" value="Calendario.viewBando"/>
 
         <input type="submit" value="Torna Indietro" style="color: #2f6a9c; font-weight: bold; cursor: pointer; border: none; width: 70%; height: 25px; background: transparent;">
     </form>

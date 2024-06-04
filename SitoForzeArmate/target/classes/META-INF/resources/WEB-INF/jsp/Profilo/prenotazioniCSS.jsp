@@ -1,8 +1,8 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.PostoLetto" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.PostoLetto" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Pasto" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Pasto" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Utente.UtenteRegistrato" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     List<Pasto> pastiList = new ArrayList<>();
@@ -41,7 +41,7 @@
                 Data arrivo: <%=alloggiList.get(i).getData_arrivo().toStringSQL()%> per <%=alloggiList.get(i).getNum_notti()%> notti <br>
                 Id della prenotazione: <%=alloggiList.get(i).getId()%>
             </li>
-            <%}
+                <%}
             }%>
         </ul>
     </section>
@@ -56,12 +56,11 @@
                 Data: <%=pastiList.get(i).getData_prenotazione().toStringSQL()%> per turno <%=pastiList.get(i).getTurno()%> <br>
                 Id della prenotazione: <%=pastiList.get(i).getId()%>
             </li>
-            <%}
-                // TODO: Aggiungere la possibilità di annullare le prenotazioni
-            }%>
+                <%}%>
+            <%}%>
         </ul>
     </section>
 </div>
-<a href="Dispatcher?controllerAction=Profilo.view" class="indietro"> Indietro </a>
+<a href="/viewProfilo" class="indietro"> Indietro </a>
 </body>
 </html>

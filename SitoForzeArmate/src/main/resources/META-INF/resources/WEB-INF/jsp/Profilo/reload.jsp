@@ -6,7 +6,7 @@
     // text/javascript: specifica codice scritto in linguaggio javascript
 
     function onLoadHandler() {
-      window.location.href = "<%=contextPath%>/Dispatcher?controllerAction=Profilo.view";
+      window.location.href = "/viewProfilo";
       // permette di caricare la pagina fornita
       // si va a chiamare il dispatcher che poi fornisce la view adeguata
     }

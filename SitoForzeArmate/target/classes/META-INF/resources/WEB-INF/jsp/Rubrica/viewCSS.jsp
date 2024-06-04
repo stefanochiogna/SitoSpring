@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Utente.UtenteRegistrato" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
@@ -74,8 +74,7 @@
 
   <script>
     function changeInitial(inital) {
-      document.changeInitialForm.inizialeSelezionata.value = inital;
-      document.changeInitialForm.submit();
+      window.location.href = "/viewRubrica?inizialeSelezionata=" + inital
     }
   </script>
 </head>
@@ -112,11 +111,12 @@
     <%}%>
   </section>
 
-  <a href="Dispatcher?controllerAction=Profilo.view" style="margin: 20px 0px; color: white; text-decoration: underline; display: block; background: #3b82f6; cursor: pointer; text-align: center; width: 5%;"> Indietro </a>
+  <a href="/viewProfilo" style="margin: 20px 0px; color: white; text-decoration: underline; display: block; background: #3b82f6; cursor: pointer; text-align: center; width: 5%;"> Indietro </a>
 
-  <form name="changeInitialForm" method="post" action="Dispatcher">
+  <!--
+  <form name="changeInitialForm" method="post" action="/viewRubrica">
     <input type="hidden" name="inizialeSelezionata"/>
-    <input type="hidden" name="controllerAction" value="Rubrica.view"/>
   </form>
+  -->
 </body>
 </html>

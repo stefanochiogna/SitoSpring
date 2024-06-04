@@ -16,7 +16,6 @@
   if(loggedAdminOn){
     partecipanti.addAll( (List<UtenteRegistrato>) request.getAttribute("partecipanti") );
   }
-  // TODO: Quando l'utente si iscrive al bando deve passare il suo ID per ricevere informazione
 %>
 <html>
 <head>

@@ -203,28 +203,45 @@ public class ListaBasi {
         }
 
     @GetMapping("/registraBase")
-    public ModelAndView registraBase(HttpServletResponse response){
+    public ModelAndView registraBase(
+            HttpServletResponse response,
+            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin
+    ){
         ModelAndView page = new ModelAndView();
 
-        page.setViewName("ListaBasi/NewBaseCSS");
+        Amministratore loggedAdmin = null;
+
+        try {
+            if( ! cookieAdmin.equals("") )
+                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+
+            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdmin", loggedAdmin);
+            page.setViewName("ListaBasi/NewBaseCSS");
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            page.setViewName("Pagina_InizialeCSS");
+        }
         return page;
     }
 
-    @PostMapping(path = "/newBase", params = {""})
+    @PostMapping(path = "/newBase")
     public ModelAndView newBase(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
-        @RequestParam(value = "foto") Part foto,
-        @RequestParam(value = "email") String email,
-        @RequestParam(value = "telefono") String telefono,
-        @RequestParam(value = "locazione") String locazione,
-        @RequestParam(value = "provicina") String provincia,
+        @RequestParam(value = "Foto") Part foto,
+        @RequestParam(value = "Email") String email,
+        @RequestParam(value = "Telefono") String telefono,
+        @RequestParam(value = "Locazione") String locazione,
+        @RequestParam(value = "Provincia") String provincia,
         @RequestParam(value = "CAP") String CAP,
-        @RequestParam(value = "via") String via,
-        @RequestParam(value = "latitudine") String latitudine,
-        @RequestParam(value = "longitudine") String longitudine
+        @RequestParam(value = "Via") String via,
+        @RequestParam(value = "Latitudine") String latitudine,
+        @RequestParam(value = "Longitudine") String longitudine
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;

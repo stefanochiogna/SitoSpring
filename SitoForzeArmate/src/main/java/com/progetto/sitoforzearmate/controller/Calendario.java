@@ -247,13 +247,13 @@ public class Calendario {
             return page;
         }
 
-    @PostMapping(path = "/modificaBandoView", params = {"bandoId"})
+    @PostMapping(path = "/modificaBandoView")
     public ModelAndView modificaBandoView(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
-        @RequestParam(value = "bandoId") String bandoId
+        @RequestParam(value = "bandoId", defaultValue = "") String bandoId
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
@@ -280,7 +280,7 @@ public class Calendario {
                 BandoDAO bandoDAO = daoFactory.getBandoDAO();
 
                 Bando bando = null;
-                if(bandoId != null) bando = bandoDAO.findbyId(bandoId);   // vado a modificare il bando selezionato tramite Id
+                if(!bandoId.equals("")) bando = bandoDAO.findbyId(bandoId);   // vado a modificare il bando selezionato tramite Id
 
                 BaseDAO baseDAO = daoFactory.getBaseDAO();
                 listaBasi.addAll(baseDAO.stampaBasi());
@@ -312,9 +312,9 @@ public class Calendario {
         @RequestParam(value = "bandoId") String bandoId,
         @RequestParam(value = "oggettoBando") String oggettoBando,
         @RequestParam(value = "numMaxIscritti") String numMaxIscritti,
-        @RequestParam(value = "dataScadenza") String dataScadenza,
-        @RequestParam(value = "dataBando") String data,
-        @RequestParam(value = "locazione") String locazione,
+        @RequestParam(value = "DataScadenza") String dataScadenza,
+        @RequestParam(value = "DataBando") String data,
+        @RequestParam(value = "Locazione") String locazione,
         @RequestParam(value = "testoBando") String testoBando
         ){
         DAOFactory sessionDAOFactory= null;
@@ -370,17 +370,17 @@ public class Calendario {
         return page;
     }
 
-    @PostMapping(path = "/inserisciBando", params = {""})
+    @PostMapping(path = "/inserisciBando")
     public ModelAndView inserisciBando(
         HttpServletResponse response,
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
-        @RequestParam(value = "dataBando") String dataBando,
+        @RequestParam(value = "DataBando") String dataBando,
         @RequestParam(value = "oggettoBando") String oggettoBando,
         @RequestParam(value = "numMaxIscritti") String numMaxIscritti,
-        @RequestParam(value = "dataScadenza") String dataScadenza,
-        @RequestParam(value = "locazione") String locazione,
+        @RequestParam(value = "DataScadenza") String dataScadenza,
+        @RequestParam(value = "Locazione") String locazione,
         @RequestParam(value = "insBando") Part insBando
         ){
                 ModelAndView page = new ModelAndView();
@@ -460,7 +460,7 @@ public class Calendario {
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
         @RequestParam(value = "bandoId") String bandoId,
-        @RequestParam(value = "iscritto") String iscrizione 
+        @RequestParam(value = "Iscritto") String iscrizione
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;

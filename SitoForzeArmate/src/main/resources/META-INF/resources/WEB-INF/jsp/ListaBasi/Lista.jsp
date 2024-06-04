@@ -75,11 +75,7 @@
 <%@include file="../../../static/html_daIncludere/navbar.inc"%>
 <main>
     <% if(loggedAdminOn){%>
-        <form name="newBase" action="/registraBase" method="post">
-            <input type="hidden" name="loggedAdmin" value="<%=loggedAdmin%>">
-
-            <input type="submit" value="Registra Nuova Base">
-        </form>
+        <a href="/registraBase"> Registra Nuova Base </a>
     <%}%>
 
     <div class="container">

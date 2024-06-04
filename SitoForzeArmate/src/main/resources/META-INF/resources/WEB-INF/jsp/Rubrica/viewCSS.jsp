@@ -74,8 +74,7 @@
 
   <script>
     function changeInitial(inital) {
-      document.changeInitialForm.inizialeSelezionata.value = inital;
-      document.changeInitialForm.submit();
+      window.location.href = "/viewRubrica?inizialeSelezionata=" + inital
     }
   </script>
 </head>
@@ -114,8 +113,10 @@
 
   <a href="/viewProfilo" style="margin: 20px 0px; color: white; text-decoration: underline; display: block; background: #3b82f6; cursor: pointer; text-align: center; width: 5%;"> Indietro </a>
 
+  <!--
   <form name="changeInitialForm" method="post" action="/viewRubrica">
     <input type="hidden" name="inizialeSelezionata"/>
   </form>
+  -->
 </body>
 </html>
