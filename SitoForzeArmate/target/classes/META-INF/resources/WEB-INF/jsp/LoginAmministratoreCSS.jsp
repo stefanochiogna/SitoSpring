@@ -29,7 +29,7 @@
 <body class="min-h-screen flex items-center justify-center">
 <div class="container">
     <h1 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Login Amministratore</h1>
-    <form name="logonFormAmministratore" action="Dispatcher" method="post">
+    <form name="logonFormAmministratore" action="/loginAdmin" method="post">
         <div style="margin-bottom: 1rem;">
             <label for="IdAdmin" style="font-weight: bold; color: #4a5568;">IdAmministratore</label>
             <input type="text" id="IdAdmin" name="IdAdministrator" maxlength="40" required
@@ -40,7 +40,6 @@
             <input type="password" id="Password" name="Password" maxlength="40" required
                    style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; font-size: 14px;">
         </div>
-        <input type="hidden" name="controllerAction" value="Login.loginAmministratore" />
         <input type="submit" value="Ok"
                style="width: 100%; padding: 0.75rem 1rem; background-color: #4299e1; color: #ffffff; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 16px;">
     </form>
@@ -48,7 +47,7 @@
     <p style="color: #4a5568;"><%=applicationMessage%></p>
     <%}%>
     <br>
-    <a href="Dispatcher?controllerAction=Login.view"
+    <a href="/viewLogin"
        style="display: block; color: #4299e1; text-decoration: none; font-size: 14px;">Indietro</a>
 </div>
 </body>

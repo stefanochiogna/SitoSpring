@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Notizie.Newsletter" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.io.*" %>
@@ -58,21 +58,19 @@
 <!-- Navbar -->
 <%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
 <main>
-<a href="Dispatcher?controllerAction=BachecaAvviso.view" class="Avvisi"> Avvisi </a>
+<a href="/viewBachecaAvviso" class="Avvisi"> Avvisi </a>
 
 <section class="pagina newsletter">
 
     <% if(loggedAdminOn){%>
     <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; height: 80%">
-        <form name="newNewsletter" action="Dispatcher" method="post" style="width: 60%; height: 100%; margin: 0 auto; padding: 15px; background-color: #f3f4f6;">
+        <form name="newNewsletter" action="/inviaNewsletter" method="post" style="width: 60%; height: 100%; margin: 0 auto; padding: 15px; background-color: #f3f4f6;">
 
             <label for="Oggetto" style="font-weight: bold;">Oggetto:</label>
             <input type="text" id="Oggetto" name="Oggetto" maxlength="45" style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 4px;">
 
             <label for="Testo" style="font-weight: bold;">Testo dell'avviso:</label>
             <textarea name="Testo" id="Testo" required style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 4px; resize: vertical; flex-grow: 1; max-height: 50%; height: 100%"></textarea>
-
-            <input type="hidden" name="controllerAction" value="BachecaNewsletter.inviaNewsletter"/>
 
             <input type="submit" value="Invia Nuova Newsletter" style="margin-top: 15px; padding: 8px 15px; background-color: #3490dc; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
         </form>
@@ -81,11 +79,9 @@
     <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
         <%for(int i=0; i<newsletterList.size(); i++){%>
         <div class="divForm">
-            <form class="formNewsletter" name="newsletterView<%=newsletterList.get(i).getID()%>" action="Dispatcher" method="post">
+            <form class="formNewsletter" name="newsletterView<%=newsletterList.get(i).getID()%>" action="/viewNewsletter" method="post">
 
                 <input type="hidden" name="newsletterId" value="<%=newsletterList.get(i).getID()%>">
-
-                <input type="hidden" name="controllerAction" value="BachecaNewsletter.viewNewsletter"/>
 
                 <input type="submit" value="<%=newsletterList.get(i).getID()%>: <%=newsletterList.get(i).getOggetto()%>"
                        style="display: inline-block;background-color:#fff;  color: black; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: bold;">
@@ -112,11 +108,9 @@
 
             </form>
 
-            <form name="newsletterDelete<%=newsletterList.get(i).getID()%>" action="Dispatcher" method="post" style="float:right">
+            <form name="newsletterDelete<%=newsletterList.get(i).getID()%>" action="/deleteNewsletter" method="post" style="float:right">
 
                 <input type="hidden" name="newsletterId" value="<%=newsletterList.get(i).getID()%>">
-
-                <input type="hidden" name="controllerAction" value="BachecaNewsletter.deleteNewsletter"/>
 
                 <input type="submit" value="Elimina"
                        style="display: inline-block; background-color: #e53e3e; color: #fff; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: bold;">

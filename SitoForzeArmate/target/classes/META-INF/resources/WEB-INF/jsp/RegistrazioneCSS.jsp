@@ -1,11 +1,11 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Base" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
 <%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <% List<Base> basi = (List<Base>) request.getAttribute("listaBasi"); %>
 <html>
 <head>
-  <%@include file="../../../../static/html_daIncludere/Header.inc"%>
+  <%@include file="../../static/html_daIncludere/Header.inc"%>
   <style>
     .hidden{
       display: none;
@@ -89,7 +89,7 @@
   </style>
 </head>
 <body class="bg-gray-100">
-<form action="Dispatcher" method="post" enctype="multipart/form-data" class="form-container">
+<form action="/registrazione" method="post" enctype="multipart/form-data" class="form-container">
 
   <div class="form-flex-container">
     <div class="form-field form-field-left">
@@ -194,9 +194,8 @@
 
   <div style="float: bottom;">
 
-    <a href="Dispatcher?controllerAction=Login.view" class="form-button" style="float: right">Indietro</a>
+    <a href="/viewLogin" class="form-button" style="float: right">Indietro</a>
 
-  <input type="hidden" name="controllerAction" value="Login.Registrazione">
   <input type="submit" value="Ok" class="form-button">
 
   </div>

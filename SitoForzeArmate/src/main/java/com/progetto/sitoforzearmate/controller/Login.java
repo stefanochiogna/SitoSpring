@@ -94,7 +94,6 @@ public class Login {
 
             System.err.println("Errore Login");
             e.printStackTrace();
-            page.setViewName("Pagina_InizialeCSS");
         }
 
         return page;
@@ -256,7 +255,7 @@ public class Login {
         return page;
     }
 
-    @GetMapping("/loginAdmin")
+    @GetMapping("/viewLoginAdmin")
     public ModelAndView viewAmministratore(
             HttpServletResponse response
     ){

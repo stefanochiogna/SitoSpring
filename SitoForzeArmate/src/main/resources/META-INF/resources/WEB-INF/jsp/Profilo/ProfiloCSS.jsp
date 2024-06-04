@@ -1,5 +1,5 @@
 <%@ page import="java.util.Base64" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Utente.Badge" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.Badge" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     UtenteRegistrato user = (UtenteRegistrato) request.getAttribute("UtenteCorrente");
@@ -10,7 +10,7 @@
 
 <html>
 <head>
-    <%@include file="../../../../../static/html_daIncludere/Header.inc"%>
+    <%@include file="../../../static/html_daIncludere/Header.inc"%>
 
     <style>
         .Utente{
@@ -25,7 +25,7 @@
 <body style="background-color: #f3f4f6;">
 
 <!-- Navbar -->
-<%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../static/html_daIncludere/navbar.inc"%>
 
 <%if(loggedOn){%>
 <div style="display: flex; justify-content: flex-end; padding: 1rem;">
@@ -52,7 +52,7 @@
         </script>
         <%}%>
         <div style="margin-top: 1rem;">
-            <a href="Dispatcher?controllerAction=Profilo.prenotazioniView" style="color: #3b82f6;">Visualizza prenotazioni</a>
+            <a href="/prenotazioniView" style="color: #3b82f6;">Visualizza prenotazioni</a>
         </div>
     </div>
     <%String Immagine64 = Base64.getEncoder().encodeToString(user.getFotoByte());%>
@@ -101,10 +101,10 @@
 
     <%if(loggedOn){%>
     <%if(user.getRuolo() != null){%>
-    <a href="Dispatcher?controllerAction=Rubrica.view" style="display: inline-block; background-color: #3b82f6; color: white; font-weight: bold; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; margin-top: 1rem;"> Rubrica </a>
+    <a href="/viewRubrica" style="display: inline-block; background-color: #3b82f6; color: white; font-weight: bold; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none; margin-top: 1rem;"> Rubrica </a>
     <%}%>
 
-    <form name="profiloModifica" action="Dispatcher" method="post" style="margin-top: 1rem;">
+    <form name="profiloModifica" action="/modificaProfiloView" method="post" style="margin-top: 1rem;">
         <input type="hidden" name="controllerAction" value="Profilo.modificaProfiloView">
         <input type="submit" value="Modifica" style="display: inline-block; background-color: #3b82f6; color: white; font-weight: bold; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none;">
     </form>

@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Base" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String locazione = (String) request.getAttribute("locazioneAlloggio");
@@ -9,7 +9,7 @@
 </head>
 <body style="background-color: #F3F4F6;">
 <h1 style="display: flex; justify-content: center;"> Prenota alloggio presso <%=locazione%>: </h1>
-<form action="Dispatcher" method="post" style="max-width: 28rem; margin: auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+<form action="/confermaIscrizione" method="post" style="max-width: 28rem; margin: auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
 
     <input type="hidden" name="locazioneAlloggio" value="<%=locazione%>">
 
@@ -38,7 +38,6 @@
     </select>
     <br>
 
-    <input type="hidden" name="controllerAction" value="PrenotaAlloggio.conferma">
     <input type="submit" value="Conferma" style="background-color: #4299e1; color: #fff; padding: 0.75rem 1rem; border-radius: 0.25rem; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s ease-in-out; width: 100%;" onmouseover="this.style.backgroundColor='#3182ce'" onmouseout="this.style.backgroundColor='#4299e1'">
 
 </form>
@@ -48,11 +47,9 @@
     document.getElementById("DataArrivo").setAttribute("min", dataOggi);
 </script>
 
-<form name="alloggioAnnulla<%=locazione%>" action="Dispatcher" method="post" style="display: flex; justify-content: center;">
+<form name="alloggioAnnulla<%=locazione%>" action="/viewBase" method="post" style="display: flex; justify-content: center;">
 
     <input type="hidden" name="luogoBase" value="<%=locazione%>">
-
-    <input type="hidden" name="controllerAction" value="ListaBasi.viewBase"/>
 
     <input type="submit" value="Annulla" style="background-color: #9CA3AF; color: #fff; padding: 0.75rem 1rem; border-radius: 0.25rem; cursor: pointer; margin-top: 1rem; transition: background-color 0.2s ease-in-out; width: 10%;" onmouseover="this.style.backgroundColor='#6B7280'" onmouseout="this.style.backgroundColor='#9CA3AF'">
 

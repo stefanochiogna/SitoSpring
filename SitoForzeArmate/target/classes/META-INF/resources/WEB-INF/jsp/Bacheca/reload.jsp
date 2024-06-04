@@ -6,7 +6,7 @@
         // text/javascript: specifica codice scritto in linguaggio javascript
 
         function onLoadHandler() {
-            window.location.href = "<%=contextPath%>/Dispatcher?controllerAction=BachecaAvviso.view";
+            window.location.href = "/viewBachecaAvviso";
             // permette di caricare la pagina fornita
             // si va a chiamare il dispatcher che poi fornisce la view adeguata
         }
@@ -16,6 +16,6 @@
     <title>Page Redirection</title>
 </head>
 <body>
-If you are not redirected automatically, follow the <a href='<%=contextPath%>/Dispatcher?controllerAction=BachecaAvviso.view'>link</a>
+If you are not redirected automatically, follow the <a href='/viewBachecaAvviso'>link</a>
 </body>
 </html>

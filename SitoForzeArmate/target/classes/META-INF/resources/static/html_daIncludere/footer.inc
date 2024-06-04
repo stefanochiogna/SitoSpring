@@ -1,11 +1,3 @@
-<!--
-<footer>
-    <section>
-        <a href="https://www.aeronautica.difesa.it/"> Aeronautica Militare </a><br />
-        <a class="link" href="http://www.unife.it/">Universit&agrave; degli Studi di Ferrara</a><br />
-    </section>
-</footer>
--->
 <footer style="background-color: #333; color: #fff; padding: 20px 0; margin-top: auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; ">
         <div>

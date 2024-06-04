@@ -101,7 +101,7 @@ public class Profilo {
         return page;
     }
 
-    @GetMapping(value = "/modificaBandoView")
+    @GetMapping(value = "/modificaProfiloView")
     public ModelAndView modificaProfiloView(
             HttpServletResponse response,
             @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,

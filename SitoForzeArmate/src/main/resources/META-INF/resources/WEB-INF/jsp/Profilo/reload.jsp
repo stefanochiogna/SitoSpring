@@ -16,6 +16,6 @@
   <title>Page Redirection</title>
 </head>
 <body>
-If you are not redirected automatically, follow the <a href='<%=contextPath%>/Dispatcher?controllerAction=Profilo.view'>link</a>
+If you are not redirected automatically, follow the <a href='/viewProfilo'>link</a>
 </body>
 </html>
