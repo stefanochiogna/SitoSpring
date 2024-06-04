@@ -1,8 +1,8 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Bando" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Bando" %>
 <%@ page import="java.io.*" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Utente.Amministratore" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.Amministratore" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Base" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Bando bando = (Bando) request.getAttribute("BandoSelezionato");
@@ -27,7 +27,7 @@
     <%}%>
 </head>
 <body style="background-color: #F3F4F6;">
-<form action="Dispatcher" method="post" enctype="multipart/form-data" style="max-width: 65%; min-width: 725px; margin: auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+<form <% if(bando != null){%> action="/modificaBando" <%}else{%> action="/inserisciBando" <%}%> method="post" enctype="multipart/form-data" style="max-width: 65%; min-width: 725px; margin: auto; background-color: #fff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
     <label for="oggettoBando" style="font-weight: bold;">Oggetto: </label>
     <input type="text" <% if(bando != null){ %> value="<%=bando.getOggetto() %>" <%}%> name="oggettoBando" id="oggettoBando" required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; outline: none; transition: border-color 0.2s ease-in-out;"><br>
 
@@ -72,18 +72,16 @@
         <li style="display: flex;">
         <% if(bando != null){ %>
         <input type="hidden" name="bandoId" value="<%=bando.getId()%>">
-        <input type="hidden" name="controllerAction" value="Calendario.modificaBando"/>
 
         <input type="submit" value="Salva Modifiche" style="margin-top: 15px; padding: 8px 15px; background-color: #3490dc; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
         <%}
         else{%>
-        <input type="hidden" name="controllerAction" value="Calendario.inserisciBando"/>
 
         <input type="submit" value="Crea nuovo Bando" style="margin-top: 15px; padding: 8px 15px; background-color: #3490dc; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
         <%}%>
         </li>
         <li style="display: flex; margin-left: 72%;">
-        <a href="Dispatcher?controllerAction=Calendario.view" style="margin-top: 15px; padding: 8px 15px; background-color: #9CA3AF; color: #fff; border: none; border-radius: 4px; cursor: pointer;"> Annulla </a>
+        <a href="/viewCalendario" style="margin-top: 15px; padding: 8px 15px; background-color: #9CA3AF; color: #fff; border: none; border-radius: 4px; cursor: pointer;"> Annulla </a>
         </li>
     </ul>
 </form>

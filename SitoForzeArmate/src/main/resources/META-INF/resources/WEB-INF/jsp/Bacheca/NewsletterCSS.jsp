@@ -56,7 +56,7 @@
 </head>
 <body>
 <!-- Navbar -->
-<%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../static/html_daIncludere/navbar.inc"%>
 <main>
 <a href="/viewBachecaAvviso" class="Avvisi"> Avvisi </a>
 
