@@ -5,7 +5,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <%@include file="/html_daIncludere/Header.inc"%>
+    <%@include file="../../../static/html_daIncludere/Header.inc"%>
     <%
         List<Avviso> avvisoList = new ArrayList<>();
         if(loggedOn) avvisoList.addAll((List<Avviso>) request.getAttribute("Avvisi"));
@@ -61,7 +61,7 @@
 <body>
 
 <!-- Navbar -->
-<%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../static/html_daIncludere/navbar.inc"%>
 <main>
 <a href="/viewBachecaNewsletter" class="newsletter">Newsletter</a>
 
@@ -256,6 +256,6 @@
 
 </script>
 </main>
-<%@include file="../../../../../static/html_daIncludere/footer.inc"%>
+<%@include file="../../../static/html_daIncludere/footer.inc"%>
 </body>
 </html>
