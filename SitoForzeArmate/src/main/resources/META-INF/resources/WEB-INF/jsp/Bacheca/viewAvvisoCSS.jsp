@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Notizie.Avviso" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Avviso" %>
 <%@ page import="java.io.InputStreamReader" %>
 <%@ page import="java.io.FileInputStream" %>
 <%@ page import="java.io.BufferedReader" %>
@@ -67,7 +67,7 @@
     }
     %>
 
-    <a href="Dispatcher?controllerAction=BachecaAvviso.view" class="indietro"> Indietro </a>
+    <a href="/viewBachecaAvviso" class="indietro"> Indietro </a>
 
 </div>
 
