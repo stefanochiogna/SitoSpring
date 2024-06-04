@@ -256,7 +256,7 @@ public class Login {
         return page;
     }
 
-    @GetMapping("/loginAdmin")
+    @GetMapping("/viewLoginAdmin")
     public ModelAndView viewAmministratore(
             HttpServletResponse response
     ){

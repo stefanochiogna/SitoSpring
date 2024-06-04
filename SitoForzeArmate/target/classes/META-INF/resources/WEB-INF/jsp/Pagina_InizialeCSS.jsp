@@ -102,7 +102,7 @@
   <% String notizia = "notizia" + i; %>
   <% Notizie notizie = (Notizie) request.getAttribute(notizia); %>
   <section class="bloccoArt">
-      <form name="Articolo<%=notizia%>" class="Articolo" action="Dispatcher" method="post">
+      <form name="Articolo<%=notizia%>" class="Articolo" action="/viewArt" method="post">
         <input type="hidden" name="controllerAction" value="PaginaIniziale.viewArt">
         <input type="hidden" name="Id" value="<%=notizie.getID()%>">
 
@@ -113,7 +113,7 @@
 
     <% if (loggedAdminOn) { %>
     <div class="containerAdmin">
-      <form name="Sostituire<%=notizia%>" action="Dispatcher" class="modifica mt-4"
+      <form name="Sostituire<%=notizia%>" action="/modifyArticolo" class="modifica mt-4"
             method="post" enctype="multipart/form-data" style="float: bottom;">
         <input type="hidden" name="controllerAction" value="PaginaIniziale.sostituisciArticolo">
 
