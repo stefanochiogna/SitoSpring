@@ -1,7 +1,7 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Utente.Utente" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.Utente" %>
 <%@ page import="java.io.*" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Utente.Amministratore" %>
-<%@ page import="com.example.sitoforzaarmata.model.mo.Utente.UtenteRegistrato" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.Amministratore" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     UtenteRegistrato user = (UtenteRegistrato) request.getAttribute("UserSelezionato");
@@ -74,7 +74,7 @@
 </head>
 <body>
 <div style="width: 50%; background-color: white; padding: 20px; margin-left: 25%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
-    <form action="Dispatcher" method="post" enctype="multipart/form-data">
+    <form action="/modificaProfilo" method="post" enctype="multipart/form-data">
         <section>
             <label for="Nome"> Nome: </label>
             <input id="Nome" type="text" <%if(user != null){%> value="<%=user.getNome()%>" <%}
@@ -142,13 +142,11 @@
             <%if(user != null){%> value="<%=user.getMail()%>" <%}
                else if(admin != null){%> value="<%=admin.getMail()%>" <%}%>>
 
-        <input type="hidden" name="controllerAction" value="Profilo.modificaProfilo"/>
-
         <input type="submit" value="Salva Modifiche">
 
     </form>
 
-    <form action="Dispatcher" method="post">
+    <form action="/viewProfilo" method="post">
         <input type="hidden" name="controllerAction" value="Profilo.view"/>
         <input type="submit" value="Annulla">
     </form>

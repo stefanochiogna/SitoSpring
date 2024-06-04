@@ -58,7 +58,7 @@
     }
     %>
 
-    <a href="Dispatcher?controllerAction=PaginaIniziale.view" class="indietro"> Indietro </a>
+    <a href="/homepage" class="indietro"> Indietro </a>
 </div>
 </body>
 </html>

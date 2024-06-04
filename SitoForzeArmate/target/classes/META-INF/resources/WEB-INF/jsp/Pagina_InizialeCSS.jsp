@@ -103,7 +103,6 @@
   <% Notizie notizie = (Notizie) request.getAttribute(notizia); %>
   <section class="bloccoArt">
       <form name="Articolo<%=notizia%>" class="Articolo" action="/viewArt" method="post">
-        <input type="hidden" name="controllerAction" value="PaginaIniziale.viewArt">
         <input type="hidden" name="Id" value="<%=notizie.getID()%>">
 
         <button class="containerArticolo">
@@ -115,7 +114,6 @@
     <div class="containerAdmin">
       <form name="Sostituire<%=notizia%>" action="/modifyArticolo" class="modifica mt-4"
             method="post" enctype="multipart/form-data" style="float: bottom;">
-        <input type="hidden" name="controllerAction" value="PaginaIniziale.sostituisciArticolo">
 
         <label for="Oggetto" style="display: block; font-weight: bold; color: #4a5568;">Oggetto: </label>
         <input type="text" id="Oggetto" name="Oggetto"

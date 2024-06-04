@@ -1,7 +1,7 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Base.Base" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
 <%@ page import="java.util.Base64" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="../../../../../static/html_daIncludere/Header.inc"%>
+<%@include file="../../../static/html_daIncludere/Header.inc"%>
 <%
     Base base = (Base) request.getAttribute("BaseSelezionata");
 %>
@@ -60,21 +60,17 @@
     <section>
         <ul style="list-style-type: none; display:flex">
             <li style="display: flex; align-items: center; margin-top: 10px; margin-left: 1%; margin-right: 1%; width: 48%">
-                <form name="prenotaPasto<%=base.getLocazione()%>" action="Dispatcher" method="post" style="margin: 0px; padding: 0px; width: 100%">
+                <form name="prenotaPasto<%=base.getLocazione()%>" action="/viewPrenotaPasto" method="post" style="margin: 0px; padding: 0px; width: 100%">
 
                     <input type="hidden" name="locazioneBase" value="<%=base.getLocazione()%>">
-
-                    <input type="hidden" name="controllerAction" value="PrenotaPasto.view"/>
 
                     <input type="submit" value="Prenota Pasto" style="border: none; width: 100%; background-color: rgba(112, 172, 226, 0.7); color: #fff; padding: 8px 15px; border-radius: 4px; cursor: pointer;  font-weight: bold;">
                 </form>
             </li>
             <li style="margin-bottom: 0; margin-left: 1%; margin-right: 1%; padding: 0; display: flex; margin-top: 10px; width: 48%">
-                <form name="prenotaAlloggio<%=base.getLocazione()%>" action="Dispatcher" method="post" style="margin: 0px; padding: 0px; width: 100%">
+                <form name="prenotaAlloggio<%=base.getLocazione()%>" action="/viewPrenotaAlloggi" method="post" style="margin: 0px; padding: 0px; width: 100%">
 
                     <input type="hidden" name="locazioneBase" value="<%=base.getLocazione()%>">
-
-                    <input type="hidden" name="controllerAction" value="PrenotaAlloggio.view"/>
 
                     <input type="submit" value="Prenota Alloggio" style="width: 100%; padding: 8px 15px; background-color: rgba(112, 172, 226, 0.7); color: #fff; border: none; border-radius: 4px; cursor: pointer;">
 
@@ -101,11 +97,9 @@
 
     </section>
 
-    <form name="baseAnnulla<%=base.getLocazione()%>" action="Dispatcher" method="post">
+    <form name="baseAnnulla<%=base.getLocazione()%>" action="/viewListaBasi" method="post">
 
         <input type="hidden" name="luogoBase" value="<%=base.getLocazione()%>">
-
-        <input type="hidden" name="controllerAction" value="ListaBasi.view"/>
 
         <input type="submit" value="Indietro">
     </form>

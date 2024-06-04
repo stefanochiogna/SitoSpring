@@ -94,7 +94,6 @@ public class Login {
 
             System.err.println("Errore Login");
             e.printStackTrace();
-            page.setViewName("Pagina_InizialeCSS");
         }
 
         return page;

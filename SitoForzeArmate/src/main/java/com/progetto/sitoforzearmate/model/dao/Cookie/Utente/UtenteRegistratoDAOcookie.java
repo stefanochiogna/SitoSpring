@@ -211,7 +211,7 @@ public class UtenteRegistratoDAOcookie implements UtenteRegistratoDAO {
 
         // CF#matricola#mail-bando1%bando2%bando3...
         for(int i=0; i<user.getLunghezzaBando(); i++){
-            encodeBandi = encodeBandi + user.getElementoBando(i) + "%";
+            encodeBandi = encodeBandi + user.getElementoBando(i) + "&";
         }
 
         encodeText = encodeInfo + "-" + encodeBandi;
@@ -227,8 +227,8 @@ public class UtenteRegistratoDAOcookie implements UtenteRegistratoDAO {
         user.setMail(info[2]);
 
         if(campi.length > 1) {
-            if (campi[1] != "") {
-                String[] idBandi = campi[1].split("%");
+            if (!campi[1].equals("")) {
+                String[] idBandi = campi[1].split("&");
                 for (int i = 0; i < idBandi.length; i++) user.AddIdBando(idBandi[i]);
             }
         }
