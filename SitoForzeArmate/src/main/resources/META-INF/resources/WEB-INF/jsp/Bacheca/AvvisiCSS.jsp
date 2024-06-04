@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Notizie.Avviso" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Avviso" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.io.*" %>
@@ -63,13 +63,13 @@
 <!-- Navbar -->
 <%@include file="../../../../../static/html_daIncludere/navbar.inc"%>
 <main>
-<a href="Dispatcher?controllerAction=BachecaNewsletter.view" class="newsletter">Newsletter</a>
+<a href="/viewBachecaNewsletter" class="newsletter">Newsletter</a>
 
 <section class="pagina avvisi">
     <% if(loggedAdminOn){%>
     <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; height: 80%">
 
-        <form name="newAvviso" action="Dispatcher" method="post" style="width: 60%; height: 100%; margin: 0 auto; padding: 15px; background-color: #f3f4f6;">
+        <form name="newAvviso" action="/inviaAvviso" method="post" style="width: 60%; height: 100%; margin: 0 auto; padding: 15px; background-color: #f3f4f6;">
 
             <div>
                 <p style="font-weight: bold;">A:</p>
@@ -132,8 +132,6 @@
             <label for="Testo" style="font-weight: bold;">Testo dell'avviso:</label>
             <textarea name="Testo" id="Testo" required style="width: 100%; border: 1px solid #ccc; padding: 5px; border-radius: 4px; resize: vertical; flex-grow: 1; max-height: 50%; height: 100%"></textarea>
 
-            <input type="hidden" name="controllerAction" value="BachecaAvviso.inviaAvviso">
-
             <input type="submit" value="Invia Nuovo Avviso" onclick="selezionato()" style="margin-top: 15px; padding: 8px 15px; background-color: #3490dc; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
         </form>
     </div>
@@ -141,12 +139,10 @@
     <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
         <%for(int i=0; i<avvisoList.size(); i++){%>
         <div class="divForm">
-            <form class="formAvviso" name="avvisoView<%=avvisoList.get(i).getID()%>" action="Dispatcher" method="post">
+            <form class="formAvviso" name="avvisoView<%=avvisoList.get(i).getID()%>" action="/viewAvviso" method="post">
 
                 <input type="hidden" name="avvisoId" value="<%=avvisoList.get(i).getID()%>">
                 <!-- type hidden: usato per inviare parametri con la form specificandone il nome -->
-
-                <input type="hidden" name="controllerAction" value="BachecaAvviso.viewAvviso"/>
 
                 <input type="submit" value="<%=avvisoList.get(i).getID()%>: <%=avvisoList.get(i).getOggetto()%>"
                        style="display: inline-block;background-color:#fff;  color: black; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: bold;">
@@ -173,11 +169,9 @@
 
 
             </form>
-            <form name="avvisoDelete<%=avvisoList.get(i).getID()%>" action="Dispatcher" method="post" style="float:right">
+            <form name="avvisoDelete<%=avvisoList.get(i).getID()%>" action="/deleteAvviso" method="post" style="float:right">
 
                 <input type="hidden" name="avvisoId" value="<%=avvisoList.get(i).getID()%>">
-
-                <input type="hidden" name="controllerAction" value="BachecaAvviso.deleteAvviso"/>
 
                 <input type="submit" value="Elimina"
                        style="display: inline-block; background-color: #e53e3e; color: #fff; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: bold;">

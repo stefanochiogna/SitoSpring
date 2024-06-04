@@ -1,4 +1,4 @@
-<%@ page import="com.example.sitoforzaarmata.model.mo.Notizie.Avviso" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Avviso" %>
 <%@ page import="java.io.InputStreamReader" %>
 <%@ page import="java.io.FileInputStream" %>
 <%@ page import="java.io.BufferedReader" %>
@@ -34,9 +34,7 @@
             throw new RuntimeException(e);
         }
     %>
-    <form name="newsletterAnnulla<%=newsletter.getID()%>" action="Dispatcher" method="post">
-
-        <input type="hidden" name="controllerAction" value="BachecaNewsletter.view"/>
+    <form name="newsletterAnnulla<%=newsletter.getID()%>" action="/viewBachecaNewsletter" method="post">
 
         <input type="submit" value="Indietro">
 
