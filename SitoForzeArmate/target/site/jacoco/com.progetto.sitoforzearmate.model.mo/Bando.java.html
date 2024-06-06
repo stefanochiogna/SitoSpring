@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Bando.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.model.mo</a> &gt; <span class="el_source">Bando.java</span></div><h1>Bando.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.model.mo;
+
+import com.progetto.sitoforzearmate.model.dao.Data;
+
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+<span class="nc" id="L15">public class Bando {</span>
+    /* Data */
+
+    /* Attributi */
+    private String Id;
+    private String Oggetto;
+    // private Integer NumPartecipanti;    // = dimensione lista utenti registrati
+    private Integer MaxNumPartecipanti;
+    private Path RiferimentoTesto;
+    private String IdAdmin;
+<span class="nc" id="L25">    private Data data = new Data(0,0,0);</span>
+<span class="nc" id="L26">    private Data dataScadenzaIscrizione = new Data(0,0,0);</span>
+
+    /* ATTRIBUTI RELAZIONI */
+    private String Locazione;
+<span class="nc" id="L30">    private List&lt;String&gt; Matricola = new ArrayList&lt;&gt;();</span>
+
+    // private List&lt;String&gt; Esito = new ArrayList&lt;&gt;();
+
+<span class="nc" id="L34">    private HashMap&lt;String, String&gt; Esito = new HashMap&lt;&gt;();</span>
+    // TODO: Esito come coppia &lt;String, String&gt; = &lt;Matricola, Esito&gt;
+
+    /* SET */
+    public void setId(String Id){
+<span class="nc" id="L39">        this.Id = Id;</span>
+<span class="nc" id="L40">    }</span>
+    public void setOggetto(String Oggetto){
+<span class="nc" id="L42">        this.Oggetto = Oggetto;</span>
+<span class="nc" id="L43">    }</span>
+    public void setRiferimentoTesto(Path Riferimento){
+<span class="nc" id="L45">        this.RiferimentoTesto = Riferimento;</span>
+<span class="nc" id="L46">    }</span>
+    public void setDataInt(Integer Anno, Integer Mese, Integer Giorno){
+<span class="nc" id="L48">        data.setAnno(Anno);</span>
+<span class="nc" id="L49">        data.setMese(Mese);</span>
+<span class="nc" id="L50">        data.setGiorno(Giorno);</span>
+<span class="nc" id="L51">    }</span>
+    public void setData(Data data){
+<span class="nc" id="L53">        data.setData(data);</span>
+<span class="nc" id="L54">    }</span>
+    public void setDataStringa(String data){
+<span class="nc" id="L56">        String[] campi = data.split(&quot;-&quot;);</span>
+
+<span class="nc" id="L58">        this.data.setAnno(Integer.parseInt(campi[0]));</span>
+<span class="nc" id="L59">        this.data.setMese(Integer.parseInt(campi[1]));</span>
+<span class="nc" id="L60">        this.data.setGiorno(Integer.parseInt(campi[2]));</span>
+<span class="nc" id="L61">    }</span>
+    public void setDataScadenzaIscrizioneInt(Integer Anno, Integer Mese, Integer Giorno){
+<span class="nc" id="L63">        dataScadenzaIscrizione.setAnno(Anno);</span>
+<span class="nc" id="L64">        dataScadenzaIscrizione.setMese(Mese);</span>
+<span class="nc" id="L65">        dataScadenzaIscrizione.setGiorno(Giorno);</span>
+<span class="nc" id="L66">    }</span>
+    public void setDataScadenzaIscrizioneStringa(String data){
+<span class="nc" id="L68">        String[] campi = data.split(&quot;-&quot;);</span>
+<span class="nc" id="L69">        this.dataScadenzaIscrizione.setAnno(Integer.parseInt(campi[0]));</span>
+<span class="nc" id="L70">        this.dataScadenzaIscrizione.setMese(Integer.parseInt(campi[1]));</span>
+<span class="nc" id="L71">        this.dataScadenzaIscrizione.setGiorno(Integer.parseInt(campi[2]));</span>
+<span class="nc" id="L72">    }</span>
+    public void setDataScadenzaIscrizione(Data data){
+<span class="nc" id="L74">        dataScadenzaIscrizione.setData(data);</span>
+<span class="nc" id="L75">    }</span>
+    public void setMaxNumPartecipanti(Integer maxNumPartecipanti){
+<span class="nc" id="L77">        this.MaxNumPartecipanti = maxNumPartecipanti;</span>
+<span class="nc" id="L78">    }</span>
+    public void setLocazione(String Locazione){
+<span class="nc" id="L80">        this.Locazione = Locazione;</span>
+<span class="nc" id="L81">    }</span>
+    public void setIdAdmin(String IdAdmin){
+<span class="nc" id="L83">        this.IdAdmin = IdAdmin;</span>
+<span class="nc" id="L84">    }</span>
+
+
+
+    /* GET */
+    public String getId(){
+<span class="nc" id="L90">        return Id;</span>
+    }
+    public String getOggetto(){
+<span class="nc" id="L93">        return Oggetto;</span>
+    }
+    public Integer getNumPartecipanti(){
+<span class="nc" id="L96">        return Matricola.size();</span>
+    }
+    public Integer getMaxNumPartecipanti(){
+<span class="nc" id="L99">        return MaxNumPartecipanti;</span>
+    }
+    public Data getData(){
+<span class="nc" id="L102">        return data;</span>
+    }
+    public String getDataSQL(Data data){
+<span class="nc" id="L105">        String anno = data.getAnno().toString();</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        while(anno.length() &lt; 4) anno = &quot;0&quot; + anno;</span>
+
+<span class="nc" id="L108">        String mese = data.getMese().toString();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        while(mese.length() &lt; 2) mese = &quot;0&quot; + mese;</span>
+
+<span class="nc" id="L111">        String giorno = data.getGiorno().toString();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        while(giorno.length() &lt; 2) giorno = &quot;0&quot; + giorno;</span>
+
+<span class="nc" id="L114">        return anno + &quot;-&quot; + mese + &quot;-&quot; + giorno;</span>
+    }
+    public Data getDataScadenzaIscrizione(){
+<span class="nc" id="L117">        return dataScadenzaIscrizione;</span>
+    }
+    public String getLocazione(){
+<span class="nc" id="L120">        return Locazione;</span>
+    }
+    public Path getRiferimentoTesto() {
+<span class="nc" id="L123">        return RiferimentoTesto;</span>
+    }
+    public String getIdAdmin(){
+<span class="nc" id="L126">        return IdAdmin;</span>
+    }
+
+    /* */
+    public void AddEsito(String Esito, String Matricola){
+<span class="nc" id="L131">        this.Esito.put(Matricola, Esito);</span>
+<span class="nc" id="L132">    }</span>
+    public void updateEsito(String Esito, String Matricola){
+<span class="nc" id="L134">        this.Esito.replace(Matricola, Esito);</span>
+<span class="nc" id="L135">    }</span>
+    public String getEsito(String Matricola){
+<span class="nc" id="L137">        return this.Esito.get(Matricola);</span>
+    }
+    public Integer getEsitoLength(){
+<span class="nc" id="L140">        return this.Esito.size();</span>
+    }
+    public List&lt;String&gt; getEsitoKey(){
+<span class="nc" id="L143">        List&lt;String&gt; listaMatri = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        for(int i = 0; i &lt; this.Esito.keySet().toArray().length; i++)</span>
+<span class="nc" id="L146">            listaMatri.add((String) this.Esito.keySet().toArray()[i]);</span>
+
+<span class="nc" id="L148">        return listaMatri;</span>
+    }
+
+    private Integer getIndexMatricola(String Matricola){
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        for(int i=0; i&lt;this.Matricola.size(); i++){</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">            if(this.Matricola.get(i).equalsIgnoreCase(Matricola))   return i;</span>
+        }
+<span class="nc" id="L155">        return -1;</span>
+    }
+
+    /* SET e GET Matricola */
+    public void AddMatricola(String Matricola){
+<span class="nc" id="L160">        this.Matricola.add(Matricola);</span>
+<span class="nc" id="L161">    }</span>
+    public boolean trovaMatricola(String Matricola){
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        for(int i=0; i&lt;this.Matricola.size(); i++){</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            if(this.Matricola.get(i).equalsIgnoreCase(Matricola))   return true;</span>
+        }
+<span class="nc" id="L166">        return false;</span>
+    }
+    public void deleteMatricola(String Matricola){
+<span class="nc" id="L169">        this.Matricola.remove(Matricola);</span>
+<span class="nc" id="L170">    }</span>
+
+    public void updateTesto(String text){
+        try {
+<span class="nc" id="L174">            BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(getRiferimentoTesto().toString()), StandardCharsets.UTF_8));</span>
+<span class="nc" id="L175">            br.write(text);</span>
+<span class="nc" id="L176">            br.close();</span>
+        }
+<span class="nc" id="L178">        catch(IOException e){</span>
+<span class="nc" id="L179">            e.printStackTrace();</span>
+<span class="nc" id="L180">            throw new RuntimeException(e);</span>
+<span class="nc" id="L181">        }</span>
+<span class="nc" id="L182">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

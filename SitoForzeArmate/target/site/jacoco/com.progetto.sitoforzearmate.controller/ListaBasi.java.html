@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListaBasi.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.controller</a> &gt; <span class="el_source">ListaBasi.java</span></div><h1>ListaBasi.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.controller;
+
+import com.progetto.sitoforzearmate.model.dao.Base.BaseDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.DAOFactory;
+import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
+import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
+import com.progetto.sitoforzearmate.model.mo.Base.Base;
+import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
+import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
+import com.progetto.sitoforzearmate.services.configuration.Configuration;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+@Controller
+<span class="fc" id="L32">public class ListaBasi {</span>
+
+    @GetMapping(&quot;/viewListaBasi&quot;)
+    public ModelAndView view(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser
+        ){
+<span class="nc" id="L41">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L42">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L43">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L45">            UtenteRegistrato loggedUser = null;</span>
+<span class="nc" id="L46">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L48">            String applicationMessage = null;</span>
+
+            try {
+<span class="nc" id="L51">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);</span>
+<span class="nc" id="L52">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L54">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L56">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+
+<span class="nc" id="L58">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L60">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L62">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L64">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L65">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L67">                BaseDAO baseDAO = daoFactory.getBaseDAO();</span>
+
+<span class="nc" id="L69">                List&lt;Base&gt; baseList = baseDAO.stampaBasi();</span>
+
+<span class="nc" id="L71">                daoFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="nc" id="L74">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L76">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L77">                page.addObject(&quot;Basi&quot;, baseList);</span>
+<span class="nc" id="L78">                page.setViewName(&quot;ListaBasi/Lista&quot;);</span>
+
+<span class="nc" id="L80">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L83">                e.printStackTrace();</span>
+<span class="nc" id="L84">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L85">            }</span>
+
+<span class="nc" id="L87">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/viewBase&quot;, params = {&quot;luogoBase&quot;})
+    public ModelAndView viewBase(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser,
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;luogoBase&quot;) String locazione
+        ){
+<span class="nc" id="L99">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L100">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L101">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L103">            UtenteRegistrato loggedUser = null;</span>
+<span class="nc" id="L104">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L106">            String applicationMessage = null;</span>
+
+            try {
+<span class="nc" id="L109">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L110">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L112">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )</span>
+<span class="nc" id="L114">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+
+<span class="nc" id="L116">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L118">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L120">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L122">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L123">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L125">                BaseDAO baseDAO = daoFactory.getBaseDAO();</span>
+<span class="nc" id="L126">                Base BaseSelezionata = baseDAO.findbyLocazione(locazione);</span>
+
+<span class="nc" id="L128">                daoFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L130" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="nc" id="L131">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L133">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L134">                page.addObject(&quot;BaseSelezionata&quot;, BaseSelezionata);</span>
+<span class="nc" id="L135">                page.setViewName(&quot;ListaBasi/viewBase&quot;);</span>
+
+<span class="nc" id="L137">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+                
+<span class="nc" id="L140">                e.printStackTrace();</span>
+<span class="nc" id="L141">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L142">            }</span>
+
+<span class="nc" id="L144">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/deleteBase&quot;, params = {&quot;luogoBase&quot;})
+    public ModelAndView deleteBase(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;luogoBase&quot;) String locazione 
+        ){
+<span class="nc" id="L155">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L156">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L157">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L159">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L161">            String applicationMessage = null;</span>
+
+            try {
+
+<span class="nc" id="L165">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L166">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L168">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L170">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L172">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L174">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L175">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L177">                BaseDAO baseDAO = daoFactory.getBaseDAO();</span>
+
+<span class="nc" id="L179">                Base base = baseDAO.findbyLocazione(locazione);   // vado a recuperare la base selezionata tramite locazione</span>
+
+<span class="nc" id="L181">                baseDAO.delete(base);                                   // lo passo poi al metodo delete per cancellarlo</span>
+
+<span class="nc" id="L183">                daoFactory.commitTransaction();</span>
+
+                /*
+                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject(&quot;loggedUser&quot;, loggedUser);
+                */
+<span class="nc bnc" id="L189" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L190">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L191">                page.addObject(&quot;BaseSelezionata&quot;, base);</span>
+
+<span class="nc" id="L193">                page.setViewName(&quot;ListaBasi/reload&quot;);</span>
+
+<span class="nc" id="L195">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+                
+<span class="nc" id="L198">                e.printStackTrace();</span>
+<span class="nc" id="L199">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L200">            }</span>
+
+<span class="nc" id="L202">            return page;</span>
+        }
+
+    @GetMapping(&quot;/registraBase&quot;)
+    public ModelAndView registraBase(
+            HttpServletResponse response,
+            @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin
+    ){
+<span class="nc" id="L210">        ModelAndView page = new ModelAndView();</span>
+
+<span class="nc" id="L212">        Amministratore loggedAdmin = null;</span>
+
+        try {
+<span class="nc bnc" id="L215" title="All 2 branches missed.">            if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L216">                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L219">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L220">            page.setViewName(&quot;ListaBasi/NewBaseCSS&quot;);</span>
+
+        }
+<span class="nc" id="L223">        catch (Exception e) {</span>
+<span class="nc" id="L224">            e.printStackTrace();</span>
+<span class="nc" id="L225">            page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L226">        }</span>
+<span class="nc" id="L227">        return page;</span>
+    }
+
+    @PostMapping(path = &quot;/newBase&quot;)
+    public ModelAndView newBase(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;Foto&quot;) Part foto,
+        @RequestParam(value = &quot;Email&quot;) String email,
+        @RequestParam(value = &quot;Telefono&quot;) String telefono,
+        @RequestParam(value = &quot;Locazione&quot;) String locazione,
+        @RequestParam(value = &quot;Provincia&quot;) String provincia,
+        @RequestParam(value = &quot;CAP&quot;) String CAP,
+        @RequestParam(value = &quot;Via&quot;) String via,
+        @RequestParam(value = &quot;Latitudine&quot;) String latitudine,
+        @RequestParam(value = &quot;Longitudine&quot;) String longitudine
+        ){
+<span class="nc" id="L246">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L247">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L248">            DAOFactory daoFactory = null;</span>
+<span class="nc" id="L249">            Amministratore loggedAdmin = null;</span>
+<span class="nc" id="L250">            String applicationMessage = null;</span>
+
+            try {
+<span class="nc" id="L253">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L254">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L256">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L258">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L260">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L261">                daoFactory.beginTransaction();</span>
+
+                /* Recupero Parametri */
+
+<span class="nc" id="L265">                BaseDAO baseDAO = daoFactory.getBaseDAO();</span>
+<span class="nc" id="L266">                baseDAO.create( foto.getInputStream().readAllBytes(), latitudine, longitudine, locazione, email, telefono, provincia, CAP,</span>
+<span class="nc" id="L267">                        via, loggedAdmin.getIdAdministrator());</span>
+
+<span class="nc" id="L269">                daoFactory.commitTransaction();</span>
+<span class="nc" id="L270">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;,loggedAdmin!=null);</span>
+<span class="nc" id="L273">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L274">                page.addObject(&quot;applicationMessage&quot;, applicationMessage);</span>
+<span class="nc" id="L275">                page.setViewName(&quot;ListaBasi/reload&quot;);</span>
+
+
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            } catch (Exception e) {if (daoFactory != null) daoFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L280">                e.printStackTrace();</span>
+<span class="nc" id="L281">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L282">            }</span>
+
+<span class="nc" id="L284">            return page;</span>
+        }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Configuration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.services.configuration</a> &gt; <span class="el_source">Configuration.java</span></div><h1>Configuration.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.services.configuration;
+
+import java.util.Calendar;
+import java.util.logging.Level;
+
+import com.progetto.sitoforzearmate.model.dao.DAOFactory;
+
+<span class="nc" id="L8">public class Configuration {</span>
+
+    /* Database Configruation */
+    public static final String DAO_IMPL=DAOFactory.MYSQLJDBCIMPL;
+    public static final String DATABASE_DRIVER=&quot;com.mysql.cj.jdbc.Driver&quot;;
+<span class="nc" id="L13">    public static final String SERVER_TIMEZONE=Calendar.getInstance().getTimeZone().getID();</span>
+    public static final String
+<span class="nc" id="L15">            DATABASE_URL=&quot;jdbc:mysql://localhost/forze_armate?user=root&amp;password=DataBase1203!&amp;allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=&quot;+SERVER_TIMEZONE;</span>
+            // DATABASE_URL = &quot;jdbc:mysql://&quot; + System.getenv(&quot;DB_HOST&quot;) + [&quot;:&quot; + System.getenv(&quot;DB_PORT&quot;)] &quot;/&quot; + System.getenv(&quot;DB_NAME&quot;) + &quot;?user=&quot; + System.getenv(&quot;DB_USER&quot;) +
+            //                  + &quot;&amp;password=&quot; + System.getenv(&quot;DB_PASS&quot;) + &quot;...&quot;
+            // DataBase1203!
+    /* Session Configuration */
+    public static final String COOKIE_IMPL=DAOFactory.COOKIEIMPL;
+
+    /* Logger Configuration */
+    public static final String GLOBAL_LOGGER_NAME=&quot;sitoforzaarmata&quot;;
+    public static final String GLOBAL_LOGGER_FILE=&quot;/Users/stefa/Desktop/Sito_SistemiWeb/Log/forzaarmata_log.%g.%u.txt&quot;;
+<span class="nc" id="L25">    public static final Level GLOBAL_LOGGER_LEVEL=Level.ALL;</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

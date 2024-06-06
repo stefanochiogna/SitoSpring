@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostoLettoDAOmySQL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.model.dao.MySQL.Base</a> &gt; <span class="el_source">PostoLettoDAOmySQL.java</span></div><h1>PostoLettoDAOmySQL.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.model.dao.MySQL.Base;
+
+import com.progetto.sitoforzearmate.model.dao.Base.PostoLettoDAO;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.mo.Base.PostoLetto;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class PostoLettoDAOmySQL implements PostoLettoDAO {
+    Connection connection;
+
+<span class="nc" id="L15">    public PostoLettoDAOmySQL(Connection connection) {</span>
+<span class="nc" id="L16">        this.connection = connection;</span>
+<span class="nc" id="L17">    }</span>
+
+    public PostoLetto create(
+            String Locazione,
+            String Matricola,
+            Data dataArrivo,
+            Integer numNotti,
+            Integer numPersone
+    ) {
+
+        PreparedStatement statement;
+
+<span class="nc" id="L29">        PostoLetto alloggio = new PostoLetto();</span>
+<span class="nc" id="L30">        alloggio.setLocazione(Locazione);</span>
+<span class="nc" id="L31">        alloggio.setMatricola(Matricola);</span>
+<span class="nc" id="L32">        alloggio.setData_arrivo(dataArrivo);</span>
+<span class="nc" id="L33">        alloggio.setNum_notti(numNotti);</span>
+<span class="nc" id="L34">        alloggio.setNum_persone(numPersone);</span>
+<span class="nc" id="L35">        alloggio.setId(alloggio.getId());</span>
+
+        try {
+<span class="nc" id="L38">            String sql</span>
+                    = &quot; SELECT * &quot;
+                    + &quot; FROM effettua &quot;
+                    + &quot; WHERE &quot;
+                    + &quot; Id = ? AND&quot;
+                    + &quot; Locazione = ? &quot;;
+
+<span class="nc" id="L45">            statement = connection.prepareStatement(sql);</span>
+
+<span class="nc" id="L47">            statement.setString(1, alloggio.getId());</span>
+<span class="nc" id="L48">            statement.setString(2, alloggio.getLocazione());</span>
+
+<span class="nc" id="L50">            ResultSet resultSet = statement.executeQuery();</span>
+
+            boolean exist;
+<span class="nc" id="L53">            exist = resultSet.next();</span>
+<span class="nc" id="L54">            resultSet.close();</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (exist) {</span>
+<span class="nc" id="L57">                throw new RuntimeException(&quot;PostoLettoDAOmySQL.create: Tentativo di inserimento di un posto letto con stesso Id all'interno della stessa Locazione.&quot;);</span>
+            }
+            // insert in prenotazione_alloggio
+<span class="nc" id="L60">            String sqlPrenotaAlloggio =</span>
+                    &quot; INSERT INTO prenotazione_alloggio  &quot; +
+                            &quot;     ( Locazione, &quot; +
+                            &quot;       Id    &quot; +
+                            &quot;     )       &quot; +
+                            &quot;VALUES (?, ?)&quot;;
+<span class="nc" id="L66">            statement = connection.prepareStatement(sqlPrenotaAlloggio);</span>
+<span class="nc" id="L67">            int i = 1;</span>
+
+<span class="nc" id="L69">            statement.setString(i++, alloggio.getLocazione());</span>
+<span class="nc" id="L70">            statement.setString(i++, alloggio.getId());</span>
+<span class="nc" id="L71">            statement.executeUpdate();</span>
+
+            // insert in Effettua
+<span class="nc" id="L74">            String sqlPostoLetto =</span>
+                    &quot; INSERT INTO effettua  &quot; +
+                            &quot;     ( Locazione, &quot; +
+                            &quot;       Id,    &quot; +
+                            &quot;       Matricola, &quot; +
+                            &quot;       Data_arrivo, &quot; +
+                            &quot;       Num_notti, &quot; +
+                            &quot;       Num_persone&quot; +
+                            &quot;     )            &quot; +
+                            &quot;VALUES (?, ?, ?, ?, ?, ?)&quot;;
+<span class="nc" id="L84">            statement = connection.prepareStatement(sqlPostoLetto);</span>
+<span class="nc" id="L85">            i = 1;</span>
+
+<span class="nc" id="L87">            statement.setString(i++, alloggio.getLocazione());</span>
+<span class="nc" id="L88">            statement.setString(i++, alloggio.getId());</span>
+<span class="nc" id="L89">            statement.setString(i++, alloggio.getMatricola());</span>
+<span class="nc" id="L90">            statement.setDate(i++, Date.valueOf(alloggio.getData_arrivo().toStringSQL()));</span>
+<span class="nc" id="L91">            statement.setInt(i++, alloggio.getNum_notti());</span>
+<span class="nc" id="L92">            statement.setInt(i++, alloggio.getNum_persone());</span>
+
+<span class="nc" id="L94">            statement.executeUpdate();</span>
+<span class="nc" id="L95">        } catch (SQLException e) {</span>
+<span class="nc" id="L96">            throw new RuntimeException(e);</span>
+<span class="nc" id="L97">        }</span>
+
+<span class="nc" id="L99">        return alloggio;</span>
+
+    }
+
+    public void delete(PostoLetto alloggio) {
+        PreparedStatement statement;
+
+        try {
+<span class="nc" id="L107">            String sqlPrenotaAlloggio</span>
+                    = &quot; DELETE &quot;
+                    + &quot; FROM prenotazione_alloggio &quot;
+                    + &quot; WHERE Locazione = ? AND Id = ? &quot;;
+<span class="nc" id="L111">            statement = connection.prepareStatement(sqlPrenotaAlloggio);</span>
+<span class="nc" id="L112">            statement.setString(1, alloggio.getLocazione());</span>
+<span class="nc" id="L113">            statement.setString(2, alloggio.getId());</span>
+<span class="nc" id="L114">            statement.executeUpdate();</span>
+
+<span class="nc" id="L116">            String sqlPostoLetto</span>
+                    = &quot; DELETE &quot;
+                    + &quot; FROM effettua &quot;
+                    + &quot; WHERE Locazione = ? AND Id = ? &quot;;
+<span class="nc" id="L120">            statement = connection.prepareStatement(sqlPostoLetto);</span>
+<span class="nc" id="L121">            statement.setString(1, alloggio.getLocazione());</span>
+<span class="nc" id="L122">            statement.setString(2, alloggio.getId());</span>
+<span class="nc" id="L123">            statement.executeUpdate();</span>
+
+<span class="nc" id="L125">            statement.close();</span>
+<span class="nc" id="L126">        } catch (SQLException e) {</span>
+<span class="nc" id="L127">            throw new RuntimeException(e);</span>
+<span class="nc" id="L128">        }</span>
+<span class="nc" id="L129">    }</span>
+
+    public PostoLetto findbyId(String Locazione, String Id) {
+
+<span class="nc" id="L133">        PostoLetto alloggio = null;</span>
+        PreparedStatement statement;
+
+        try {
+<span class="nc" id="L137">            String sql</span>
+                    = &quot; SELECT * &quot;
+                    + &quot; FROM effettua NATURAL JOIN prenotazione_alloggio &quot;
+                    + &quot; WHERE Locazione = ? AND Id = ? &quot;;
+<span class="nc" id="L141">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L142">            statement.setString(1, Locazione);</span>
+<span class="nc" id="L143">            statement.setString(2, Id);</span>
+
+<span class="nc" id="L145">            ResultSet resultSet = statement.executeQuery();</span>
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">            if (resultSet.next()) {</span>
+<span class="nc" id="L148">                alloggio = read(resultSet);</span>
+            }
+
+<span class="nc" id="L151">            resultSet.close();</span>
+<span class="nc" id="L152">            statement.close();</span>
+<span class="nc" id="L153">        } catch (SQLException e) {</span>
+<span class="nc" id="L154">            throw new RuntimeException(e);</span>
+<span class="nc" id="L155">        }</span>
+
+<span class="nc" id="L157">        return alloggio;</span>
+    }
+
+    public List&lt;PostoLetto&gt; findByMatricola(String Matricola){
+<span class="nc" id="L161">        List&lt;PostoLetto&gt; alloggioList = new ArrayList&lt;&gt;();</span>
+
+        PreparedStatement statement;
+        try {
+<span class="nc" id="L165">            String sql =</span>
+                    &quot; SELECT * &quot; +
+                    &quot; FROM prenotazione_alloggio NATURAL JOIN effettua &quot; +
+                    &quot; WHERE Matricola = ? &quot;;
+
+<span class="nc" id="L170">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L171">            statement.setString(1, Matricola);</span>
+
+<span class="nc" id="L173">            ResultSet resultSet = statement.executeQuery();</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">            while(resultSet.next()) {</span>
+<span class="nc" id="L175">                alloggioList.add(read(resultSet));</span>
+            }
+        }
+<span class="nc" id="L178">        catch(SQLException e){</span>
+<span class="nc" id="L179">            throw new RuntimeException(e);</span>
+<span class="nc" id="L180">        }</span>
+<span class="nc" id="L181">        return alloggioList;</span>
+    }
+
+    private PostoLetto read(ResultSet resultSet){
+<span class="nc" id="L185">        PostoLetto alloggio = new PostoLetto();</span>
+
+        // posto_letto1
+        try{
+<span class="nc" id="L189">            alloggio.setMatricola(resultSet.getString(&quot;Matricola&quot;));</span>
+        }
+<span class="nc" id="L191">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L193">            alloggio.setId(resultSet.getString(&quot;Id&quot;));</span>
+        }
+<span class="nc" id="L195">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L197">            alloggio.setLocazione(resultSet.getString(&quot;Locazione&quot;));</span>
+        }
+<span class="nc" id="L199">        catch (SQLException sql){ }</span>
+
+        try{
+<span class="nc" id="L202">            alloggio.setNum_persone(resultSet.getInt(&quot;Num_persone&quot;));</span>
+        }
+<span class="nc" id="L204">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L206">            alloggio.setNum_notti(resultSet.getInt(&quot;Num_notti&quot;));</span>
+        }
+<span class="nc" id="L208">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L210">            alloggio.setData_arrivoString(resultSet.getDate(&quot;Data_arrivo&quot;).toString());</span>
+        }
+<span class="nc" id="L212">        catch (SQLException sql){ }</span>
+
+<span class="nc" id="L214">        return alloggio;</span>
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

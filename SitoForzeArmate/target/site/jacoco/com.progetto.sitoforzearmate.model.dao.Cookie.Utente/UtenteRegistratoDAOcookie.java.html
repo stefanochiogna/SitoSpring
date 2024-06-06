@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UtenteRegistratoDAOcookie.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.model.dao.Cookie.Utente</a> &gt; <span class="el_source">UtenteRegistratoDAOcookie.java</span></div><h1>UtenteRegistratoDAOcookie.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.model.dao.Cookie.Utente;
+
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
+import com.progetto.sitoforzearmate.model.mo.Bando;
+import com.progetto.sitoforzearmate.model.mo.Utente.Badge;
+import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
+import java.util.Optional;
+
+public class UtenteRegistratoDAOcookie implements UtenteRegistratoDAO {
+    HttpServletResponse response;
+
+<span class="nc" id="L18">    private Long Matricola = (long)0;</span>
+<span class="nc" id="L19">    private long StipendioBase = (long)1000;</span>
+
+<span class="nc" id="L21">    public UtenteRegistratoDAOcookie(HttpServletResponse response){</span>
+<span class="nc" id="L22">        this.response = response;</span>
+<span class="nc" id="L23">    }</span>
+
+    @Override
+    public UtenteRegistrato create(
+            String Nome,
+            String Cognome,
+            String CF,
+            String mail,
+            String telefono,
+            String password,
+            String sesso,
+            Data dataNascita,
+
+            /* Attributi UtenteRegistrato */
+            String Matricola,
+            String IBAN,
+            /* Long Stipendio, */
+            String Ruolo,
+            byte[] Foto,
+            byte[] Documento,
+            String Indirizzo,
+            String Locazione_servizio,
+            boolean Newsletter,
+            List&lt;String&gt; Bandi){
+
+        /* Inizializzazione Utente */
+<span class="nc" id="L49">        UtenteRegistrato user = new UtenteRegistrato();</span>
+
+<span class="nc" id="L51">        user.setNome(Nome);</span>
+<span class="nc" id="L52">        user.setCognome(Cognome);</span>
+<span class="nc" id="L53">        user.setCF(CF);</span>
+<span class="nc" id="L54">        user.setMail(mail);</span>
+<span class="nc" id="L55">        user.setTelefono(telefono);</span>
+<span class="nc" id="L56">        user.setPassword(password);</span>
+<span class="nc" id="L57">        user.setSesso(sesso);</span>
+<span class="nc" id="L58">        user.setDataNascita(dataNascita);</span>
+
+<span class="nc" id="L60">        Optional&lt;String&gt; Role = Optional.ofNullable(Ruolo);</span>
+
+<span class="nc" id="L62">        user.setMatricola(Matricola);</span>
+<span class="nc" id="L63">        user.setRuolo(Ruolo);</span>
+<span class="nc" id="L64">        user.setIBAN(IBAN);</span>
+<span class="nc" id="L65">        user.setFotoByte(Foto);</span>
+<span class="nc" id="L66">        user.setDocumentoByte(Documento);</span>
+<span class="nc" id="L67">        user.setIndirizzo(Indirizzo);</span>
+<span class="nc" id="L68">        user.setLocazioneServizio(Locazione_servizio);</span>
+<span class="nc" id="L69">        user.setIscrittoNewsletter(Newsletter);</span>
+
+<span class="nc" id="L71">        Optional&lt;List&lt;String&gt;&gt; bandi = Optional.ofNullable(Bandi);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if(bandi.isPresent()) user.AddAllBando(Bandi);</span>
+
+        //user.stampaBandi();
+
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if(Role.isPresent()){</span>
+<span class="nc bnc" id="L77" title="All 4 branches missed.">            switch(Ruolo){</span>
+                case &quot;Ufficiale&quot;:
+<span class="nc" id="L79">                    user.setStipendio((long)2*StipendioBase);</span>
+<span class="nc" id="L80">                    break;</span>
+                case &quot;Sottufficiale&quot;:
+<span class="nc" id="L82">                    user.setStipendio((long)1.5*StipendioBase);</span>
+<span class="nc" id="L83">                    break;</span>
+                case &quot;Graduato&quot;:
+<span class="nc" id="L85">                    user.setStipendio(StipendioBase);</span>
+                    break;
+<span class="nc" id="L87">            }</span>
+        }
+        else{
+<span class="nc" id="L90">            user.setStipendio((long)0);</span>
+        }
+
+        /* Creazione Cookie */
+        Cookie cookie;
+<span class="nc" id="L95">        cookie = new Cookie(&quot;loggedUser&quot;, encode(user));</span>
+<span class="nc" id="L96">        cookie.setPath(&quot;/&quot;);</span>
+            /*
+            setPath: specifica il percorso per il quale il cookie è valido
+            Con &quot;/&quot; il cookie viene impostato come valido in tutto il dominio del Server
+            */
+
+<span class="nc" id="L102">        response.addCookie(cookie);</span>
+
+<span class="nc" id="L104">        return user;</span>
+    }
+
+    @Override
+    public void update(UtenteRegistrato utente){
+        Cookie cookie;
+<span class="nc" id="L110">        cookie = new Cookie(&quot;loggedUser&quot;, encode(utente));</span>
+<span class="nc" id="L111">        cookie.setPath(&quot;/&quot;);</span>
+<span class="nc" id="L112">        response.addCookie(cookie);</span>
+<span class="nc" id="L113">    }</span>
+
+    @Override
+    public void delete(UtenteRegistrato utente){
+        Cookie cookie;
+<span class="nc" id="L118">        cookie = new Cookie(&quot;loggedUser&quot;, &quot;&quot;);</span>
+<span class="nc" id="L119">        cookie.setMaxAge(0);</span>
+<span class="nc" id="L120">        cookie.setPath(&quot;/&quot;);</span>
+<span class="nc" id="L121">        response.addCookie(cookie);</span>
+<span class="nc" id="L122">    }</span>
+    /*
+    @Override
+    public UtenteRegistrato findLoggedUser() {
+
+        Cookie[] cookies = request.getCookies();
+        // Recupero lista cookies //
+
+        UtenteRegistrato user = null;
+
+        if (cookies != null) {
+            for (int i = 0; i &lt; cookies.length &amp;&amp; user == null; i++) {
+                if (cookies[i].getName().equals(&quot;loggedUser&quot;)) {
+                    user = decode(cookies[i].getValue());
+                }
+            }
+        }
+
+        return user;
+    }
+    */
+
+    @Override
+    public boolean isDeleted(UtenteRegistrato user){
+<span class="nc" id="L146">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public UtenteRegistrato findByMatricola(String Matricola){
+<span class="nc" id="L150">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public UtenteRegistrato findByMail(String mail){
+<span class="nc" id="L154">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public void iscrizioneBando(UtenteRegistrato user, Bando bando){
+<span class="nc" id="L158">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public void annullaIscrizione(UtenteRegistrato user, Bando bando){
+<span class="nc" id="L162">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public List&lt;String&gt; recuperaBandi(String Matricola){
+<span class="nc" id="L166">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public void iscrizioneNewsletter(String MailUtente){
+<span class="nc" id="L170">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public void annullaIscrizione(String MailUtente){
+<span class="nc" id="L174">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+<span class="nc" id="L177">    public boolean isIscritto(String MailUtente){throw new RuntimeException(&quot;Non supportato&quot;); }</span>
+    @Override
+    public List&lt;UtenteRegistrato&gt; getUtentiNewsletter(){
+<span class="nc" id="L180">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public String getLastMatricola(){
+<span class="nc" id="L184">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+<span class="nc" id="L187">    public List&lt;UtenteRegistrato&gt; cercaIniziale(String Matricola, String Iniziale){throw new RuntimeException(&quot;Non supportato&quot;);}</span>
+    @Override
+<span class="nc" id="L189">    public List&lt;String&gt; ElencoIniziali(UtenteRegistrato user){throw new RuntimeException(&quot;Non supportato&quot;);}</span>
+    @Override
+    public Badge getBadge(String Matricola){
+<span class="nc" id="L192">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public List&lt;UtenteRegistrato&gt; getUtenti(){
+<span class="nc" id="L196">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    @Override
+    public List&lt;UtenteRegistrato&gt; getUtentiRuolo(String Ruolo){
+<span class="nc" id="L200">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    public boolean maxIscrittiRaggiunto(Bando bando){
+<span class="nc" id="L203">        throw new RuntimeException(&quot;Non supportato&quot;);</span>
+    }
+    private String encode(UtenteRegistrato user){
+        String encodeInfo;
+<span class="nc" id="L207">        String encodeBandi =&quot;&quot;;</span>
+        String encodeText;
+
+<span class="nc" id="L210">        encodeInfo = user.getCF() + &quot;#&quot; + user.getMatricola() + &quot;#&quot; + user.getMail();</span>
+
+        // CF#matricola#mail-bando1%bando2%bando3...
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        for(int i=0; i&lt;user.getLunghezzaBando(); i++){</span>
+<span class="nc" id="L214">            encodeBandi = encodeBandi + user.getElementoBando(i) + &quot;&amp;&quot;;</span>
+        }
+
+<span class="nc" id="L217">        encodeText = encodeInfo + &quot;-&quot; + encodeBandi;</span>
+<span class="nc" id="L218">        return encodeText;</span>
+    }
+    public static UtenteRegistrato decode(String encodeText){
+<span class="fc" id="L221">        UtenteRegistrato user = new UtenteRegistrato();</span>
+<span class="fc" id="L222">        String[] campi = encodeText.split(&quot;-&quot;);</span>
+
+<span class="fc" id="L224">        String[] info = campi[0].split(&quot;#&quot;);</span>
+<span class="fc" id="L225">        user.setCF(info[0]);</span>
+<span class="fc" id="L226">        user.setMatricola(info[1]);</span>
+<span class="fc" id="L227">        user.setMail(info[2]);</span>
+
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">        if(campi.length &gt; 1) {</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">            if (!campi[1].equals(&quot;&quot;)) {</span>
+<span class="fc" id="L231">                String[] idBandi = campi[1].split(&quot;&amp;&quot;);</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">                for (int i = 0; i &lt; idBandi.length; i++) user.AddIdBando(idBandi[i]);</span>
+            }
+        }
+
+<span class="fc" id="L236">        return user;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Calendario.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.controller</a> &gt; <span class="el_source">Calendario.java</span></div><h1>Calendario.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.controller;
+
+import com.progetto.sitoforzearmate.model.dao.Bando.BandoDAO;
+import com.progetto.sitoforzearmate.model.dao.Base.BaseDAO;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.AmministratoreDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.Cookie.Utente.UtenteRegistratoDAOcookie;
+import com.progetto.sitoforzearmate.model.dao.DAOFactory;
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Notizie.AvvisoDAO;
+import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
+import com.progetto.sitoforzearmate.model.dao.Utente.UtenteRegistratoDAO;
+import com.progetto.sitoforzearmate.model.mo.Bando;
+import com.progetto.sitoforzearmate.model.mo.Base.Base;
+import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
+import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
+import com.progetto.sitoforzearmate.services.configuration.Configuration;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+@Controller
+<span class="fc" id="L39">public class Calendario {</span>
+
+    @GetMapping(&quot;/viewCalendario&quot;)
+    public ModelAndView view(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser
+        ){
+<span class="nc" id="L48">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L49">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L50">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L52">            UtenteRegistrato loggedUser = null;</span>
+<span class="nc" id="L53">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L55">            List&lt;String&gt; dateList = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L57">            String applicationMessage = null;</span>
+
+            try {
+<span class="nc" id="L60">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L61">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L63">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )</span>
+<span class="nc" id="L65">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+
+<span class="nc" id="L67">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L69">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L71">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L73">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L74">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L76">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+
+<span class="nc" id="L78">                List&lt;Bando&gt; bandoList = bandoDAO.show();</span>
+<span class="nc" id="L79">                dateList.addAll(bandoDAO.getDate());</span>
+
+<span class="nc" id="L81">                daoFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="nc" id="L84">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L86">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L87">                page.addObject(&quot;Date&quot;, dateList);</span>
+<span class="nc" id="L88">                page.addObject(&quot;Bandi&quot;, bandoList);</span>
+<span class="nc" id="L89">                page.setViewName(&quot;Calendario/CalendarioCSS&quot;);</span>
+
+<span class="nc" id="L91">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+                
+<span class="nc" id="L94">                e.printStackTrace();</span>
+<span class="nc" id="L95">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L96">            }</span>
+
+<span class="nc" id="L98">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/viewBando&quot;, params = {&quot;bandoId&quot;})
+    public ModelAndView viewBando(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser,
+        
+        @RequestParam(value = &quot;bandoId&quot;) String bandoId 
+        ) {
+
+<span class="nc" id="L111">            ModelAndView page = new ModelAndView();   </span>
+<span class="nc" id="L112">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L113">            DAOFactory daoFactory = null;</span>
+
+
+<span class="nc" id="L116">            UtenteRegistrato loggedUser = null;</span>
+<span class="nc" id="L117">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L119">            String applicationMessage = null;</span>
+
+            try {
+
+<span class="nc" id="L123">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L124">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L126">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )</span>
+<span class="nc" id="L128">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+
+<span class="nc" id="L130">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">                if ( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L132">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L134">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L136">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L137">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L139">                UtenteRegistratoDAO userDao = daoFactory.getUtenteRegistratoDAO();</span>
+<span class="nc" id="L140">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+
+                //System.out.println(&quot;Controller: &quot;+bandoId);
+<span class="nc" id="L143">                Bando bando = bandoDAO.findbyId(bandoId);</span>
+
+<span class="nc" id="L145">                List&lt;UtenteRegistrato&gt; partecipanti = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">                for(int i = 0; i &lt; bando.getEsitoLength(); i++) {</span>
+<span class="nc" id="L147">                    partecipanti.add(userDao.findByMatricola(bando.getEsitoKey().get(i)));</span>
+                }
+
+<span class="nc" id="L150">                boolean maxIscritti = userDao.maxIscrittiRaggiunto(bando);</span>
+
+<span class="nc" id="L152">                daoFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="nc" id="L155">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L157">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L158">                page.addObject(&quot;BandoSelezionato&quot;, bando);</span>
+<span class="nc" id="L159">                page.addObject(&quot;maxIscrittiRaggiunto&quot;, maxIscritti);</span>
+
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                if(loggedAdmin != null){</span>
+<span class="nc" id="L162">                    page.addObject(&quot;partecipanti&quot;, partecipanti);</span>
+                }
+
+<span class="nc bnc" id="L165" title="All 2 branches missed.">                if (loggedUser != null){</span>
+<span class="nc" id="L166">                    page.addObject(&quot;Iscritto&quot;, loggedUser.trovaBando(bandoId));</span>
+<span class="nc" id="L167">                    page.addObject(&quot;inAttesa&quot;, bando.getEsito(loggedUser.getMatricola()));</span>
+                    // loggedUser.stampaBandi();
+                    // System.out.println(loggedUser.getMatricola());
+                    // System.out.println(loggedUser.trovaBando(bandoId));
+                }
+
+<span class="nc" id="L173">                page.setViewName(&quot;Calendario/viewBandoCSS&quot;);</span>
+
+<span class="nc" id="L175">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+                
+<span class="nc" id="L178">                e.printStackTrace();</span>
+<span class="nc" id="L179">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L180">            }</span>
+
+<span class="nc" id="L182">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/deleteBando&quot;, params = {&quot;bandoId&quot;})
+    public ModelAndView deleteBando(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;bandoId&quot;) String bandoId
+        ){
+<span class="nc" id="L193">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L194">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L195">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L197">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L199">            String applicationMessage = null;</span>
+
+            try {
+
+<span class="nc" id="L203">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L204">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L206">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L208">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L210">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L212">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L213">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L215">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+
+<span class="nc" id="L217">                Bando bando = bandoDAO.findbyId(bandoId);   // vado a recuperare il bando selezionato tramite Id</span>
+
+<span class="nc" id="L219">                File file = new File(bando.getRiferimentoTesto().toString());</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">                if(file.exists()){</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">                    if(file.delete());</span>
+<span class="nc" id="L222">                    else    System.err.println(&quot;Errore nella cancellazione del file&quot;);</span>
+                }
+
+<span class="nc" id="L225">                bandoDAO.delete(bando);                     // lo passo poi al metodo delete per cancellarlo</span>
+
+<span class="nc" id="L227">                daoFactory.commitTransaction();</span>
+
+                /*
+                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject(&quot;loggedUser&quot;, loggedUser);
+                */
+<span class="nc bnc" id="L233" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L234">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L235">                page.addObject(&quot;BandoSelezionato&quot;, bando);</span>
+
+<span class="nc" id="L237">                page.setViewName(&quot;Calendario/reload&quot;);</span>
+                /* Da aggiungere pagina che ricarica la view di calendario */
+
+<span class="nc" id="L240">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L243">                e.printStackTrace();</span>
+<span class="nc" id="L244">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L245">            }</span>
+
+<span class="nc" id="L247">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/modificaBandoView&quot;)
+    public ModelAndView modificaBandoView(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;bandoId&quot;, defaultValue = &quot;&quot;) String bandoId
+        ){
+<span class="nc" id="L258">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L259">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L260">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L262">            Amministratore loggedAdmin = null;</span>
+<span class="nc" id="L263">            List&lt;Base&gt; listaBasi = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L265">            String applicationMessage = null;</span>
+
+            try {
+<span class="nc" id="L268">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);</span>
+<span class="nc" id="L269">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L271">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L273">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L275">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L277">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L278">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L280">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+
+<span class="nc" id="L282">                Bando bando = null;</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">                if(!bandoId.equals(&quot;&quot;)) bando = bandoDAO.findbyId(bandoId);   // vado a modificare il bando selezionato tramite Id</span>
+
+<span class="nc" id="L285">                BaseDAO baseDAO = daoFactory.getBaseDAO();</span>
+<span class="nc" id="L286">                listaBasi.addAll(baseDAO.stampaBasi());</span>
+
+<span class="nc" id="L288">                daoFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L290" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L291">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L292">                page.addObject(&quot;BandoSelezionato&quot;, bando);</span>
+<span class="nc" id="L293">                page.addObject(&quot;ListaBasi&quot;, listaBasi);</span>
+<span class="nc" id="L294">                page.setViewName(&quot;Calendario/modificaBandoCSS&quot;);</span>
+
+<span class="nc" id="L296">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L299">                e.printStackTrace();</span>
+<span class="nc" id="L300">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L301">            }</span>
+
+<span class="nc" id="L303">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/modificaBando&quot;, params = {&quot;bandoId&quot;})
+    public ModelAndView modificaBando(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;bandoId&quot;) String bandoId,
+        @RequestParam(value = &quot;oggettoBando&quot;) String oggettoBando,
+        @RequestParam(value = &quot;numMaxIscritti&quot;) String numMaxIscritti,
+        @RequestParam(value = &quot;DataScadenza&quot;) String dataScadenza,
+        @RequestParam(value = &quot;DataBando&quot;) String data,
+        @RequestParam(value = &quot;Locazione&quot;) String locazione,
+        @RequestParam(value = &quot;testoBando&quot;) String testoBando
+        ){
+<span class="nc" id="L320">        DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L321">        DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L323">        Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L325">        ModelAndView page = new ModelAndView();</span>
+
+<span class="nc" id="L327">        String applicationMessage = null;</span>
+
+
+        try {
+<span class="nc" id="L331">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);</span>
+<span class="nc" id="L332">            sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L334">            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">            if( ! cookieAdmin.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L336">                loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L338">            sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L340">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L341">            daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L343">            BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+
+<span class="nc" id="L345">            Bando bando = bandoDAO.findbyId(bandoId);</span>
+
+<span class="nc" id="L347">            Data dataBando = new Data(data);</span>
+<span class="nc" id="L348">            Data dataScadenzaBando = new Data(dataScadenza);</span>
+
+<span class="nc" id="L350">            bandoDAO.update(dataBando, bandoId, oggettoBando, locazione, Integer.parseInt(numMaxIscritti), dataScadenzaBando, loggedAdmin.getIdAdministrator());</span>
+                    // vado a modificare il bando selezionato tramite Id
+
+<span class="nc" id="L353">            daoFactory.commitTransaction();</span>
+
+            /*
+            page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+            page.addObject(&quot;loggedUser&quot;, loggedUser);
+            */
+<span class="nc bnc" id="L359" title="All 2 branches missed.">            page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L360">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+
+<span class="nc" id="L362">            page.setViewName(&quot;Calendario/reload&quot;);</span>
+<span class="nc" id="L363">        } catch (Exception e) {</span>
+<span class="nc bnc" id="L364" title="All 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L366">            e.printStackTrace();</span>
+<span class="nc" id="L367">            page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L368">        } </span>
+        
+<span class="nc" id="L370">        return page;</span>
+    }
+
+    @PostMapping(path = &quot;/inserisciBando&quot;)
+    public ModelAndView inserisciBando(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;DataBando&quot;) String dataBando,
+        @RequestParam(value = &quot;oggettoBando&quot;) String oggettoBando,
+        @RequestParam(value = &quot;numMaxIscritti&quot;) String numMaxIscritti,
+        @RequestParam(value = &quot;DataScadenza&quot;) String dataScadenza,
+        @RequestParam(value = &quot;Locazione&quot;) String locazione,
+        @RequestParam(value = &quot;insBando&quot;) Part insBando
+        ){
+<span class="nc" id="L386">                ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L387">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L388">            DAOFactory daoFactory = null;</span>
+<span class="nc" id="L389">            Amministratore loggedAdmin = null;</span>
+<span class="nc" id="L390">            String applicationMessage = null;</span>
+
+            try {
+<span class="nc" id="L393">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L394">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L396">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L397" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L398">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L400">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L401">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L403">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+
+<span class="nc" id="L405">                Integer Id = Integer.parseInt(bandoDAO.getLastId()) + 1;</span>
+
+<span class="nc" id="L407">                String bandoId = Id.toString();</span>
+<span class="nc" id="L408">                String caratteriRestanti = &quot;&quot;;</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">                while((caratteriRestanti.length() + bandoId.length()) &lt; 10){</span>
+<span class="nc" id="L410">                    caratteriRestanti += &quot;0&quot;;</span>
+                }
+<span class="nc" id="L412">                bandoId = caratteriRestanti + bandoId;</span>
+
+<span class="nc" id="L414">                String DirectoryDest = &quot;C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\&quot;;   // directory dove salvo i file</span>
+<span class="nc" id="L415">                File file = new File(DirectoryDest + 'B' + bandoId);                  // vado a creare un file in quella directory con il nome 'B' + Id</span>
+<span class="nc" id="L416">                insBando.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file</span>
+<span class="nc" id="L417">                String RiferimentoTesto = file.getAbsolutePath();                               // recupero il riferimento al testo</span>
+
+<span class="nc" id="L419">                Data data = new Data(dataBando);</span>
+<span class="nc" id="L420">                Data dataScadenzaBando = new Data(dataScadenza);</span>
+
+
+<span class="nc" id="L423">                Bando bando = bandoDAO.create(data, bandoId, oggettoBando, Paths.get(RiferimentoTesto),</span>
+<span class="nc" id="L424">                        locazione, Integer.parseInt(numMaxIscritti), dataScadenzaBando, loggedAdmin.getIdAdministrator());</span>
+
+
+<span class="nc" id="L427">                BaseDAO baseDAO = daoFactory.getBaseDAO();</span>
+<span class="nc" id="L428">                List&lt;com.progetto.sitoforzearmate.model.mo.Base.Base&gt; listaBasi = baseDAO.stampaBasi();</span>
+
+<span class="nc" id="L430">                daoFactory.commitTransaction();</span>
+<span class="nc" id="L431">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L433" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;,loggedAdmin!=null);</span>
+<span class="nc" id="L434">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L435">                page.addObject(&quot;applicationMessage&quot;, applicationMessage);</span>
+<span class="nc" id="L436">                page.addObject(&quot;ListaBasi&quot;, listaBasi);</span>
+
+<span class="nc bnc" id="L438" title="All 2 branches missed.">                if(bando != null){</span>
+<span class="nc" id="L439">                    page.setViewName(&quot;Calendario/reload&quot;);</span>
+                }
+                else{
+<span class="nc" id="L442">                    throw new RuntimeException(&quot;Errore nell'inserimento del Bando&quot;);</span>
+                }
+
+<span class="nc" id="L445">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L446" title="All 2 branches missed.">                if (daoFactory != null) daoFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L448">                e.printStackTrace();</span>
+<span class="nc" id="L449">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L450">            }</span>
+
+<span class="nc" id="L452">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/iscrizione&quot;, params = {&quot;bandoId&quot;})
+    public ModelAndView iscrizione(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser,
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;bandoId&quot;) String bandoId,
+        @RequestParam(value = &quot;Iscritto&quot;) String iscrizione
+        ){
+<span class="nc" id="L465">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L466">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L467">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L469">            UtenteRegistrato loggedUser = null;</span>
+<span class="nc" id="L470">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L472">            String applicationMessage = null;</span>
+
+            try {
+
+<span class="nc" id="L476">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L477">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L479">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
+<span class="nc bnc" id="L480" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L481">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+
+<span class="nc" id="L483">                AmministratoreDAO amministratoreDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L484" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L485">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L487">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L489">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L490">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L492">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+<span class="nc" id="L493">                UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();</span>
+
+<span class="nc" id="L495">                Bando bando = bandoDAO.findbyId(bandoId);   // vado a recuperare il bando selezionato tramite Id</span>
+
+<span class="nc" id="L497">                bando.AddMatricola(loggedUser.getMatricola());</span>
+<span class="nc" id="L498">                bando.AddEsito(&quot;in attesa&quot;, loggedUser.getMatricola());</span>
+
+<span class="nc" id="L500">                userDAO.iscrizioneBando(loggedUser, bando);</span>
+<span class="nc" id="L501">                boolean maxIscritti = userDAO.maxIscrittiRaggiunto(bando);</span>
+
+<span class="nc" id="L503">                daoFactory.commitTransaction();</span>
+
+<span class="nc" id="L505">                loggedUser.AddIdBando(bando.getId());</span>
+
+<span class="nc" id="L507">                sessionUserDAO.update(loggedUser);</span>
+
+                boolean iscritto;
+<span class="nc bnc" id="L510" title="All 2 branches missed.">                if (iscrizione.equalsIgnoreCase(&quot;True&quot;)) iscritto = true;</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">                else if (iscrizione.equalsIgnoreCase(&quot;False&quot;)) iscritto = false;</span>
+<span class="nc" id="L512">                else throw new RuntimeException();</span>
+
+
+<span class="nc bnc" id="L515" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="nc" id="L516">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">                page.addObject( &quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L518">                page.addObject( &quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc bnc" id="L519" title="All 4 branches missed.">                page.addObject(&quot;Iscritto&quot;, loggedUser.trovaBando(bandoId) || iscritto);</span>
+<span class="nc" id="L520">                page.addObject(&quot;BandoSelezionato&quot;, bando);</span>
+<span class="nc" id="L521">                page.setViewName(&quot;Calendario/viewBandoCSS&quot;);</span>
+<span class="nc" id="L522">                page.addObject(&quot;maxIscrittiRaggiunto&quot;, maxIscritti);</span>
+<span class="nc" id="L523">                page.addObject(&quot;inAttesa&quot;, bando.getEsito(loggedUser.getMatricola()));</span>
+
+<span class="nc" id="L525">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L526" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L528">                e.printStackTrace();</span>
+<span class="nc" id="L529">                page.setViewName(&quot;Pagina_inizialeCSS&quot;);</span>
+<span class="nc" id="L530">            }</span>
+
+<span class="nc" id="L532">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/annullaIscrizione&quot;, params = {&quot;bandoId&quot;})
+    public ModelAndView annullaIscrizione(
+        HttpServletResponse response,
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser,
+        
+        @RequestParam(value = &quot;bandoId&quot;) String bandoId
+        ){
+<span class="nc" id="L544">                ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L545">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L546">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L548">            UtenteRegistrato loggedUser = null;</span>
+<span class="nc" id="L549">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L551">            String applicationMessage = null;</span>
+
+            try {
+
+<span class="nc" id="L555">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L556">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L558">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L560">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+
+<span class="nc" id="L562">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L563" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )    </span>
+<span class="nc" id="L564">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L566">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L568">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L569">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L571">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+<span class="nc" id="L572">                UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();</span>
+
+<span class="nc" id="L574">                Bando bando = bandoDAO.findbyId(bandoId);   // vado a recuperare il bando selezionato tramite Id</span>
+
+<span class="nc" id="L576">                bando.deleteMatricola(loggedUser.getMatricola());</span>
+
+<span class="nc" id="L578">                userDAO.annullaIscrizione(loggedUser, bando);</span>
+<span class="nc" id="L579">                boolean maxIscritti = userDAO.maxIscrittiRaggiunto(bando);</span>
+
+
+<span class="nc" id="L582">                daoFactory.commitTransaction();</span>
+
+<span class="nc" id="L584">                loggedUser.deleteIdBando(bando.getId());</span>
+<span class="nc" id="L585">                bando.deleteMatricola(loggedUser.getMatricola());</span>
+
+<span class="nc" id="L587">                sessionUserDAO.update(loggedUser);</span>
+
+<span class="nc bnc" id="L589" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="nc" id="L590">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="nc bnc" id="L591" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L592">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L593">                page.addObject(&quot;Iscritto&quot;, false);</span>
+<span class="nc" id="L594">                page.addObject(&quot;BandoSelezionato&quot;, bando);</span>
+<span class="nc" id="L595">                page.setViewName(&quot;Calendario/viewBandoCSS&quot;);</span>
+<span class="nc" id="L596">                page.addObject(&quot;maxIscrittiRaggiunto&quot;, maxIscritti);</span>
+
+<span class="nc" id="L598">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L599" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L601">                e.printStackTrace();</span>
+<span class="nc" id="L602">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L603">            }</span>
+
+<span class="nc" id="L605">            return page;</span>
+        }
+
+    @PostMapping(path = &quot;/esitoPartecipante&quot;, params = {&quot;bandoId&quot;})
+    public ModelAndView esitoPartecipante(
+        HttpServletResponse response, 
+        
+        @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
+        
+        @RequestParam(value = &quot;utenteSelezionato&quot;) String utenteSelezionato,
+        @RequestParam(value = &quot;inAttesa&quot;) String Esito,
+        @RequestParam(value = &quot;bandoId&quot;) String bandoId
+        ){
+<span class="nc" id="L618">            ModelAndView page = new ModelAndView();</span>
+<span class="nc" id="L619">            DAOFactory sessionDAOFactory= null;</span>
+<span class="nc" id="L620">            DAOFactory daoFactory = null;</span>
+
+<span class="nc" id="L622">            Amministratore loggedAdmin = null;</span>
+
+<span class="nc" id="L624">            String applicationMessage = null;</span>
+
+            try {
+<span class="nc" id="L627">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="nc" id="L628">                sessionDAOFactory.beginTransaction();</span>
+
+<span class="nc" id="L630">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
+<span class="nc bnc" id="L631" title="All 2 branches missed.">                if( !cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="nc" id="L632">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+
+<span class="nc" id="L634">                sessionDAOFactory.commitTransaction();</span>
+
+<span class="nc" id="L636">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L637">                daoFactory.beginTransaction();</span>
+
+<span class="nc" id="L639">                UtenteRegistratoDAO userDao = daoFactory.getUtenteRegistratoDAO();</span>
+
+<span class="nc" id="L641">                BandoDAO bandoDAO = daoFactory.getBandoDAO();</span>
+
+<span class="nc" id="L643">                Bando bando = bandoDAO.findbyId(bandoId);</span>
+<span class="nc" id="L644">                bando.updateEsito(Esito, utenteSelezionato);</span>
+<span class="nc" id="L645">                bandoDAO.updateEsito(bandoId, utenteSelezionato, Esito);</span>
+
+                /* INVIO AVVISO */
+<span class="nc" id="L648">                AvvisoDAO avvisoDAO = daoFactory.getAvvisoDAO();</span>
+<span class="nc" id="L649">                UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();</span>
+
+<span class="nc" id="L651">                String Oggetto = &quot;Esito bando: &quot; + bandoId;</span>
+<span class="nc" id="L652">                String Testo = &quot;Gentile utente,&quot; +</span>
+                        &quot;\nLa informiamo che la sua domanda per il bando &quot; + bandoId + &quot; ha avuto esito: &quot; + Esito + &quot;.&quot; +
+                        &quot;\nPer ulteriori informazioni contattare il numero della Segreteria.&quot;;
+
+<span class="nc" id="L656">                Integer Id = Integer.parseInt(avvisoDAO.getID()) + 1;</span>
+<span class="nc" id="L657">                String avvisoId = Id.toString();</span>
+
+<span class="nc" id="L659">                String DirectoryDest = &quot;C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\&quot;;</span>
+<span class="nc" id="L660">                File file = new File(DirectoryDest + 'A' + avvisoId);</span>
+
+                try{
+<span class="nc" id="L663">                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));</span>
+<span class="nc" id="L664">                    bw.write(Testo);</span>
+<span class="nc" id="L665">                    bw.close();</span>
+                }
+<span class="nc" id="L667">                catch(IOException e){</span>
+<span class="nc" id="L668">                    throw new RuntimeException(e);</span>
+<span class="nc" id="L669">                }</span>
+
+<span class="nc" id="L671">                String RiferimentoTesto = file.getAbsolutePath();</span>
+
+<span class="nc" id="L673">                avvisoDAO.create(avvisoId, Oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), utenteSelezionato);</span>
+
+<span class="nc" id="L675">                daoFactory.commitTransaction();</span>
+
+<span class="nc bnc" id="L677" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L678">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc" id="L679">                page.addObject(&quot;BandoSelezionato&quot;, bandoId);</span>
+
+<span class="nc" id="L681">                page.setViewName(&quot;Calendario/reload&quot;);</span>
+
+
+<span class="nc" id="L684">            } catch (Exception e) {</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+
+<span class="nc" id="L687">                e.printStackTrace();</span>
+<span class="nc" id="L688">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="nc" id="L689">            }</span>
+
+<span class="nc" id="L691">            return page;</span>
+        }
+    }
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

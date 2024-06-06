@@ -61,6 +61,7 @@ public class PaginaIniziale {
 
             sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
 
+            if(!cookieUtente.equals("") && !cookieAdmin.equals("")) throw new Exception("Errore: entrambi i cookie sono settati");
             if(!cookieUtente.equals("")) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUtente);
             if(!cookieAdmin.equals(""))  loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
@@ -81,6 +82,8 @@ public class PaginaIniziale {
             page.addObject("notizia4", notizie.get(3));
 
 
+            System.out.println(cookieUtente);
+            System.out.println(cookieAdmin);
 
             daoFactory.commitTransaction();
 
@@ -95,6 +98,7 @@ public class PaginaIniziale {
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return page;
 
@@ -125,7 +129,8 @@ public class PaginaIniziale {
 
             sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
 
-            loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+            if(!cookieAdmin.equals("")) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+            else throw new Exception("Errore: cookie non settato");
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
@@ -164,7 +169,7 @@ public class PaginaIniziale {
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
             e.printStackTrace();
-
+            throw new RuntimeException(e);
         }
         return page;
     }

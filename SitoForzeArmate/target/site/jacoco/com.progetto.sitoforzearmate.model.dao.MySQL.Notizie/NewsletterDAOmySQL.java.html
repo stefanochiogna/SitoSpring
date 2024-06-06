@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NewsletterDAOmySQL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.model.dao.MySQL.Notizie</a> &gt; <span class="el_source">NewsletterDAOmySQL.java</span></div><h1>NewsletterDAOmySQL.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.model.dao.MySQL.Notizie;
+
+import com.progetto.sitoforzearmate.model.dao.Notizie.NewsletterDAO;
+import com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class NewsletterDAOmySQL implements NewsletterDAO {
+    Connection connection;
+<span class="nc" id="L18">    public NewsletterDAOmySQL(Connection connection){</span>
+<span class="nc" id="L19">        this.connection = connection;</span>
+<span class="nc" id="L20">    }</span>
+
+    public Newsletter create(
+            String Id,
+            String Oggetto,
+            Path RiferimentoTesto,
+            String IdAdministrator,
+            String MailDestinatario,
+            String Matricola
+    ){
+        PreparedStatement statement;
+
+<span class="nc" id="L32">        Newsletter newsletter = new Newsletter();</span>
+<span class="nc" id="L33">        newsletter.setID(Id);</span>
+<span class="nc" id="L34">        newsletter.setOggetto(Oggetto);</span>
+<span class="nc" id="L35">        newsletter.setRiferimentoTesto(RiferimentoTesto);</span>
+<span class="nc" id="L36">        newsletter.setIdAdministrator(IdAdministrator);</span>
+<span class="nc" id="L37">        newsletter.addMailDestinatario(MailDestinatario);</span>
+<span class="nc" id="L38">        newsletter.addMatricolaDestinatario(Matricola);</span>
+
+        try{
+<span class="nc" id="L41">            String sql</span>
+                    = &quot; SELECT Id &quot;
+                    + &quot; FROM newsletter NATURAL JOIN notizia &quot;
+                    + &quot; WHERE &quot;
+                    + &quot; Id = ?       &quot;;
+
+<span class="nc" id="L47">            statement = connection.prepareStatement(sql);</span>
+
+<span class="nc" id="L49">            statement.setString(1, newsletter.getID());</span>
+
+<span class="nc" id="L51">            ResultSet resultSet = statement.executeQuery();</span>
+
+            boolean exist;
+<span class="nc" id="L54">            exist = resultSet.next();</span>
+<span class="nc" id="L55">            resultSet.close();</span>
+
+<span class="nc bnc" id="L57" title="All 2 branches missed.">            if (exist) {</span>
+<span class="nc" id="L58">                throw new RuntimeException(&quot;NewsletterDAOmySQL.create: Tentativo di inserimento di una notizia con stesso Id.&quot;);</span>
+            }
+
+<span class="nc" id="L61">            String sqlNotizie =</span>
+                    &quot; INSERT INTO notizia &quot; +
+                            &quot;     ( Id,        &quot; +
+                            &quot;       Oggetto,                &quot; +
+                            &quot;       Riferimento_al_testo,   &quot; +
+                            &quot;       IdAdministrator        &quot; +
+                            &quot;       )            &quot; +
+                            &quot;VALUES (?, ?, ?, ?)&quot;;
+
+<span class="nc" id="L70">            statement = connection.prepareStatement(sqlNotizie);</span>
+<span class="nc" id="L71">            int i = 1;</span>
+
+<span class="nc" id="L73">            statement.setString(i++, newsletter.getID());</span>
+<span class="nc" id="L74">            statement.setString(i++, newsletter.getOggetto());</span>
+<span class="nc" id="L75">            statement.setString(i++, newsletter.getRiferimentoTesto().toString());</span>
+<span class="nc" id="L76">            statement.setString(i++, newsletter.getIdAdministrator());</span>
+
+<span class="nc" id="L78">            statement.executeUpdate();</span>
+
+<span class="nc" id="L80">            String sqlAvvisi =</span>
+                    &quot; INSERT INTO newsletter &quot; +
+                            &quot; ( Id,&quot; +
+                            &quot;   Mail_destinatario &quot; +
+                            &quot; ) &quot; +
+                            &quot; VALUES (?,?) &quot;;
+
+<span class="nc" id="L87">            statement = connection.prepareStatement(sqlAvvisi);</span>
+
+<span class="nc" id="L89">            statement.setString(1, newsletter.getID());</span>
+<span class="nc" id="L90">            statement.setString(2, MailDestinatario);</span>
+
+<span class="nc" id="L92">            statement.executeUpdate();</span>
+
+<span class="nc" id="L94">            String sqlRiceve =</span>
+                    &quot; INSERT INTO riceve_news &quot; +
+                            &quot; ( Matricola,&quot; +
+                            &quot;   Id_news &quot; +
+                            &quot; ) &quot; +
+                            &quot; VALUES (?,?) &quot;;
+
+<span class="nc" id="L101">            statement = connection.prepareStatement(sqlRiceve);</span>
+
+<span class="nc" id="L103">            statement.setString(1, Matricola);</span>
+<span class="nc" id="L104">            statement.setString(2, newsletter.getID());</span>
+
+<span class="nc" id="L106">            statement.executeUpdate();</span>
+
+<span class="nc" id="L108">            statement.close();</span>
+        }
+<span class="nc" id="L110">        catch(SQLException e){</span>
+<span class="nc" id="L111">            throw new RuntimeException(e);</span>
+<span class="nc" id="L112">        }</span>
+<span class="nc" id="L113">        return newsletter;</span>
+    }
+
+    public void delete ( Newsletter newsletter ) {
+        PreparedStatement statement;
+
+        try {
+<span class="nc" id="L120">            String sql</span>
+                    = &quot; DELETE &quot;
+                    + &quot; FROM riceve_news &quot;
+                    + &quot; WHERE Id_news = ? &quot;;
+<span class="nc" id="L124">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L125">            statement.setString(1, newsletter.getID());</span>
+<span class="nc" id="L126">            statement.executeUpdate();</span>
+<span class="nc" id="L127">            statement.close();</span>
+        }
+<span class="nc" id="L129">        catch ( SQLException e ) {</span>
+<span class="nc" id="L130">            throw new RuntimeException(e);</span>
+<span class="nc" id="L131">        }</span>
+<span class="nc" id="L132">    }</span>
+
+    public Newsletter findById(String Id) {
+<span class="nc" id="L135">        Newsletter newsletter = null;</span>
+        PreparedStatement statement;
+
+        try {
+<span class="nc" id="L139">            String sql</span>
+                    = &quot; SELECT * &quot;
+                    + &quot; FROM newsletter NATURAL JOIN notizia&quot;
+                    + &quot; WHERE Id = ? &quot;;
+<span class="nc" id="L143">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L144">            statement.setString(1, Id);</span>
+
+<span class="nc" id="L146">            ResultSet resultSet = statement.executeQuery();</span>
+
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            if(resultSet.next()){</span>
+<span class="nc" id="L149">                newsletter = read(resultSet);</span>
+            }
+
+<span class="nc" id="L152">            resultSet.close();</span>
+<span class="nc" id="L153">            statement.close();</span>
+        }
+<span class="nc" id="L155">        catch ( SQLException e ) {</span>
+<span class="nc" id="L156">            throw new RuntimeException(e);</span>
+<span class="nc" id="L157">        }</span>
+
+<span class="nc" id="L159">        return newsletter;</span>
+    }
+
+    public List&lt;Newsletter&gt; stampaNewsletter(String MailDestinatario){
+<span class="nc" id="L163">        List&lt;Newsletter&gt; newsletters = new ArrayList&lt;&gt;();</span>
+
+        PreparedStatement statement;
+
+        try{
+<span class="nc" id="L168">            String sqlAvvisi</span>
+                    = &quot; SELECT * &quot; +
+                      &quot; FROM riceve_news &quot; +
+                      &quot; JOIN newsletter ON riceve_news.Id_news = newsletter.Id &quot; +
+                      &quot; JOIN notizia ON newsletter.Id = notizia.Id &quot; +
+                      &quot; JOIN utente_registrato ON newsletter.Mail_destinatario = utente_registrato.Email &quot; +
+                      &quot; WHERE utente_registrato.Email = ? AND utente_registrato.Iscritto_newsletter = 1 &quot;;
+
+<span class="nc" id="L176">            statement = connection.prepareStatement(sqlAvvisi);</span>
+
+<span class="nc" id="L178">            statement.setString(1, MailDestinatario);</span>
+<span class="nc" id="L179">            ResultSet resultSet = statement.executeQuery();</span>
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">            while(resultSet.next()){</span>
+<span class="nc" id="L182">                newsletters.add(read(resultSet));</span>
+            }
+
+<span class="nc" id="L185">            resultSet.close();</span>
+<span class="nc" id="L186">            statement.close();</span>
+        }
+<span class="nc" id="L188">        catch(SQLException e){</span>
+<span class="nc" id="L189">            throw new RuntimeException(e);</span>
+<span class="nc" id="L190">        }</span>
+
+<span class="nc" id="L192">        return newsletters;</span>
+    }
+
+    @Override
+    public String getID(){
+        String Id;
+        PreparedStatement statement;
+
+        try{
+<span class="nc" id="L201">            String sql</span>
+                    = &quot; SELECT Id &quot;
+                    + &quot; FROM notizia &quot;
+                    + &quot; WHERE Id LIKE '2%' AND Id &gt;= ALL( SELECT Id &quot;
+                    + &quot;                                   FROM notizia &quot;
+                    + &quot;                                   WHERE Id LIKE '2%')&quot;;
+
+<span class="nc" id="L208">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L209">            ResultSet resultSet = statement.executeQuery();</span>
+<span class="nc" id="L210">            resultSet.next();</span>
+
+<span class="nc" id="L212">            Id = resultSet.getString(&quot;Id&quot;);</span>
+
+<span class="nc bnc" id="L214" title="All 2 branches missed.">            if(Id == null){</span>
+<span class="nc" id="L215">                throw new RuntimeException(&quot;Errore nell creazione dell'ID&quot;);</span>
+            }
+        }
+<span class="nc" id="L218">        catch ( SQLException e ) {</span>
+<span class="nc" id="L219">            throw new RuntimeException(e);</span>
+<span class="nc" id="L220">        }</span>
+
+<span class="nc" id="L222">        return Id;</span>
+    }
+
+    private Newsletter read(ResultSet resultSet){
+<span class="nc" id="L226">        Newsletter newsletter = new Newsletter();</span>
+
+        /* Notizia */
+        try{
+<span class="nc" id="L230">            newsletter.setID(resultSet.getString(&quot;Id&quot;));</span>
+        }
+<span class="nc" id="L232">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L234">            newsletter.setOggetto(resultSet.getString(&quot;Oggetto&quot;));</span>
+        }
+<span class="nc" id="L236">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L238">            newsletter.setRiferimentoTesto(Paths.get(resultSet.getString(&quot;Riferimento_al_testo&quot;)));</span>
+        }
+<span class="nc" id="L240">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L242">            newsletter.setIdAdministrator(resultSet.getString(&quot;IdAdministrator&quot;));</span>
+        }
+<span class="nc" id="L244">        catch (SQLException sql){ }</span>
+
+        /* Newsletter */
+        try {
+<span class="nc" id="L248">            newsletter.addMailDestinatario(resultSet.getString(&quot;Mail_destinatario&quot;));</span>
+        }
+<span class="nc" id="L250">        catch (SQLException sql){ }</span>
+
+<span class="nc" id="L252">        return newsletter ;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

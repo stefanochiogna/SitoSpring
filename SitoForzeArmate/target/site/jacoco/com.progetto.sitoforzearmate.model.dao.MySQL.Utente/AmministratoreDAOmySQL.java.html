@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="it"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AmministratoreDAOmySQL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SitoForzeArmate</a> &gt; <a href="index.source.html" class="el_package">com.progetto.sitoforzearmate.model.dao.MySQL.Utente</a> &gt; <span class="el_source">AmministratoreDAOmySQL.java</span></div><h1>AmministratoreDAOmySQL.java</h1><pre class="source lang-java linenums">package com.progetto.sitoforzearmate.model.dao.MySQL.Utente;
+
+import com.progetto.sitoforzearmate.model.dao.Data;
+import com.progetto.sitoforzearmate.model.dao.Utente.AmministratoreDAO;
+import com.progetto.sitoforzearmate.model.mo.Utente.*;
+
+import java.sql.*;
+
+public class AmministratoreDAOmySQL implements AmministratoreDAO{
+    Connection connection;
+<span class="nc" id="L11">    public AmministratoreDAOmySQL(Connection connection){</span>
+<span class="nc" id="L12">        this.connection = connection;</span>
+<span class="nc" id="L13">    }</span>
+
+    @Override
+    public Amministratore create(
+            /* Attributi Utente */
+            String Nome,
+            String Cognome,
+            String CF,
+            String mail,
+            String telefono,
+            String password,
+            String sesso,
+            Data dataNascita,
+
+            /* Attributi Amministratore */
+            String IdAdministrator){
+
+        PreparedStatement statement;
+<span class="nc" id="L31">        Amministratore admin = new Amministratore();</span>
+
+<span class="nc" id="L33">        admin.setNome(Nome);</span>
+<span class="nc" id="L34">        admin.setCognome(Cognome);</span>
+<span class="nc" id="L35">        admin.setCF(CF);</span>
+<span class="nc" id="L36">        admin.setMail(mail);</span>
+<span class="nc" id="L37">        admin.setTelefono(telefono);</span>
+<span class="nc" id="L38">        admin.setPassword(password);</span>
+<span class="nc" id="L39">        admin.setSesso(sesso);</span>
+<span class="nc" id="L40">        admin.setDataNascita(dataNascita);</span>
+
+<span class="nc" id="L42">        admin.setIdAdministrator(IdAdministrator);</span>
+
+        try {
+
+<span class="nc" id="L46">            String sql</span>
+                    = &quot; SELECT Email &quot;
+                    + &quot; FROM utente &quot;
+                    + &quot; WHERE  Email = ?&quot;;
+
+<span class="nc" id="L51">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L52">            statement.setString(1, admin.getMail());</span>
+
+<span class="nc" id="L54">            ResultSet resultSet = statement.executeQuery();</span>
+
+            boolean exist;
+<span class="nc" id="L57">            exist = resultSet.next();</span>
+<span class="nc" id="L58">            resultSet.close();</span>
+            /* .next restituisce false se la select restituisce dei dati */
+            /* si ha quindi che se restituisce true, allora si hanno più utenti con stessa chiave */
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (exist) {</span>
+<span class="nc" id="L63">                throw new RuntimeException(&quot;AmministratoreDAOmySQL.create: Tentativo di inserimento di un amministratore già esistente.&quot;);</span>
+            }
+
+<span class="nc" id="L66">            String sqlUtente =</span>
+                    &quot; INSERT INTO utente &quot; +
+                            &quot;     ( Nome,        &quot; +
+                            &quot;       Cognome,     &quot; +
+                            &quot;       CF,          &quot; +
+                            &quot;       Telefono,    &quot; +
+                            &quot;       Email,       &quot; +
+                            &quot;       Password,    &quot; +
+                            &quot;       sesso,       &quot; +
+                            &quot;       DataNascita  &quot; +
+                            &quot;       )            &quot; +
+                            &quot;VALUES (?, ?, ?, ?, ?, ?, ?, ?)&quot;;
+<span class="nc" id="L78">            statement = connection.prepareStatement(sqlUtente);</span>
+<span class="nc" id="L79">            int i = 1;</span>
+<span class="nc" id="L80">            statement.setString(i++, admin.getNome());</span>
+<span class="nc" id="L81">            statement.setString(i++, admin.getCognome());</span>
+<span class="nc" id="L82">            statement.setString(i++, admin.getCF());</span>
+<span class="nc" id="L83">            statement.setString(i++, admin.getTelefono());</span>
+<span class="nc" id="L84">            statement.setString(i++, admin.getMail());</span>
+<span class="nc" id="L85">            statement.setString(i++, admin.getPassword());</span>
+<span class="nc" id="L86">            statement.setString(i++, admin.getSesso());</span>
+<span class="nc" id="L87">            statement.setDate(i++, Date.valueOf(dataNascita.toStringSQL()));</span>
+<span class="nc" id="L88">            statement.setString(i++, admin.getPassword());</span>
+
+<span class="nc" id="L90">            statement.executeUpdate();</span>
+
+<span class="nc" id="L92">            String sqlUtenteRegistrato1 =</span>
+                    &quot; INSERT INTO utente_registrato &quot; +
+                            &quot;       ( Email,                &quot; +
+                            &quot;         IdAdministrator       &quot; +
+                            &quot;       )                       &quot; +
+                            &quot; VALUES (?,?)&quot;;
+<span class="nc" id="L98">            statement = connection.prepareStatement(sqlUtenteRegistrato1);</span>
+
+<span class="nc" id="L100">            statement.setString(1, admin.getMail());</span>
+<span class="nc" id="L101">            statement.setString(2, admin.getIdAdministrator());</span>
+
+<span class="nc" id="L103">            statement.executeUpdate();</span>
+<span class="nc" id="L104">            statement.close();</span>
+        }
+<span class="nc" id="L106">        catch(SQLException e) {</span>
+<span class="nc" id="L107">            throw new RuntimeException(e);</span>
+<span class="nc" id="L108">        }</span>
+
+<span class="nc" id="L110">        return admin;</span>
+    }
+
+    @Override
+    public void update(Amministratore Admin){
+        PreparedStatement statement;
+
+        try {
+
+<span class="nc" id="L119">            String sql</span>
+                    = &quot; SELECT Email &quot;
+                    + &quot; FROM utente &quot;
+                    + &quot; WHERE &quot;
+                    + &quot; Nome = ? AND&quot;
+                    + &quot; Cognome = ? AND&quot;
+                    + &quot; CF = ? AND&quot;
+                    + &quot; Telefono = ? AND &quot;
+                    + &quot; Email &lt;&gt; ? AND &quot;
+                    + &quot; Password = ? AND &quot;
+                    + &quot; sesso = ? AND &quot;
+                    + &quot; DataNascita = ?&quot;;
+            /* Si controlla se si ha uno stesso utente con due mail differenti. In caso eccezione */
+
+<span class="nc" id="L133">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L134">            int i = 1;</span>
+<span class="nc" id="L135">            statement.setString(i++, Admin.getNome());</span>
+<span class="nc" id="L136">            statement.setString(i++, Admin.getCognome());</span>
+<span class="nc" id="L137">            statement.setString(i++, Admin.getCF());</span>
+<span class="nc" id="L138">            statement.setString(i++, Admin.getTelefono());</span>
+<span class="nc" id="L139">            statement.setString(i++, Admin.getMail());</span>
+<span class="nc" id="L140">            statement.setString(i++, Admin.getPassword());</span>
+<span class="nc" id="L141">            statement.setString(i++, Admin.getSesso());</span>
+<span class="nc" id="L142">            statement.setDate(i++, Date.valueOf(Admin.getDataNascita().toStringSQL()));</span>
+
+<span class="nc" id="L144">            ResultSet resultSet = statement.executeQuery();</span>
+
+            boolean exist;
+<span class="nc" id="L147">            exist = resultSet.next();</span>
+<span class="nc" id="L148">            resultSet.close();</span>
+
+<span class="nc bnc" id="L150" title="All 2 branches missed.">            if (exist) {</span>
+                // throw new DuplicatedObjectException(&quot;ContactDAOJDBCImpl.create: Tentativo di aggiornamento in un contatto già esistente.&quot;);
+<span class="nc" id="L152">                throw new RuntimeException(&quot;Aggiornamento amministratore già esistente&quot;);</span>
+            }
+
+<span class="nc" id="L155">            sql</span>
+                    = &quot; UPDATE utente &quot;
+                    + &quot; SET &quot;
+                    + &quot;   Nome = ?, &quot;
+                    + &quot;   Cognome = ?, &quot;
+                    + &quot;   CF = ?, &quot;
+                    + &quot;   Telefono = ?, &quot;
+                    + &quot;   Password = ?, &quot;
+                    + &quot;   sesso = ?, &quot;
+                    + &quot;   DataNascita = ? &quot;
+                    + &quot; WHERE &quot;
+                    + &quot;   Email = ? &quot;;
+
+<span class="nc" id="L168">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L169">            i = 1;</span>
+<span class="nc" id="L170">            statement.setString(i++, Admin.getNome());</span>
+<span class="nc" id="L171">            statement.setString(i++, Admin.getCognome());</span>
+<span class="nc" id="L172">            statement.setString(i++, Admin.getCF());</span>
+<span class="nc" id="L173">            statement.setString(i++, Admin.getTelefono());</span>
+<span class="nc" id="L174">            statement.setString(i++, Admin.getPassword());</span>
+<span class="nc" id="L175">            statement.setString(i++, Admin.getSesso());</span>
+<span class="nc" id="L176">            statement.setDate(i++, Date.valueOf(Admin.getDataNascita().toStringSQL()));</span>
+<span class="nc" id="L177">            statement.setString(i++, Admin.getMail());</span>
+
+<span class="nc" id="L179">            statement.executeUpdate();</span>
+
+<span class="nc" id="L181">            String sqlUtenteRegistrato =</span>
+                    &quot; UPDATE amministratore &quot; +
+                            &quot;       SET                        &quot; +
+                            &quot;         Email = ?,               &quot; +
+                            &quot;         IdAdministrator = ?      &quot; +
+                            &quot;       WHERE                      &quot; +
+                            &quot;         IdAdministrator = ?      &quot;;
+<span class="nc" id="L188">            statement = connection.prepareStatement(sqlUtenteRegistrato);</span>
+<span class="nc" id="L189">            i = 1;</span>
+<span class="nc" id="L190">            statement.setString(i++, Admin.getMail());</span>
+<span class="nc" id="L191">            statement.setString(i++, Admin.getIdAdministrator());</span>
+<span class="nc" id="L192">            statement.setString(i++, Admin.getIdAdministrator());</span>
+
+<span class="nc" id="L194">            statement.executeUpdate();</span>
+<span class="nc" id="L195">            statement.close();</span>
+
+        }
+<span class="nc" id="L198">        catch (SQLException e) {</span>
+<span class="nc" id="L199">            throw new RuntimeException(e);</span>
+<span class="nc" id="L200">        }</span>
+<span class="nc" id="L201">    }</span>
+
+    @Override
+    public void delete(Amministratore Admin){
+        PreparedStatement statement;
+
+        try{
+<span class="nc" id="L208">            String sql</span>
+                    = &quot;DELETE &quot;
+                    + &quot;FROM utente NATURAL JOIN amministratore &quot;
+                    + &quot;WHERE IdAdministrator = ?&quot;;
+
+<span class="nc" id="L213">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L214">            statement.setString(1, Admin.getIdAdministrator());</span>
+<span class="nc" id="L215">            statement.executeUpdate();</span>
+<span class="nc" id="L216">            statement.close();</span>
+        }
+<span class="nc" id="L218">        catch(SQLException e){</span>
+<span class="nc" id="L219">            throw new RuntimeException(e);</span>
+<span class="nc" id="L220">        }</span>
+<span class="nc" id="L221">    }</span>
+
+    @Override
+    public Amministratore findByMail(String mail){
+<span class="nc" id="L225">        Amministratore admin = null;</span>
+        PreparedStatement statement;
+
+        try{
+<span class="nc" id="L229">            String sql</span>
+                    = &quot; SELECT * &quot;
+                    + &quot; FROM utente NATURAL JOIN amministratore &quot;
+                    + &quot; WHERE Email = ?&quot;;
+
+<span class="nc" id="L234">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L235">            statement.setString(1, mail);</span>
+
+<span class="nc" id="L237">            ResultSet resultSet = statement.executeQuery();</span>
+
+<span class="nc bnc" id="L239" title="All 2 branches missed.">            if(resultSet.next()){</span>
+<span class="nc" id="L240">                admin = readAdmin(resultSet);</span>
+            }
+
+<span class="nc" id="L243">            resultSet.close();</span>
+<span class="nc" id="L244">            statement.close();</span>
+        }
+<span class="nc" id="L246">        catch (SQLException e){</span>
+<span class="nc" id="L247">            throw new RuntimeException(e);</span>
+<span class="nc" id="L248">        }</span>
+
+<span class="nc" id="L250">        return admin;</span>
+    }
+
+    @Override
+    public Amministratore findById(String IdAdmin){
+<span class="nc" id="L255">        Amministratore admin = null;</span>
+        PreparedStatement statement;
+
+        try{
+<span class="nc" id="L259">            String sql</span>
+                    = &quot; SELECT * &quot;
+                    + &quot; FROM utente NATURAL JOIN amministratore &quot;
+                    + &quot; WHERE IdAdministrator = ?&quot;;
+
+<span class="nc" id="L264">            statement = connection.prepareStatement(sql);</span>
+<span class="nc" id="L265">            statement.setString(1, IdAdmin);</span>
+
+<span class="nc" id="L267">            ResultSet resultSet = statement.executeQuery();</span>
+
+<span class="nc bnc" id="L269" title="All 2 branches missed.">            if(resultSet.next()){</span>
+<span class="nc" id="L270">                admin = readAdmin(resultSet);</span>
+            }
+
+<span class="nc" id="L273">            resultSet.close();</span>
+<span class="nc" id="L274">            statement.close();</span>
+        }
+<span class="nc" id="L276">        catch (SQLException e){</span>
+<span class="nc" id="L277">            throw new RuntimeException(e);</span>
+<span class="nc" id="L278">        }</span>
+
+<span class="nc" id="L280">        return admin;</span>
+    }
+
+    private Amministratore readAdmin(ResultSet resultSet) {
+<span class="nc" id="L284">        Amministratore admin = new Amministratore();</span>
+
+        /* Utente */
+        try{
+<span class="nc" id="L288">            admin.setNome(resultSet.getString(&quot;Nome&quot;));</span>
+        }
+<span class="nc" id="L290">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L292">            admin.setCognome(resultSet.getString(&quot;Cognome&quot;));</span>
+        }
+<span class="nc" id="L294">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L296">            admin.setCF(resultSet.getString(&quot;CF&quot;));</span>
+        }
+<span class="nc" id="L298">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L300">            admin.setTelefono(resultSet.getString(&quot;Telefono&quot;));</span>
+        }
+<span class="nc" id="L302">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L304">            admin.setMail(resultSet.getString(&quot;Email&quot;));</span>
+        }
+<span class="nc" id="L306">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L308">            admin.setPassword(resultSet.getString(&quot;Password&quot;));</span>
+        }
+<span class="nc" id="L310">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L312">            admin.setSesso(resultSet.getString(&quot;sesso&quot;));</span>
+        }
+<span class="nc" id="L314">        catch (SQLException sql){ }</span>
+        try{
+<span class="nc" id="L316">            admin.setDataNascitaString(resultSet.getDate(&quot;DataNascita&quot;).toString());</span>
+        }
+<span class="nc" id="L318">        catch (SQLException sql){ }</span>
+
+        /* Amministratore */
+        try{
+<span class="nc" id="L322">            admin.setIdAdministrator(resultSet.getString(&quot;IdAdministrator&quot;));</span>
+        }
+<span class="nc" id="L324">        catch (SQLException sql){ }</span>
+
+<span class="nc" id="L326">        return admin;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
