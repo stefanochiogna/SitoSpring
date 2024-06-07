@@ -15,7 +15,7 @@ SitoForzeArmate,com.progetto.sitoforzearmate.model.dao,DAOFactory,22,0,4,0,6,0,4
 SitoForzeArmate,com.progetto.sitoforzearmate.controller,PrenotaAlloggio,203,3,18,0,54,1,11,1,2,1
 SitoForzeArmate,com.progetto.sitoforzearmate.controller,ListaBasi,432,3,36,0,129,1,23,1,5,1
 SitoForzeArmate,com.progetto.sitoforzearmate.controller,Profilo,618,3,64,0,182,1,37,1,5,1
-SitoForzeArmate,com.progetto.sitoforzearmate.controller,PaginaIniziale,199,179,16,14,53,41,11,9,2,3
+SitoForzeArmate,com.progetto.sitoforzearmate.controller,PaginaIniziale,158,297,17,29,36,68,11,17,1,4
 SitoForzeArmate,com.progetto.sitoforzearmate.controller,Login,570,3,44,0,150,1,29,1,7,1
 SitoForzeArmate,com.progetto.sitoforzearmate.controller,BachecaNewsletter,453,3,32,0,130,1,20,1,4,1
 SitoForzeArmate,com.progetto.sitoforzearmate.controller,BachecaAvviso,570,3,46,0,151,1,27,1,4,1

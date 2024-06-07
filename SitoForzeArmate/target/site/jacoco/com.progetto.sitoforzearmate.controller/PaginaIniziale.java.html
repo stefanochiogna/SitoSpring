@@ -129,48 +129,55 @@ import java.util.logging.Logger;
 
 <span class="nc" id="L130">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
 
-<span class="nc" id="L132">            loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">            if(!cookieAdmin.equals(&quot;&quot;)) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="nc" id="L133">            else throw new Exception(&quot;Errore: cookie non settato&quot;);</span>
 
-<span class="nc" id="L134">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="nc" id="L135">            daoFactory.beginTransaction();</span>
+<span class="nc" id="L135">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="nc" id="L136">            daoFactory.beginTransaction();</span>
 
 
-<span class="nc" id="L138">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
-<span class="nc" id="L139">            notizie = notizieDAO.findById(Id);</span>
+<span class="nc" id="L139">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">            if(Id.equals(&quot;&quot;)) throw new Exception(&quot;Errore: Id non settato&quot;);</span>
+<span class="nc" id="L141">            notizie = notizieDAO.findById(Id);</span>
 
             /* Recupero Parametri */
 
-<span class="nc" id="L143">            Integer IdArt = Integer.parseInt(Id);</span>
+<span class="nc" id="L145">            int IdArt = Integer.parseInt(Id);</span>
 
-<span class="nc" id="L145">            String DirectoryDest = &quot;C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\&quot;;// directory dove salvo i file</span>
-<span class="nc" id="L146">            File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id</span>
-<span class="nc" id="L147">            Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file</span>
-<span class="nc" id="L148">            String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo</span>
+<span class="nc" id="L147">            String DirectoryDest = &quot;C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\&quot;;// directory dove salvo i file</span>
+<span class="nc" id="L148">            File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id</span>
+<span class="nc" id="L149">            Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file</span>
+<span class="nc" id="L150">            String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo</span>
 
-<span class="nc" id="L150">            notizie.setOggetto(Oggetto);</span>
-<span class="nc" id="L151">            notizie.setIdAdministrator(IdAdmin);</span>
-<span class="nc" id="L152">            notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">            if(Oggetto.equals(&quot;&quot;)) throw new Exception(&quot;Errore: Oggetto non settato&quot;);</span>
+<span class="nc" id="L153">            notizie.setOggetto(Oggetto);</span>
 
-<span class="nc" id="L154">            notizieDAO.update(notizie);</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">            if(IdAdmin.equals(&quot;&quot;)) throw new Exception(&quot;Errore: IdAdmin non settato&quot;);</span>
+<span class="nc" id="L156">            notizie.setIdAdministrator(IdAdmin);</span>
+
+<span class="nc bnc" id="L158" title="All 2 branches missed.">            if(Testo == null) throw new Exception(&quot;Errore: Testo non settato&quot;);</span>
+<span class="nc" id="L159">            notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));</span>
+
+<span class="nc" id="L161">            notizieDAO.update(notizie);</span>
 
 
-<span class="nc" id="L157">            daoFactory.commitTransaction();</span>
+<span class="nc" id="L164">            daoFactory.commitTransaction();</span>
 
-<span class="nc" id="L159">            String notizia = &quot;notizia&quot; + Integer.parseInt(Id);</span>
-<span class="nc" id="L160">            page.addObject(notizia, notizie);</span>
+<span class="nc" id="L166">            String notizia = &quot;notizia&quot; + Integer.parseInt(Id);</span>
+<span class="nc" id="L167">            page.addObject(notizia, notizie);</span>
 
-<span class="nc bnc" id="L162" title="All 2 branches missed.">            page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
-<span class="nc" id="L163">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">            page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="nc" id="L170">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
 
-<span class="nc" id="L165">            page.setViewName(&quot;index&quot;);</span>
+<span class="nc" id="L172">            page.setViewName(&quot;index&quot;);</span>
 
-<span class="nc" id="L167">        } catch (Exception e) {</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+<span class="nc" id="L174">        } catch (Exception e) {</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
 
-<span class="nc" id="L170">            e.printStackTrace();</span>
-
-<span class="nc" id="L172">        }</span>
-<span class="nc" id="L173">        return page;</span>
+<span class="nc" id="L177">            e.printStackTrace();</span>
+<span class="nc" id="L178">            throw new RuntimeException(e);</span>
+<span class="nc" id="L179">        }</span>
+<span class="nc" id="L180">        return page;</span>
     }
 
     @PostMapping(&quot;/viewArt&quot;)
@@ -180,43 +187,47 @@ import java.util.logging.Logger;
             @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser,
             @RequestParam(value = &quot;Id&quot;, defaultValue = &quot;&quot;)  String NotiziaId
     ) {
-<span class="nc" id="L183">        DAOFactory sessionDAOFactory= null;</span>
-<span class="nc" id="L184">        DAOFactory daoFactory = null;</span>
+<span class="fc" id="L190">        DAOFactory sessionDAOFactory= null;</span>
+<span class="fc" id="L191">        DAOFactory daoFactory = null;</span>
 
-<span class="nc" id="L186">        UtenteRegistrato loggedUser = null;</span>
-<span class="nc" id="L187">        Amministratore loggedAdmin = null;</span>
+<span class="fc" id="L193">        UtenteRegistrato loggedUser = null;</span>
+<span class="fc" id="L194">        Amministratore loggedAdmin = null;</span>
 
-<span class="nc" id="L189">        ModelAndView page = new ModelAndView();</span>
+<span class="fc" id="L196">        ModelAndView page = new ModelAndView();</span>
 
         try {
 
-<span class="nc" id="L193">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="fc" id="L200">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
 
-<span class="nc bnc" id="L195" title="All 2 branches missed.">            if(!cookieAdmin.equals(&quot;&quot;)) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
-<span class="nc bnc" id="L196" title="All 2 branches missed.">            if(!cookieUser.equals(&quot;&quot;))  loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+<span class="fc bfc" id="L202" title="All 4 branches covered.">            if(!cookieUser.equals(&quot;&quot;) &amp;&amp; !cookieAdmin.equals(&quot;&quot;)) throw new Exception(&quot;Errore: entrambi i cookie sono settati&quot;);</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">            if(!cookieAdmin.equals(&quot;&quot;)) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">            if(!cookieUser.equals(&quot;&quot;))  loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
 
-<span class="nc" id="L198">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="nc" id="L199">            daoFactory.beginTransaction();</span>
+<span class="fc" id="L206">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L207">            daoFactory.beginTransaction();</span>
 
-<span class="nc" id="L201">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
+<span class="fc" id="L209">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
 
-<span class="nc" id="L203">            Notizie notizie = notizieDAO.findById(NotiziaId);</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">            if(NotiziaId.equals(&quot;&quot;)) throw new Exception(&quot;Errore: Id non settato&quot;);</span>
+<span class="fc" id="L212">            Notizie notizie = notizieDAO.findById(NotiziaId);</span>
 
-<span class="nc" id="L205">            daoFactory.commitTransaction();</span>
+<span class="fc" id="L214">            daoFactory.commitTransaction();</span>
 
-<span class="nc bnc" id="L207" title="All 2 branches missed.">            page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="nc" id="L208">            page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
-<span class="nc bnc" id="L209" title="All 2 branches missed.">            page.addObject(&quot;loggedAdminOn&quot;,loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="nc" id="L210">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
-<span class="nc" id="L211">            page.addObject(&quot;NotiziaSelezionata&quot;, notizie);</span>
-<span class="nc" id="L212">            page.setViewName(&quot;viewArticoloCSS&quot;);</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">            page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L217">            page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">            page.addObject(&quot;loggedAdminOn&quot;,loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L219">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="fc" id="L220">            page.addObject(&quot;NotiziaSelezionata&quot;, notizie);</span>
+<span class="fc" id="L221">            page.setViewName(&quot;viewArticoloCSS&quot;);</span>
 
-<span class="nc" id="L214">        } catch (Exception e) {</span>
-<span class="nc bnc" id="L215" title="All 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+<span class="fc" id="L223">        } catch (Exception e) {</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+<span class="fc" id="L225">            e.printStackTrace();</span>
 
-<span class="nc" id="L217">        }</span>
+<span class="fc" id="L227">            throw new RuntimeException(e);</span>
+<span class="fc" id="L228">        }</span>
 
-<span class="nc" id="L219">        return page;</span>
+<span class="fc" id="L230">        return page;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

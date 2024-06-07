@@ -137,19 +137,25 @@ public class PaginaIniziale {
 
 
             NotizieDAO notizieDAO = daoFactory.getNotizieDAO();
+            if(Id.equals("")) throw new Exception("Errore: Id non settato");
             notizie = notizieDAO.findById(Id);
 
             /* Recupero Parametri */
 
-            Integer IdArt = Integer.parseInt(Id);
+            int IdArt = Integer.parseInt(Id);
 
             String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";// directory dove salvo i file
             File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id
             Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file
             String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo
 
+            if(Oggetto.equals("")) throw new Exception("Errore: Oggetto non settato");
             notizie.setOggetto(Oggetto);
+
+            if(IdAdmin.equals("")) throw new Exception("Errore: IdAdmin non settato");
             notizie.setIdAdministrator(IdAdmin);
+
+            if(Testo == null) throw new Exception("Errore: Testo non settato");
             notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));
 
             notizieDAO.update(notizie);
@@ -193,6 +199,7 @@ public class PaginaIniziale {
 
             sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
 
+            if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new Exception("Errore: entrambi i cookie sono settati");
             if(!cookieAdmin.equals("")) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
             if(!cookieUser.equals(""))  loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
@@ -201,6 +208,7 @@ public class PaginaIniziale {
 
             NotizieDAO notizieDAO = daoFactory.getNotizieDAO();
 
+            if(NotiziaId.equals("")) throw new Exception("Errore: Id non settato");
             Notizie notizie = notizieDAO.findById(NotiziaId);
 
             daoFactory.commitTransaction();
@@ -214,7 +222,9 @@ public class PaginaIniziale {
 
         } catch (Exception e) {
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+            e.printStackTrace();
 
+            throw new RuntimeException(e);
         }
 
         return page;

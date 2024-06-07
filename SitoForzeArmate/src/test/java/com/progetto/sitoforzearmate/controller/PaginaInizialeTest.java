@@ -6,19 +6,24 @@ import com.progetto.sitoforzearmate.model.dao.Notizie.NotizieDAO;
 import com.progetto.sitoforzearmate.model.mo.Notizie.Notizie;
 import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
+import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 class PaginaInizialeTest {
 
@@ -49,9 +54,10 @@ class PaginaInizialeTest {
 
     @ParameterizedTest
     @CsvSource({
-            ",",
-            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,",
-            ",nonlosoquanticar#1234567890#ciao1"
+            "'',''",
+            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,''",
+            "'',nonlosoquanticar#1234567890#ciao1",
+            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,nonlosoquanticar#1234567890#ciao1"
     })
     void view(
             String cookieUtente,
@@ -71,37 +77,94 @@ class PaginaInizialeTest {
         Mockito.when(notizie_dao.findById("0000000003")).thenReturn(notizie);
         Mockito.when(notizie_dao.findById("0000000004")).thenReturn(notizie);
 
-        /*
-        if(cookieUtente != null && cookieAdmin != null) {
-            assertThrows(RuntimeException.class, () -> new PaginaIniziale().view(null, cookieUtente, cookieAdmin));
+        if(!cookieUtente.equals("") && !cookieAdmin.equals("")) {
+            assertThrows(Exception.class, () -> new PaginaIniziale().view(null, cookieUtente, cookieAdmin));
         }
-        */
-        if(cookieAdmin == null) cookieAdmin = "";
-        if(cookieUtente == null) cookieUtente = "";
+        else {
+            ModelAndView page = new PaginaIniziale().view(null, cookieUtente, cookieAdmin);
+            assertEquals(pageExpected.getViewName(), page.getViewName());
+        }
 
-        ModelAndView page = new PaginaIniziale().view(null, cookieUtente, cookieAdmin);
+    }
 
-        assertEquals(pageExpected.getViewName(), page.getViewName());
-
+    /*
+    static Stream<Arguments> sostituisciArticoloProvider() {
+        return Stream.of(
+                Arguments.of("", "", "", "", null),
+                Arguments.of("", "0000000001", "", "", null),
+                Arguments.of("", "", "Oggetto articolo", "", null),
+                Arguments.of("", "", "", "1234567890", null),
+                Arguments.of("", "", "", "", Mockito.mock(Part.class)),
+                Arguments.of("nonlosoquanticar#1234567890#ciao1", "0000000001", "Oggetto articolo", "1234567890", Mockito.mock(Part.class))
+        );
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "view"
-    })
-    void ExceptionCookie(String metodo) {
-        switch (metodo) {
-            case "view":
-                assertThrows(RuntimeException.class, () -> new PaginaIniziale().view(null, "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&", "nonlosoquanticar#1234567890#ciao1"));
+    @MethodSource("sostituisciArticoloProvider")
+    void sostituisciArticolo(
+            String cookieAdmin,
+            String id,
+            String oggetto,
+            String idAdmin,
+            Part testo
+    ){
 
+       ModelAndView pageExpected = new ModelAndView();
+       pageExpected.setViewName("index");
+       NotizieDAOmySQL notizie_dao = Mockito.mock(NotizieDAOmySQL.class);
+
+       Notizie notizia = new Notizie();
+
+       dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+       Mockito.when(db_mock.getNotizieDAO()).thenReturn(notizie_dao);
+       Mockito.when(notizie_dao.findById(anyString())).thenReturn(notizia);
+
+       if(id.equals("")) assertThrows(RuntimeException.class, () -> new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo));
+       if(oggetto == null)  assertThrows(RuntimeException.class, () -> new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo));
+       if(cookieAdmin.equals("")) assertThrows(RuntimeException.class, () -> new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo));
+       if(idAdmin.equals("")) assertThrows(RuntimeException.class, () -> new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo));
+       if(testo == null) assertThrows(RuntimeException.class, () -> new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo));
+
+       ModelAndView page = new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo);
+       assertEquals(pageExpected.getViewName(), page.getViewName());
+
+    }
+    */
+
+    @ParameterizedTest
+    @CsvSource({
+            "'','',''",
+            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',''",
+            "'',nonlosoquanticar#1234567890#ciao1,''",
+            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,nonlosoquanticar#1234567890#ciao1,''",
+            "'','','0000000001'",
+            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','0000000001'",
+            "'',nonlosoquanticar#1234567890#ciao1,'0000000001'",
+            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,nonlosoquanticar#1234567890#ciao1,'0000000001'"
+    })
+    void viewArt(
+            String cookieUtente,
+            String cookieAdmin,
+            String id
+    ) {
+        ModelAndView pageExpected = new ModelAndView();
+        pageExpected.setViewName("viewArticoloCSS");
+        NotizieDAOmySQL notizie_dao = Mockito.mock(NotizieDAOmySQL.class);
+        Notizie notizie = new Notizie();
+
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+        Mockito.when(db_mock.getNotizieDAO()).thenReturn(notizie_dao);
+        Mockito.when(notizie_dao.findById(anyString())).thenReturn(notizie);
+
+        if(!cookieUtente.equals("") && !cookieAdmin.equals(""))
+            assertThrows(Exception.class, () -> new PaginaIniziale().viewArt(null, cookieAdmin, cookieUtente, id));
+        else if(id.equals("")) {
+            assertThrows(Exception.class, () -> new PaginaIniziale().viewArt(null, cookieAdmin, cookieUtente, id));
+        }
+        else{
+            ModelAndView page = new PaginaIniziale().viewArt(null, cookieAdmin, cookieUtente, id);
+            assertEquals(pageExpected.getViewName(), page.getViewName());
         }
     }
 
-    @Test
-    void sostituisciArticolo() {
-    }
-
-    @Test
-    void viewArt() {
-    }
 }
