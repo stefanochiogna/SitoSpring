@@ -54,6 +54,9 @@ public class BachecaAvviso {
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
                 sessionDAOFactory.beginTransaction();
 
+                if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new Exception("Errore: entrambi i cookie sono settati");
+                if(cookieUser.equals("") && cookieAdmin.equals("")) throw new Exception("Errore: non puoi visualizzare la bacheca se non sei registrato");
+
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);;
@@ -93,6 +96,7 @@ public class BachecaAvviso {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
                 System.err.println();
                 e.printStackTrace();
+                throw new RuntimeException(e);
                 page.setViewName("Pagina_InizialeCSS");
             }
 
@@ -120,6 +124,9 @@ public class BachecaAvviso {
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
                 sessionDAOFactory.beginTransaction();
 
+                if(cookieUser.equals("")) throw new Exception("Errore: non puoi visualizzare gli avvisi se non sei registrato");
+                if(avvisoId.equals("")) throw new Exception("Errore: non è stato trovato l'avviso da visualizzare")
+
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
@@ -145,6 +152,7 @@ public class BachecaAvviso {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
+                throw new RuntimeException(e);
                 page.setViewName("Pagina_InizialeCSS");
             }
 
@@ -171,6 +179,9 @@ public class BachecaAvviso {
 
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
                 sessionDAOFactory.beginTransaction();
+
+                if(cookieUser.equals("")) throw new Exception("Errore: non puoi visualizzare gli avvisi se non sei registrato");
+                if(avvisoId.equals("")) throw new Exception("Errore: non è stato trovato l'avviso da eliminare")
 
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
@@ -202,6 +213,7 @@ public class BachecaAvviso {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
+                throw new RuntimeException();
                 page.setViewName("Pagina_InizialeCSS");
             }
 
@@ -232,6 +244,11 @@ public class BachecaAvviso {
 
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
                 sessionDAOFactory.beginTransaction();
+
+                if(cookieAdmin.equals("")) throw new Exception("Errore: non puoi inviare avvisi se non sei loggato come amministratore");
+                if(scelta.equals("") || oggetto.equals("") || testo.equals("")) throw new Exception("Errore: per inviare un avviso vanno riempiti tutti i campi");
+                if(scelta.equals("Ruolo") && Ruolo.length() == 0) throw new Exception("Errore: devi selezionare almeno un ruolo per inviare l'avviso");
+                if(scelta.equals("Utente") && Matricola.length() == 0 ) throw new Exception("Errore: devi selezionare almeno un destinatario per inviare l'avviso");
 
                 AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
@@ -310,6 +327,8 @@ public class BachecaAvviso {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
                 System.err.println("Errore invio avviso");
                 e.printStackTrace();
+
+                throw new RuntimeException();
                 page.setViewName("Pagina_inzialeCSS");
             } 
         
