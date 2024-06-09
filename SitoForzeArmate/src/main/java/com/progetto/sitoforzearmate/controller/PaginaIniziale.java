@@ -130,32 +130,32 @@ public class PaginaIniziale {
             sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
 
             if(!cookieAdmin.equals("")) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
-            else throw new Exception("Errore: cookie non settato");
+            else throw new RuntimeException("Errore: cookie non settato");
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
 
 
             NotizieDAO notizieDAO = daoFactory.getNotizieDAO();
-            if(Id.equals("")) throw new Exception("Errore: Id non settato");
+            if(Id.equals("")) throw new RuntimeException("Errore: Id non settato");
             notizie = notizieDAO.findById(Id);
 
             /* Recupero Parametri */
 
             int IdArt = Integer.parseInt(Id);
 
-            String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";// directory dove salvo i file
+            String DirectoryDest = Configuration.getDIRECTORY_FILE();                   // directory dove salvo i file
             File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id
             Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file
             String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo
 
-            if(Oggetto.equals("")) throw new Exception("Errore: Oggetto non settato");
+            if(Oggetto.equals("")) throw new RuntimeException("Errore: Oggetto non settato");
             notizie.setOggetto(Oggetto);
 
-            if(IdAdmin.equals("")) throw new Exception("Errore: IdAdmin non settato");
+            if(IdAdmin.equals("")) throw new RuntimeException("Errore: IdAdmin non settato");
             notizie.setIdAdministrator(IdAdmin);
 
-            if(Testo == null) throw new Exception("Errore: Testo non settato");
+            if(Testo == null) throw new RuntimeException("Errore: Testo non settato");
             notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));
 
             notizieDAO.update(notizie);
@@ -166,7 +166,7 @@ public class PaginaIniziale {
             String notizia = "notizia" + Integer.parseInt(Id);
             page.addObject(notizia, notizie);
 
-            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdminOn", true);
             page.addObject("loggedAdmin", loggedAdmin);
 
             page.setViewName("index");

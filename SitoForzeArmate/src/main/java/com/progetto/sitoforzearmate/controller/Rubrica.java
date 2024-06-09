@@ -42,10 +42,11 @@ public class Rubrica {
 
         try {
             sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
-            sessionDAOFactory.beginTransaction();
 
             if(!cookieUser.equals(""))
                 loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+            else
+                throw new RuntimeException("Utente non loggato");
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL, null);
             daoFactory.beginTransaction();
@@ -69,7 +70,6 @@ public class Rubrica {
             page.addObject("Contatti", contatti);
 
             daoFactory.commitTransaction();
-            sessionDAOFactory.commitTransaction();
 
             page.addObject("loggedOn", loggedUser != null);
             page.addObject("loggedUser", loggedUser);
@@ -80,8 +80,9 @@ public class Rubrica {
             if (daoFactory != null) daoFactory.rollbackTransaction();
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
-            page.setViewName("/Profilo/ProfiloCSS");
+            e.printStackTrace();
 
+            throw new RuntimeException(e);
         }
 
         return page;

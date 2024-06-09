@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.383" tests="18" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="4.005" tests="15" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -57,30 +57,14 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="init" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.009"/>
-  <testcase name="view(String, String)[1]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.06">
-    <system-out><![CDATA[
-
-]]></system-out>
-  </testcase>
-  <testcase name="view(String, String)[2]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.003">
-    <system-out><![CDATA[tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&
-
-]]></system-out>
-  </testcase>
-  <testcase name="view(String, String)[3]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.004">
-    <system-out><![CDATA[
-nonlosoquanticar#1234567890#ciao1
-]]></system-out>
-  </testcase>
-  <testcase name="view(String, String)[4]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.005">
-    <system-err><![CDATA[java.lang.Exception: Errore: entrambi i cookie sono settati
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.view(PaginaIniziale.java:64)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$view$1(PaginaInizialeTest.java:86)
+  <testcase name="deleteAvviso(String, String)[1]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="3.042">
+    <system-err><![CDATA[java.lang.RuntimeException: Errore: non puoi visualizzare gli avvisi se non sei registrato
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.deleteAvviso(BachecaAvviso.java:185)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$deleteAvviso$7(BachecaAvvisoTest.java:147)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.view(PaginaInizialeTest.java:86)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.deleteAvviso(BachecaAvvisoTest.java:147)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -198,14 +182,15 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="viewArt(String, String, String)[1]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.008">
-    <system-err><![CDATA[java.lang.Exception: Errore: Id non settato
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.viewArt(PaginaIniziale.java:211)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$viewArt$11(PaginaInizialeTest.java:161)
+  <testcase name="deleteAvviso(String, String)[2]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.032"/>
+  <testcase name="deleteAvviso(String, String)[3]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.011">
+    <system-err><![CDATA[java.lang.RuntimeException: Errore: non è stato trovato l'avviso da eliminare
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.deleteAvviso(BachecaAvviso.java:180)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$deleteAvviso$8(BachecaAvvisoTest.java:149)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.viewArt(PaginaInizialeTest.java:161)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.deleteAvviso(BachecaAvvisoTest.java:149)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -323,14 +308,15 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="viewArt(String, String, String)[2]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.006">
-    <system-err><![CDATA[java.lang.Exception: Errore: Id non settato
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.viewArt(PaginaIniziale.java:211)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$viewArt$11(PaginaInizialeTest.java:161)
+  <testcase name="view(String, String)[1]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.288">
+    <system-err><![CDATA[
+java.lang.RuntimeException: Errore: non puoi visualizzare la bacheca se non sei registrato
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.view(BachecaAvviso.java:58)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$view$1(BachecaAvvisoTest.java:85)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.viewArt(PaginaInizialeTest.java:161)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.view(BachecaAvvisoTest.java:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -448,14 +434,17 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="viewArt(String, String, String)[3]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.007">
-    <system-err><![CDATA[java.lang.Exception: Errore: Id non settato
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.viewArt(PaginaIniziale.java:211)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$viewArt$11(PaginaInizialeTest.java:161)
+  <testcase name="view(String, String)[2]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.009"/>
+  <testcase name="view(String, String)[3]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.013"/>
+  <testcase name="view(String, String)[4]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.014">
+    <system-err><![CDATA[
+java.lang.RuntimeException: Errore: entrambi i cookie sono settati
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.view(BachecaAvviso.java:57)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$view$2(BachecaAvvisoTest.java:88)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.viewArt(PaginaInizialeTest.java:161)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.view(BachecaAvvisoTest.java:88)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -573,14 +562,14 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="viewArt(String, String, String)[4]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.008">
-    <system-err><![CDATA[java.lang.Exception: Errore: entrambi i cookie sono settati
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.viewArt(PaginaIniziale.java:202)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$viewArt$10(PaginaInizialeTest.java:159)
+  <testcase name="viewAvviso(String, String)[1]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.02">
+    <system-err><![CDATA[java.lang.RuntimeException: Errore: non puoi visualizzare gli avvisi se non sei registrato
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.viewAvviso(BachecaAvviso.java:130)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$viewAvviso$4(BachecaAvvisoTest.java:117)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.viewArt(PaginaInizialeTest.java:159)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.viewAvviso(BachecaAvvisoTest.java:117)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -698,17 +687,15 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="viewArt(String, String, String)[5]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.008"/>
-  <testcase name="viewArt(String, String, String)[6]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.007"/>
-  <testcase name="viewArt(String, String, String)[7]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.005"/>
-  <testcase name="viewArt(String, String, String)[8]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.007">
-    <system-err><![CDATA[java.lang.Exception: Errore: entrambi i cookie sono settati
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.viewArt(PaginaIniziale.java:202)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$viewArt$10(PaginaInizialeTest.java:159)
+  <testcase name="viewAvviso(String, String)[2]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.012"/>
+  <testcase name="viewAvviso(String, String)[3]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.009">
+    <system-err><![CDATA[java.lang.RuntimeException: Errore: non è stato trovato l'avviso da visualizzare
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.viewAvviso(BachecaAvviso.java:124)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$viewAvviso$5(BachecaAvvisoTest.java:118)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.viewArt(PaginaInizialeTest.java:159)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.viewAvviso(BachecaAvvisoTest.java:118)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -826,14 +813,15 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="sostituisciArticolo(String, String, String, String)[1]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.087">
-    <system-err><![CDATA[java.lang.RuntimeException: Errore: cookie non settato
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.sostituisciArticolo(PaginaIniziale.java:133)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$sostituisciArticolo$4(PaginaInizialeTest.java:122)
+  <testcase name="inviaAvviso(String, String, String, String, String[], String[])[1]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.149">
+    <system-err><![CDATA[Errore invio avviso
+java.lang.RuntimeException: Errore: non puoi inviare avvisi se non sei loggato come amministratore
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.inviaAvviso(BachecaAvviso.java:251)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$inviaAvviso$11(BachecaAvvisoTest.java:197)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.sostituisciArticolo(PaginaInizialeTest.java:122)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.inviaAvviso(BachecaAvvisoTest.java:197)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -951,14 +939,16 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="sostituisciArticolo(String, String, String, String)[2]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.009">
-    <system-err><![CDATA[java.lang.RuntimeException: Errore: Id non settato
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.sostituisciArticolo(PaginaIniziale.java:140)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$sostituisciArticolo$4(PaginaInizialeTest.java:122)
+  <testcase name="inviaAvviso(String, String, String, String, String[], String[])[2]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.023"/>
+  <testcase name="inviaAvviso(String, String, String, String, String[], String[])[3]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.01">
+    <system-err><![CDATA[Errore invio avviso
+java.lang.RuntimeException: Errore: devi selezionare almeno un ruolo per inviare l'avviso
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.inviaAvviso(BachecaAvviso.java:244)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$inviaAvviso$13(BachecaAvvisoTest.java:199)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.sostituisciArticolo(PaginaInizialeTest.java:122)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.inviaAvviso(BachecaAvvisoTest.java:199)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -1076,15 +1066,15 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="sostituisciArticolo(String, String, String, String)[3]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.022"/>
-  <testcase name="sostituisciArticolo(String, String, String, String)[4]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.016">
-    <system-err><![CDATA[java.lang.RuntimeException: Errore: Oggetto non settato
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.sostituisciArticolo(PaginaIniziale.java:152)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$sostituisciArticolo$5(PaginaInizialeTest.java:123)
+  <testcase name="inviaAvviso(String, String, String, String, String[], String[])[4]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.011">
+    <system-err><![CDATA[Errore invio avviso
+java.lang.RuntimeException: Errore: devi selezionare almeno un destinatario per inviare l'avviso
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.inviaAvviso(BachecaAvviso.java:245)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$inviaAvviso$14(BachecaAvvisoTest.java:200)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.sostituisciArticolo(PaginaInizialeTest.java:123)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.inviaAvviso(BachecaAvvisoTest.java:200)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -1202,14 +1192,15 @@ nonlosoquanticar#1234567890#ciao1
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></system-err>
   </testcase>
-  <testcase name="sostituisciArticolo(String, String, String, String)[5]" classname="com.progetto.sitoforzearmate.controller.PaginaInizialeTest" time="0.02">
-    <system-err><![CDATA[java.lang.RuntimeException: Errore: IdAdmin non settato
-	at com.progetto.sitoforzearmate.controller.PaginaIniziale.sostituisciArticolo(PaginaIniziale.java:155)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.lambda$sostituisciArticolo$7(PaginaInizialeTest.java:125)
+  <testcase name="inviaAvviso(String, String, String, String, String[], String[])[5]" classname="com.progetto.sitoforzearmate.controller.BachecaAvvisoTest" time="0.013">
+    <system-err><![CDATA[Errore invio avviso
+java.lang.RuntimeException: Errore: per inviare un avviso vanno riempiti tutti i campi
+	at com.progetto.sitoforzearmate.controller.BachecaAvviso.inviaAvviso(BachecaAvviso.java:243)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.lambda$inviaAvviso$12(BachecaAvvisoTest.java:198)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
-	at com.progetto.sitoforzearmate.controller.PaginaInizialeTest.sostituisciArticolo(PaginaInizialeTest.java:125)
+	at com.progetto.sitoforzearmate.controller.BachecaAvvisoTest.inviaAvviso(BachecaAvvisoTest.java:198)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

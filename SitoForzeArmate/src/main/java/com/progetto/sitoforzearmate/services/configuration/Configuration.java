@@ -9,6 +9,9 @@ public class Configuration {
 
     /* Database Configruation */
     public static final String DAO_IMPL=DAOFactory.MYSQLJDBCIMPL;
+    public static String getDIRECTORY_FILE(){
+        return "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";
+    }
     public static final String DATABASE_DRIVER="com.mysql.cj.jdbc.Driver";
     public static final String SERVER_TIMEZONE=Calendar.getInstance().getTimeZone().getID();
     public static final String
