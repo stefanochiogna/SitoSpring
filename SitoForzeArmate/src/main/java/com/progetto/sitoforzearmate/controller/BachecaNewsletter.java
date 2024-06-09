@@ -52,17 +52,21 @@ public class BachecaNewsletter {
             try {
                 
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory.beginTransaction();
 
-                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                
+                if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new RuntimeException("Errore: entrambi i cookie sono settati");
+                if(cookieUser.equals("") && cookieAdmin.equals("")) throw new RuntimeException("Errore: non puoi visualizzare la bacheca se non sei registrato");
+
+                //UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
-                sessionDAOFactory.commitTransaction();
+                //sessionDAOFactory.commitTransaction();
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -85,6 +89,7 @@ public class BachecaNewsletter {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
                 
                 e.printStackTrace();
+                throw new RuntimeException(e);
                 page.setViewName("Pagina_InizialeCSS");
             }
 
@@ -110,13 +115,15 @@ public class BachecaNewsletter {
                 try {
 
                     sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                    sessionDAOFactory.beginTransaction();
+                    //sessionDAOFactory.beginTransaction();
 
-                    UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                    //UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                     if( ! cookieUser.equals("") )
                         loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+                    else
+                        throw new RuntimeException("Errore: non puoi visualizzare le newsletter se non sei registrato");
 
-                    sessionDAOFactory.commitTransaction();
+                    //sessionDAOFactory.commitTransaction();
 
                     daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                     daoFactory.beginTransaction();
@@ -137,6 +144,7 @@ public class BachecaNewsletter {
                     if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
                     
                     e.printStackTrace();
+                    throw new RuntimeException(e);
                     page.setViewName("Pagina_InizialeCSS");
                 }
 
@@ -162,11 +170,15 @@ public class BachecaNewsletter {
             try {
 
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory.beginTransaction();
 
-                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                if(newsletterId.equals("")) throw new RuntimeException("Errore: non è stata trovata la newsletter da visualizzare");
+
+                //UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+                else 
+                    throw new RuntimeException("Errore: non puoi visualizzare le newsletter se non sei registrato");
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -180,7 +192,7 @@ public class BachecaNewsletter {
                 newsletter.removeMailDestinatario(loggedUser.getMail());
 
                 // sessionUserDAO.update(loggedUser);          dopo aver modificato il logged user effettuo aggiornamento cookie
-                sessionDAOFactory.commitTransaction();
+                //sessionDAOFactory.commitTransaction();
 
                 daoFactory.commitTransaction();
 
@@ -194,6 +206,7 @@ public class BachecaNewsletter {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
+                throw new RuntimeException(e);
                 page.setViewName("Pagina_InizialeCSS");
             }
             
@@ -220,11 +233,15 @@ public class BachecaNewsletter {
             try {
 
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory.beginTransaction();
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                if(oggetto.equals("") || testo.equals("")) throw new RuntimeException("Errore: per inviare una newsletter vanno riempiti tutti i campi");
+
+                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+                else 
+                    throw new RuntimeException("Errore: non puoi inviare newsletter se non sei loggato come admin");
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -246,7 +263,7 @@ public class BachecaNewsletter {
                     bw.close();
                 }
                 catch(IOException e){
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Eccezione scrittura");
                 }
 
                 String RiferimentoTesto = file.getAbsolutePath();
@@ -259,7 +276,7 @@ public class BachecaNewsletter {
                     NewsId = Id.toString();
                 }
 
-                sessionDAOFactory.commitTransaction();
+                //sessionDAOFactory.commitTransaction();
 
                 daoFactory.commitTransaction();
 
@@ -273,6 +290,7 @@ public class BachecaNewsletter {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
+                throw new RuntimeException(e);
                 page.setViewName("Pagina_InizialeCSS");
             }
 

@@ -95,6 +95,7 @@ public class BachecaAvviso {
                 System.err.println();
                 e.printStackTrace();
                 throw new RuntimeException(e);
+                page.setViewName("Pagina_InizialeCSS");
             }
 
             return page;
@@ -151,6 +152,7 @@ public class BachecaAvviso {
 
                 e.printStackTrace();
                 throw new RuntimeException(e);
+                page.setViewName("Pagina_InizialeCSS");
             }
 
             return page;
@@ -210,7 +212,8 @@ public class BachecaAvviso {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
-                throw new RuntimeException();
+                throw new RuntimeException(e);
+                page.setViewName("Pagina_InizialeCSS");
             }
 
             return page;
@@ -326,6 +329,7 @@ public class BachecaAvviso {
                 e.printStackTrace();
 
                 throw new RuntimeException(e);
+                page.setViewName("Pagina_InizialeCSS");
             } 
         
         return page;
