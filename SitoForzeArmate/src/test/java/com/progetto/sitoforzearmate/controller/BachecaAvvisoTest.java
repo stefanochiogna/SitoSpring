@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 
 class BachecaAvvisoTest {
@@ -40,12 +40,15 @@ class BachecaAvvisoTest {
     private MockedStatic<Configuration> configuration_mock;
     @Mock
     private DAOFactory db_mock;
+    @Mock
+    private DAOFactory session_mock;
 
     @BeforeEach
     void setUp() {
         dao_factory_mock = Mockito.mockStatic(DAOFactory.class);
         configuration_mock = Mockito.mockStatic(Configuration.class);
         db_mock = Mockito.mock(DAOFactory.class);
+        session_mock = Mockito.mock(DAOFactory.class);
     }
 
     @AfterEach
@@ -139,6 +142,15 @@ class BachecaAvvisoTest {
         Avviso avvisi = new Avviso();
 
         dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory(eq("CookieImpl"), any())).thenReturn(session_mock);
+
+        UtenteRegistratoDAOcookie utente_cookie_dao = Mockito.mock(UtenteRegistratoDAOcookie.class);
+
+        Mockito.when(session_mock.getUtenteRegistratoDAO()).thenReturn(utente_cookie_dao);
+        Mockito.doNothing().when(session_mock).beginTransaction();
+        Mockito.doNothing().when(session_mock).commitTransaction();
+        Mockito.doNothing().when(session_mock).rollbackTransaction();
+        Mockito.doNothing().when(utente_cookie_dao).update(new UtenteRegistrato());
 
         Mockito.when(db_mock.getAvvisoDAO()).thenReturn(avvisi_dao);
         Mockito.when(avvisi_dao.findById(avvisoId)).thenReturn(avvisi);
@@ -154,22 +166,37 @@ class BachecaAvvisoTest {
         }
     }
 
+    private String[] parseString(String stringa){
+        if(stringa == null)
+            return null;
+        else
+            return stringa.split(",");
+    }
+
     @ParameterizedTest
     @CsvSource({
             "'',Tutti,ProvaTest, Stiamo provando il test,,", 
             "nonlosoquanticar#1234567890#ciao1,Tutti,ProvaTest,Stiamo provando il test,,",
             "nonlosoquanticar#1234567890#ciao1,Ruolo,ProvaTest,Stiamo provando il test,,",
             "nonlosoquanticar#1234567890#ciao1,Utente,ProvaTest,Stiamo provando il test,,",
-            "nonlosoquanticar#1234567890#ciao1,Tutti,'','',,"
+            "nonlosoquanticar#1234567890#ciao1,Tutti,'','',,",
+            "nonlosoquanticar#1234567890#ciao1,Ruolo,ProvaTest,Stiamo provando il test,'Graduato',",
+            "nonlosoquanticar#1234567890#ciao1,Utente,ProvaTest,Stiamo provando il test,,'tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&'",
+            "nonlosoquanticar#1234567890#ciao1,Altro,ProvaTest,Stiamo provando il test,,"
+
     })
     void inviaAvviso(
         String cookieAdmin,
         String scelta,
         String oggetto,
         String testo,
-        String[] Ruolo,
-        String[] Matricola
+        String Ruolo,
+        String Matricola
     ) {
+
+        String[] RuoloArray = parseString(Ruolo);
+        String[] MatricolaArray = parseString(Matricola);
+
         UtenteRegistratoDAOmySQL utente_dao = Mockito.mock(UtenteRegistratoDAOmySQL.class);
         AvvisiDAOmySQL avviso_dao = Mockito.mock(AvvisiDAOmySQL.class);
 
@@ -194,15 +221,17 @@ class BachecaAvvisoTest {
         configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
 
 
-        if(cookieAdmin.equals("")) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, Ruolo, Matricola));
-        else if(scelta.equals("") || oggetto.equals("") || testo.equals("")) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, Ruolo, Matricola));
-        else if(scelta.equals("Ruolo") && Ruolo == null) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, Ruolo, Matricola));
-        else if(scelta.equals("Utente") && Matricola == null) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, Ruolo, Matricola));
+        if(cookieAdmin.equals("")) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, RuoloArray, MatricolaArray));
+        else if(scelta.equals("") || oggetto.equals("") || testo.equals("")) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, RuoloArray, MatricolaArray));
+        else if(scelta.equals("Ruolo") && Ruolo == null) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, RuoloArray, MatricolaArray));
+        else if(scelta.equals("Utente") && Matricola == null) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, RuoloArray, MatricolaArray));
+        else if(!scelta.equals("Tutti") && !scelta.equals("Ruolo") && !scelta.equals("Utente")) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, RuoloArray, MatricolaArray));
         else {
             utenteTest = UtenteRegistratoDAOcookie.decode("tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&");
             utenti.add(utenteTest);
+            utenteRuolo.add(utenteTest);
 
-            ModelAndView page = new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, Ruolo, Matricola);
+            ModelAndView page = new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, RuoloArray, MatricolaArray);
             assertEquals(pageExpected.getViewName(), page.getViewName());
         }
     }

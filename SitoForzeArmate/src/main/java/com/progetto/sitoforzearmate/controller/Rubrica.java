@@ -33,7 +33,7 @@ public class Rubrica {
             @RequestParam(value = "inizialeSelezionata", defaultValue = "") String inizialeSelezionata
     ) {
 
-        DAOFactory sessionDAOFactory = null;
+        // DAOFactory sessionDAOFactory = null;
         DAOFactory daoFactory = null;
         UtenteRegistrato loggedUser = null;
         String applicationMessage = null;
@@ -41,7 +41,7 @@ public class Rubrica {
         ModelAndView page = new ModelAndView();
 
         try {
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
+            // sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
 
             if(!cookieUser.equals(""))
                 loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
@@ -71,14 +71,14 @@ public class Rubrica {
 
             daoFactory.commitTransaction();
 
-            page.addObject("loggedOn", loggedUser != null);
+            page.addObject("loggedOn", true);
             page.addObject("loggedUser", loggedUser);
             page.addObject("applicationMessage", applicationMessage);
             page.setViewName("Rubrica/viewCSS");
 
         } catch (Exception e) {
             if (daoFactory != null) daoFactory.rollbackTransaction();
-            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+            // if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
             e.printStackTrace();
 

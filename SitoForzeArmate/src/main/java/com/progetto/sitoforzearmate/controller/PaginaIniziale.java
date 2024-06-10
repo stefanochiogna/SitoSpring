@@ -49,7 +49,6 @@ public class PaginaIniziale {
 
         // page.addObject("nome", oggetto) == request.addAttribute()
 
-        DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
         UtenteRegistrato loggedUser = null;
@@ -58,9 +57,6 @@ public class PaginaIniziale {
         ArrayList<Notizie> notizie = new ArrayList<>();
 
         try {
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
-
             if(!cookieUtente.equals("") && !cookieAdmin.equals("")) throw new Exception("Errore: entrambi i cookie sono settati");
             if(!cookieUtente.equals("")) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUtente);
             if(!cookieAdmin.equals(""))  loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
@@ -73,8 +69,6 @@ public class PaginaIniziale {
             notizie.add(1, notizieDAO.findById("0000000002"));
             notizie.add(2, notizieDAO.findById("0000000003"));
             notizie.add(3, notizieDAO.findById("0000000004"));
-
-
 
             page.addObject("notizia1", notizie.get(0));
             page.addObject("notizia2", notizie.get(1));
@@ -95,7 +89,6 @@ public class PaginaIniziale {
 
         } catch (Exception e) {
             if (daoFactory != null) daoFactory.rollbackTransaction();
-            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -118,7 +111,6 @@ public class PaginaIniziale {
 
         ModelAndView page = new ModelAndView();
 
-        DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
         Amministratore loggedAdmin = null;
@@ -126,9 +118,6 @@ public class PaginaIniziale {
         Notizie notizie;
 
         try {
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-
             if(!cookieAdmin.equals("")) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
             else throw new RuntimeException("Errore: cookie non settato");
 
@@ -172,8 +161,6 @@ public class PaginaIniziale {
             page.setViewName("index");
 
         } catch (Exception e) {
-            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -187,7 +174,6 @@ public class PaginaIniziale {
             @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
             @RequestParam(value = "Id", defaultValue = "")  String NotiziaId
     ) {
-        DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
         UtenteRegistrato loggedUser = null;
@@ -196,9 +182,6 @@ public class PaginaIniziale {
         ModelAndView page = new ModelAndView();
 
         try {
-
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-
             if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new Exception("Errore: entrambi i cookie sono settati");
             if(!cookieAdmin.equals("")) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
             if(!cookieUser.equals(""))  loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
@@ -221,7 +204,6 @@ public class PaginaIniziale {
             page.setViewName("viewArticoloCSS");
 
         } catch (Exception e) {
-            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             e.printStackTrace();
 
             throw new RuntimeException(e);

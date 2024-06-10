@@ -40,7 +40,6 @@ public class BachecaAvviso {
         @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser
         ){
             ModelAndView page = new ModelAndView();
-            DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
             String applicationMessage = null;
 
@@ -50,18 +49,12 @@ public class BachecaAvviso {
             List<Avviso> avvisoList = new ArrayList<>();
 
             try {
-
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                //sessionDAOFactory.beginTransaction();
-
                 if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new RuntimeException("Errore: entrambi i cookie sono settati");
                 if(cookieUser.equals("") && cookieAdmin.equals("")) throw new RuntimeException("Errore: non puoi visualizzare la bacheca se non sei registrato");
 
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);;
 
-
-                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
@@ -90,12 +83,8 @@ public class BachecaAvviso {
                 page.setViewName("Bacheca/AvvisiCSS");
 
             } catch (Exception e) {
-                
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-                System.err.println();
                 e.printStackTrace();
                 throw new RuntimeException(e);
-                page.setViewName("Pagina_InizialeCSS");
             }
 
             return page;
@@ -110,7 +99,6 @@ public class BachecaAvviso {
         @RequestParam(value = "avvisoId") String avvisoId
         ) {
             ModelAndView page = new ModelAndView();
-            DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
             UtenteRegistrato loggedUser = null;
@@ -118,19 +106,12 @@ public class BachecaAvviso {
             String applicationMessage = null;
 
             try {
-
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                //sessionDAOFactory.beginTransaction();
-
                 if(avvisoId.equals("")) throw new RuntimeException("Errore: non è stato trovato l'avviso da visualizzare");
 
-                //UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
                 else
                     throw new RuntimeException("Errore: non puoi visualizzare gli avvisi se non sei registrato");
-
-                //sessionDAOFactory.commitTransaction();
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -148,11 +129,8 @@ public class BachecaAvviso {
                 page.setViewName("Bacheca/viewAvvisoCSS");
 
             } catch (Exception e) {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
-
                 e.printStackTrace();
                 throw new RuntimeException(e);
-                page.setViewName("Pagina_InizialeCSS");
             }
 
             return page;
@@ -177,7 +155,8 @@ public class BachecaAvviso {
             try {
 
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                // sessionDAOFactory.beginTransaction();
+                sessionDAOFactory.beginTransaction();
+                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
 
                 if(avvisoId.equals("")) throw new RuntimeException("Errore: non è stato trovato l'avviso da eliminare");
 
@@ -197,12 +176,12 @@ public class BachecaAvviso {
                 loggedUser.deleteIdAvviso(avvisoId);
                 avviso.removeMatricolaDestinatario(loggedUser.getMatricola());
 
-                // sessionUserDAO.update(loggedUser);          dopo aver modificato il logged user effettuo aggiornamento cookie
-                // sessionDAOFactory.commitTransaction();
+                sessionUserDAO.update(loggedUser);          // dopo aver modificato il logged user effettuo aggiornamento cookie
+                sessionDAOFactory.commitTransaction();
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
 
                 page.setViewName("Bacheca/reload");
@@ -213,7 +192,6 @@ public class BachecaAvviso {
 
                 e.printStackTrace();
                 throw new RuntimeException(e);
-                page.setViewName("Pagina_InizialeCSS");
             }
 
             return page;
@@ -232,7 +210,6 @@ public class BachecaAvviso {
         @RequestParam(value = "Matricola", required = false) String[] Matricola
         ){
             ModelAndView page = new ModelAndView();
-            DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
             Amministratore loggedAdmin = null;
@@ -240,14 +217,10 @@ public class BachecaAvviso {
             String applicationMessage = null;
 
             try {
-
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-
                 if(scelta.equals("") || oggetto.equals("") || testo.equals("")) throw new RuntimeException("Errore: per inviare un avviso vanno riempiti tutti i campi");
                 if(scelta.equals("Ruolo") && Ruolo == null) throw new RuntimeException("Errore: devi selezionare almeno un ruolo per inviare l'avviso");
                 if(scelta.equals("Utente") && Matricola == null ) throw new RuntimeException("Errore: devi selezionare almeno un destinatario per inviare l'avviso");
 
-                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
                 else
@@ -314,22 +287,23 @@ public class BachecaAvviso {
                         avvisoId = Id.toString();
                     }
                 }
+                else{
+                    throw new RuntimeException("Errore: scelta non valida");
+                }
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedAdminOn",loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedAdminOn",true);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedAdmin", loggedAdmin);
 
 
                 page.setViewName("Bacheca/reload");
 
             } catch (Exception e) {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
                 System.err.println("Errore invio avviso");
                 e.printStackTrace();
 
                 throw new RuntimeException(e);
-                page.setViewName("Pagina_InizialeCSS");
             } 
         
         return page;

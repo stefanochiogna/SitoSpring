@@ -7,6 +7,7 @@ import com.progetto.sitoforzearmate.model.dao.MySQL.Notizie.NotizieDAOmySQL;
 import com.progetto.sitoforzearmate.model.dao.MySQL.Utente.UtenteRegistratoDAOmySQL;
 import com.progetto.sitoforzearmate.model.dao.Notizie.NotizieDAO;
 import com.progetto.sitoforzearmate.model.mo.Notizie.Avviso;
+import com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter;
 import com.progetto.sitoforzearmate.model.mo.Notizie.Notizie;
 import com.progetto.sitoforzearmate.model.mo.Utente.Amministratore;
 import com.progetto.sitoforzearmate.model.mo.Utente.UtenteRegistrato;
@@ -29,8 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 class BachecaNewsletterTest {
 
@@ -40,12 +42,15 @@ class BachecaNewsletterTest {
     private MockedStatic<Configuration> configuration_mock;
     @Mock
     private DAOFactory db_mock;
+    @Mock
+    private DAOFactory session_mock;
 
     @BeforeEach
     void setUp() {
         dao_factory_mock = Mockito.mockStatic(DAOFactory.class);
         configuration_mock = Mockito.mockStatic(Configuration.class);
         db_mock = Mockito.mock(DAOFactory.class);
+        session_mock = Mockito.mock(DAOFactory.class);
     }
 
     @AfterEach
@@ -70,11 +75,11 @@ class BachecaNewsletterTest {
         pageExpected.setViewName("Bacheca/NewsletterCSS");
         NewsletterDAOmySQL newsletter_dao = Mockito.mock(NewsletterDAOmySQL.class);
         UtenteRegistratoDAOmySQL utente_dao = Mockito.mock(UtenteRegistratoDAOmySQL.class);
+
         ArrayList<Newsletter> newsletter = new ArrayList<>();
         ArrayList<UtenteRegistrato> utenti = new ArrayList<>();
 
         dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
-
 
         Mockito.when(db_mock.getNewsletterDAO()).thenReturn(newsletter_dao);
         Mockito.when(newsletter_dao.stampaNewsletter(anyString())).thenReturn(newsletter);
@@ -138,7 +143,16 @@ class BachecaNewsletterTest {
         NewsletterDAOmySQL newsletter_dao = Mockito.mock(NewsletterDAOmySQL.class);
         Newsletter newsletter = new Newsletter();
 
+        UtenteRegistratoDAOcookie utente_cookie_dao = Mockito.mock(UtenteRegistratoDAOcookie.class);
+
         dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory(eq("CookieImpl"), any())).thenReturn(session_mock);
+
+        Mockito.when(session_mock.getUtenteRegistratoDAO()).thenReturn(utente_cookie_dao);
+        Mockito.doNothing().when(session_mock).beginTransaction();
+        Mockito.doNothing().when(session_mock).commitTransaction();
+        Mockito.doNothing().when(session_mock).rollbackTransaction();
+        Mockito.doNothing().when(utente_cookie_dao).update(new UtenteRegistrato());
 
         Mockito.when(db_mock.getNewsletterDAO()).thenReturn(newsletter_dao);
         Mockito.when(newsletter_dao.findById(newsletterId)).thenReturn(newsletter);
@@ -158,8 +172,8 @@ class BachecaNewsletterTest {
     @CsvSource({
             "'',Tutti,ProvaTest, Stiamo provando il test", 
             "nonlosoquanticar#1234567890#ciao1,ProvaTest,Stiamo provando il test",
-            "nonlosoquanticar#1234567890#ciao1,ProvaTest,Stiamo provando il test",
-            "nonlosoquanticar#1234567890#ciao1,ProvaTest,Stiamo provando il test",
+            "nonlosoquanticar#1234567890#ciao1,'',Stiamo provando il test",
+            "nonlosoquanticar#1234567890#ciao1,ProvaTest,''",
             "nonlosoquanticar#1234567890#ciao1,'',''"
     })
     void inviaNewsletter(
@@ -176,18 +190,19 @@ class BachecaNewsletterTest {
 
         UtenteRegistrato utenteTest = new UtenteRegistrato();
 
+        utenti.add(utenteTest);
+
         ModelAndView pageExpected = new ModelAndView();
         pageExpected.setViewName("Bacheca/reload");
 
         dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
 
         Mockito.when(db_mock.getUtenteRegistratoDAO()).thenReturn(utente_dao);
-        Mockito.when(utente_dao.getUtenti()).thenReturn(utenti);
+        Mockito.when(utente_dao.getUtentiNewsletter()).thenReturn(utenti);
         Mockito.when(db_mock.getNewsletterDAO()).thenReturn(newsletter_dao);
         Mockito.when(newsletter_dao.getID()).thenReturn("00000001");
 
         configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
-
 
         if(cookieAdmin.equals("")) assertThrows(RuntimeException.class, () -> new BachecaNewsletter().inviaNewsletter(null, cookieAdmin, oggetto, testo));
         else if(oggetto.equals("") || testo.equals("")) assertThrows(RuntimeException.class, () -> new BachecaNewsletter().inviaNewsletter(null, cookieAdmin, oggetto, testo));

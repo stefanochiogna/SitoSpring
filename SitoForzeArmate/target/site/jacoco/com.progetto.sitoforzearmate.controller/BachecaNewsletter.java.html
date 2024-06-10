@@ -40,55 +40,48 @@ import java.util.logging.Logger;
         @CookieValue(value = &quot;loggedAdmin&quot;, defaultValue = &quot;&quot;) String cookieAdmin,
         @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser
         ){
-<span class="nc" id="L43">            ModelAndView page = new ModelAndView();</span>
-<span class="nc" id="L44">            DAOFactory sessionDAOFactory= null;</span>
-<span class="nc" id="L45">            DAOFactory daoFactory = null;</span>
-<span class="nc" id="L46">            String applicationMessage = null;</span>
+<span class="fc" id="L43">            ModelAndView page = new ModelAndView();</span>
+<span class="fc" id="L44">            DAOFactory daoFactory = null;</span>
+<span class="fc" id="L45">            String applicationMessage = null;</span>
 
-<span class="nc" id="L48">            UtenteRegistrato loggedUser = null;</span>
-<span class="nc" id="L49">            Amministratore loggedAdmin = null;</span>
-<span class="nc" id="L50">            List&lt;Newsletter&gt; newsletterList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L47">            UtenteRegistrato loggedUser = null;</span>
+<span class="fc" id="L48">            Amministratore loggedAdmin = null;</span>
+<span class="fc" id="L49">            List&lt;Newsletter&gt; newsletterList = new ArrayList&lt;&gt;();</span>
 
             try {
                 
-<span class="nc" id="L54">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
-<span class="nc" id="L55">                sessionDAOFactory.beginTransaction();</span>
+<span class="fc bfc" id="L53" title="All 4 branches covered.">                if(!cookieUser.equals(&quot;&quot;) &amp;&amp; !cookieAdmin.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: entrambi i cookie sono settati&quot;);</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">                if(cookieUser.equals(&quot;&quot;) &amp;&amp; cookieAdmin.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: non puoi visualizzare la bacheca se non sei registrato&quot;);</span>
 
-<span class="nc" id="L57">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
-<span class="nc bnc" id="L58" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )</span>
-<span class="nc" id="L59">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                if( ! cookieUser.equals(&quot;&quot;) )</span>
+<span class="fc" id="L57">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
 
-<span class="nc" id="L61">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
-<span class="nc" id="L63">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="fc" id="L60">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
 
-<span class="nc" id="L65">                sessionDAOFactory.commitTransaction();</span>
+<span class="fc" id="L62">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L63">                daoFactory.beginTransaction();</span>
 
-<span class="nc" id="L67">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="nc" id="L68">                daoFactory.beginTransaction();</span>
-
-<span class="nc bnc" id="L70" title="All 2 branches missed.">                if(loggedAdmin == null) {</span>
-<span class="nc" id="L71">                    NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
-<span class="nc" id="L72">                    newsletterList.addAll(newsletterDAO.stampaNewsletter(loggedUser.getMail()));</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">                if(loggedAdmin == null) {</span>
+<span class="fc" id="L66">                    NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
+<span class="fc" id="L67">                    newsletterList.addAll(newsletterDAO.stampaNewsletter(loggedUser.getMail()));</span>
                 }
 
-<span class="nc" id="L75">                daoFactory.commitTransaction();</span>
+<span class="fc" id="L70">                daoFactory.commitTransaction();</span>
 
-<span class="nc bnc" id="L77" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="nc" id="L78">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin!=null);</span>
-<span class="nc" id="L80">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
-<span class="nc" id="L81">                page.addObject(&quot;Newsletter&quot;, newsletterList);</span>
-<span class="nc" id="L82">                page.setViewName(&quot;Bacheca/NewsletterCSS&quot;);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L73">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin!=null);</span>
+<span class="fc" id="L75">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="fc" id="L76">                page.addObject(&quot;Newsletter&quot;, newsletterList);</span>
+<span class="fc" id="L77">                page.setViewName(&quot;Bacheca/NewsletterCSS&quot;);</span>
 
-<span class="nc" id="L84">            } catch (Exception e) {</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
-                
-<span class="nc" id="L87">                e.printStackTrace();</span>
-<span class="nc" id="L88">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
-<span class="nc" id="L89">            }</span>
+<span class="fc" id="L79">            } catch (Exception e) {</span>
+<span class="fc" id="L80">                e.printStackTrace();</span>
+<span class="fc" id="L81">                throw new RuntimeException(e);</span>
+<span class="fc" id="L82">            }</span>
 
-<span class="nc" id="L91">            return page;</span>
+<span class="fc" id="L84">            return page;</span>
         }
 
         @PostMapping(path = &quot;/viewNewsletter&quot;, params = {&quot;newsletterId&quot;})
@@ -99,48 +92,41 @@ import java.util.logging.Logger;
             
             @RequestParam(value = &quot;newsletterId&quot;) String newsletterId
             ) {
-<span class="nc" id="L102">                ModelAndView page = new ModelAndView();</span>
-<span class="nc" id="L103">                DAOFactory sessionDAOFactory= null;</span>
-<span class="nc" id="L104">                DAOFactory daoFactory = null;</span>
+<span class="fc" id="L95">                ModelAndView page = new ModelAndView();</span>
+<span class="fc" id="L96">                DAOFactory daoFactory = null;</span>
 
-<span class="nc" id="L106">                UtenteRegistrato loggedUser = null;</span>
+<span class="fc" id="L98">                UtenteRegistrato loggedUser = null;</span>
 
-<span class="nc" id="L108">                String applicationMessage = null;</span>
+<span class="fc" id="L100">                String applicationMessage = null;</span>
 
                 try {
+<span class="fc bfc" id="L103" title="All 2 branches covered.">                    if( ! cookieUser.equals(&quot;&quot;) )</span>
+<span class="fc" id="L104">                        loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+                    else
+<span class="fc" id="L106">                        throw new RuntimeException(&quot;Errore: non puoi visualizzare le newsletter se non sei registrato&quot;);</span>
 
-<span class="nc" id="L112">                    sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
-<span class="nc" id="L113">                    sessionDAOFactory.beginTransaction();</span>
+<span class="fc" id="L108">                    daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L109">                    daoFactory.beginTransaction();</span>
 
-<span class="nc" id="L115">                    UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">                    if( ! cookieUser.equals(&quot;&quot;) )</span>
-<span class="nc" id="L117">                        loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+<span class="fc" id="L111">                    NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
 
-<span class="nc" id="L119">                    sessionDAOFactory.commitTransaction();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">                    if(newsletterId.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: id newsletter non presente&quot;);</span>
+<span class="fc" id="L114">                    Newsletter newsletter = newsletterDAO.findById(newsletterId);</span>
 
-<span class="nc" id="L121">                    daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="nc" id="L122">                    daoFactory.beginTransaction();</span>
+<span class="fc" id="L116">                    daoFactory.commitTransaction();</span>
 
-<span class="nc" id="L124">                    NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
+<span class="fc" id="L118">                    page.addObject(&quot;loggedOn&quot;,true);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L119">                    page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="fc" id="L120">                    page.addObject(&quot;NewsletterSelezionata&quot;, newsletter);</span>
 
-<span class="nc" id="L126">                    Newsletter newsletter = newsletterDAO.findById(newsletterId);</span>
+<span class="fc" id="L122">                    page.setViewName(&quot;Bacheca/viewNewsletterCSS&quot;);</span>
 
-<span class="nc" id="L128">                    daoFactory.commitTransaction();</span>
+<span class="fc" id="L124">                } catch (Exception e) {</span>
+<span class="fc" id="L125">                    e.printStackTrace();</span>
+<span class="fc" id="L126">                    throw new RuntimeException(e);</span>
+<span class="fc" id="L127">                }</span>
 
-<span class="nc bnc" id="L130" title="All 2 branches missed.">                    page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="nc" id="L131">                    page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
-<span class="nc" id="L132">                    page.addObject(&quot;NewsletterSelezionata&quot;, newsletter);</span>
-
-<span class="nc" id="L134">                    page.setViewName(&quot;Bacheca/viewNewsletterCSS&quot;);</span>
-
-<span class="nc" id="L136">                } catch (Exception e) {</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">                    if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
-                    
-<span class="nc" id="L139">                    e.printStackTrace();</span>
-<span class="nc" id="L140">                    page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
-<span class="nc" id="L141">                }</span>
-
-<span class="nc" id="L143">                return page;</span>
+<span class="fc" id="L129">                return page;</span>
             }
 
     @PostMapping(path = &quot;/deleteNewsletter&quot;, params = {&quot;newsletterId&quot;})
@@ -151,53 +137,57 @@ import java.util.logging.Logger;
         
         @RequestParam(value = &quot;newsletterId&quot;) String newsletterId
         ){
-<span class="nc" id="L154">            ModelAndView page = new ModelAndView();</span>
-<span class="nc" id="L155">            DAOFactory sessionDAOFactory= null;</span>
-<span class="nc" id="L156">            DAOFactory daoFactory = null;</span>
+<span class="fc" id="L140">            ModelAndView page = new ModelAndView();</span>
+<span class="fc" id="L141">            DAOFactory sessionDAOFactory= null;</span>
+<span class="fc" id="L142">            DAOFactory daoFactory = null;</span>
 
-<span class="nc" id="L158">            UtenteRegistrato loggedUser = null;</span>
+<span class="fc" id="L144">            UtenteRegistrato loggedUser = null;</span>
 
-<span class="nc" id="L160">            String applicationMessage = null;</span>
+<span class="fc" id="L146">            String applicationMessage = null;</span>
 
             try {
 
-<span class="nc" id="L164">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
-<span class="nc" id="L165">                sessionDAOFactory.beginTransaction();</span>
+<span class="fc" id="L150">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="fc" id="L151">                sessionDAOFactory.beginTransaction();</span>
 
-<span class="nc" id="L167">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">                if( ! cookieUser.equals(&quot;&quot;) )</span>
-<span class="nc" id="L169">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">                if(newsletterId.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: non è stata trovata la newsletter da visualizzare&quot;);</span>
 
-<span class="nc" id="L171">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="nc" id="L172">                daoFactory.beginTransaction();</span>
+<span class="fc" id="L155">                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">                if( ! cookieUser.equals(&quot;&quot;) )</span>
+<span class="fc" id="L157">                    loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+                else 
+<span class="fc" id="L159">                    throw new RuntimeException(&quot;Errore: non puoi visualizzare le newsletter se non sei registrato&quot;);</span>
 
-<span class="nc" id="L174">                NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
+<span class="fc" id="L161">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L162">                daoFactory.beginTransaction();</span>
 
-<span class="nc" id="L176">                Newsletter newsletter = newsletterDAO.findById(newsletterId);</span>
-<span class="nc" id="L177">                newsletterDAO.delete(newsletter);                     // lo passo poi al metodo delete per cancellarlo</span>
+<span class="fc" id="L164">                NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
 
-<span class="nc" id="L179">                loggedUser.deleteIdAvviso(newsletterId);</span>
-<span class="nc" id="L180">                newsletter.removeMailDestinatario(loggedUser.getMail());</span>
+<span class="fc" id="L166">                Newsletter newsletter = newsletterDAO.findById(newsletterId);</span>
+<span class="fc" id="L167">                newsletterDAO.delete(newsletter);                     // lo passo poi al metodo delete per cancellarlo</span>
 
-                // sessionUserDAO.update(loggedUser);          dopo aver modificato il logged user effettuo aggiornamento cookie
-<span class="nc" id="L183">                sessionDAOFactory.commitTransaction();</span>
+<span class="fc" id="L169">                loggedUser.deleteIdAvviso(newsletterId);</span>
+<span class="fc" id="L170">                newsletter.removeMailDestinatario(loggedUser.getMail());</span>
 
-<span class="nc" id="L185">                daoFactory.commitTransaction();</span>
+<span class="fc" id="L172">                sessionUserDAO.update(loggedUser);          //dopo aver modificato il logged user effettuo aggiornamento cookie</span>
+<span class="fc" id="L173">                sessionDAOFactory.commitTransaction();</span>
 
-<span class="nc bnc" id="L187" title="All 2 branches missed.">                page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="nc" id="L188">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="fc" id="L175">                daoFactory.commitTransaction();</span>
 
-<span class="nc" id="L190">                page.setViewName(&quot;Bacheca/reload&quot;);</span>
+<span class="fc" id="L177">                page.addObject(&quot;loggedOn&quot;,true);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L178">                page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+
+<span class="fc" id="L180">                page.setViewName(&quot;Bacheca/reload&quot;);</span>
                 /* Da aggiungere pagina che ricarica la view di bacheca */
 
-<span class="nc" id="L193">            } catch (Exception e) {</span>
-<span class="nc bnc" id="L194" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+<span class="fc" id="L183">            } catch (Exception e) {</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
 
-<span class="nc" id="L196">                e.printStackTrace();</span>
-<span class="nc" id="L197">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
-<span class="nc" id="L198">            }</span>
+<span class="fc" id="L186">                e.printStackTrace();</span>
+<span class="fc" id="L187">                throw new RuntimeException(e);</span>
+<span class="fc" id="L188">            }</span>
             
-<span class="nc" id="L200">            return page;</span>
+<span class="fc" id="L190">            return page;</span>
         }
 
     @PostMapping(path = &quot;/inviaNewsletter&quot;)
@@ -209,74 +199,69 @@ import java.util.logging.Logger;
         @RequestParam(value = &quot;Oggetto&quot;) String oggetto,
         @RequestParam(value = &quot;Testo&quot;) String testo
         ){
-<span class="nc" id="L212">            ModelAndView page = new ModelAndView();</span>
-<span class="nc" id="L213">            DAOFactory sessionDAOFactory= null;</span>
-<span class="nc" id="L214">            DAOFactory daoFactory = null;</span>
+<span class="fc" id="L202">            ModelAndView page = new ModelAndView();</span>
+<span class="fc" id="L203">            DAOFactory daoFactory = null;</span>
 
-<span class="nc" id="L216">            Amministratore loggedAdmin = null;</span>
+<span class="fc" id="L205">            Amministratore loggedAdmin = null;</span>
 
-<span class="nc" id="L218">            String applicationMessage = null;</span>
+<span class="fc" id="L207">            String applicationMessage = null;</span>
 
             try {
 
-<span class="nc" id="L222">                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
-<span class="nc" id="L223">                sessionDAOFactory.beginTransaction();</span>
+<span class="fc bfc" id="L211" title="All 4 branches covered.">                if(oggetto.equals(&quot;&quot;) || testo.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: per inviare una newsletter vanno riempiti tutti i campi&quot;);</span>
 
-<span class="nc" id="L225">                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();</span>
-<span class="nc bnc" id="L226" title="All 2 branches missed.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
-<span class="nc" id="L227">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">                if( ! cookieAdmin.equals(&quot;&quot;) )</span>
+<span class="fc" id="L214">                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+                else 
+<span class="fc" id="L216">                    throw new RuntimeException(&quot;Errore: non puoi inviare newsletter se non sei loggato come admin&quot;);</span>
 
-<span class="nc" id="L229">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="nc" id="L230">                daoFactory.beginTransaction();</span>
+<span class="fc" id="L218">                daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L219">                daoFactory.beginTransaction();</span>
 
-<span class="nc" id="L232">                NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
-<span class="nc" id="L233">                UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();</span>
+<span class="fc" id="L221">                NewsletterDAO newsletterDAO = daoFactory.getNewsletterDAO();</span>
+<span class="fc" id="L222">                UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();</span>
 
-<span class="nc" id="L235">                List&lt;UtenteRegistrato&gt; listUser = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L224">                List&lt;UtenteRegistrato&gt; listUser = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L237">                Integer Id = Integer.parseInt(newsletterDAO.getID()) + 1;</span>
-<span class="nc" id="L238">                String NewsId = Id.toString();</span>
+<span class="fc" id="L226">                Integer Id = Integer.parseInt(newsletterDAO.getID()) + 1;</span>
+<span class="fc" id="L227">                String NewsId = Id.toString();</span>
 
-<span class="nc" id="L240">                String DirectoryDest = &quot;C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\&quot;;</span>
-<span class="nc" id="L241">                File file = new File(DirectoryDest + 'N' + NewsId);</span>
+<span class="fc" id="L229">                String DirectoryDest = Configuration.getDIRECTORY_FILE();</span>
+<span class="fc" id="L230">                File file = new File(DirectoryDest + 'N' + NewsId);</span>
 
                 try{
-<span class="nc" id="L244">                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));</span>
-<span class="nc" id="L245">                    bw.write(testo);</span>
-<span class="nc" id="L246">                    bw.close();</span>
+<span class="fc" id="L233">                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));</span>
+<span class="fc" id="L234">                    bw.write(testo);</span>
+<span class="fc" id="L235">                    bw.close();</span>
                 }
-<span class="nc" id="L248">                catch(IOException e){</span>
-<span class="nc" id="L249">                    throw new RuntimeException(e);</span>
-<span class="nc" id="L250">                }</span>
+<span class="nc" id="L237">                catch(IOException e){</span>
+<span class="nc" id="L238">                    throw new RuntimeException(&quot;Eccezione scrittura&quot;);</span>
+<span class="fc" id="L239">                }</span>
 
-<span class="nc" id="L252">                String RiferimentoTesto = file.getAbsolutePath();</span>
+<span class="fc" id="L241">                String RiferimentoTesto = file.getAbsolutePath();</span>
 
-<span class="nc" id="L254">                listUser.addAll(userDAO.getUtentiNewsletter());</span>
-<span class="nc bnc" id="L255" title="All 2 branches missed.">                for(int i=0; i&lt;listUser.size(); i++){</span>
-<span class="nc" id="L256">                    newsletterDAO.create(NewsId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), listUser.get(i).getMail(), listUser.get(i).getMatricola());</span>
+<span class="fc" id="L243">                listUser.addAll(userDAO.getUtentiNewsletter());</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">                for(int i=0; i&lt;listUser.size(); i++){</span>
+<span class="fc" id="L245">                    newsletterDAO.create(NewsId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), listUser.get(i).getMail(), listUser.get(i).getMatricola());</span>
 
-<span class="nc" id="L258">                    Id = Integer.parseInt(newsletterDAO.getID()) + 1;</span>
-<span class="nc" id="L259">                    NewsId = Id.toString();</span>
+<span class="fc" id="L247">                    Id = Integer.parseInt(newsletterDAO.getID()) + 1;</span>
+<span class="fc" id="L248">                    NewsId = Id.toString();</span>
                 }
 
-<span class="nc" id="L262">                sessionDAOFactory.commitTransaction();</span>
+<span class="fc" id="L251">                daoFactory.commitTransaction();</span>
 
-<span class="nc" id="L264">                daoFactory.commitTransaction();</span>
-
-<span class="nc bnc" id="L266" title="All 2 branches missed.">                page.addObject(&quot;loggedAdminOn&quot;,loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="nc" id="L267">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="fc" id="L253">                page.addObject(&quot;loggedAdminOn&quot;,true);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L254">                page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
 
 
-<span class="nc" id="L270">                page.setViewName(&quot;Bacheca/reload&quot;);</span>
+<span class="fc" id="L257">                page.setViewName(&quot;Bacheca/reload&quot;);</span>
 
-<span class="nc" id="L272">            } catch (Exception e) {</span>
-<span class="nc bnc" id="L273" title="All 2 branches missed.">                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+<span class="fc" id="L259">            } catch (Exception e) {</span>
+<span class="fc" id="L260">                e.printStackTrace();</span>
+<span class="fc" id="L261">                throw new RuntimeException(e);</span>
+<span class="fc" id="L262">            }</span>
 
-<span class="nc" id="L275">                e.printStackTrace();</span>
-<span class="nc" id="L276">                page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
-<span class="nc" id="L277">            }</span>
-
-<span class="nc" id="L279">            return page;</span>
+<span class="fc" id="L264">            return page;</span>
         }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

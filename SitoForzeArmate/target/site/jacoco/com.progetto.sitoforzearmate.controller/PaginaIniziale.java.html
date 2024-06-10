@@ -49,58 +49,51 @@ import java.util.logging.Logger;
 
         // page.addObject(&quot;nome&quot;, oggetto) == request.addAttribute()
 
-<span class="fc" id="L52">        DAOFactory sessionDAOFactory= null;</span>
-<span class="fc" id="L53">        DAOFactory daoFactory = null;</span>
+<span class="fc" id="L52">        DAOFactory daoFactory = null;</span>
 
-<span class="fc" id="L55">        UtenteRegistrato loggedUser = null;</span>
-<span class="fc" id="L56">        Amministratore loggedAdmin = null;</span>
+<span class="fc" id="L54">        UtenteRegistrato loggedUser = null;</span>
+<span class="fc" id="L55">        Amministratore loggedAdmin = null;</span>
 
-<span class="fc" id="L58">        ArrayList&lt;Notizie&gt; notizie = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L57">        ArrayList&lt;Notizie&gt; notizie = new ArrayList&lt;&gt;();</span>
 
         try {
+<span class="fc bfc" id="L60" title="All 4 branches covered.">            if(!cookieUtente.equals(&quot;&quot;) &amp;&amp; !cookieAdmin.equals(&quot;&quot;)) throw new Exception(&quot;Errore: entrambi i cookie sono settati&quot;);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            if(!cookieUtente.equals(&quot;&quot;)) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUtente);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if(!cookieAdmin.equals(&quot;&quot;))  loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
 
-<span class="fc" id="L62">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);</span>
+<span class="fc" id="L64">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L65">            daoFactory.beginTransaction();</span>
 
-<span class="fc bfc" id="L64" title="All 4 branches covered.">            if(!cookieUtente.equals(&quot;&quot;) &amp;&amp; !cookieAdmin.equals(&quot;&quot;)) throw new Exception(&quot;Errore: entrambi i cookie sono settati&quot;);</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">            if(!cookieUtente.equals(&quot;&quot;)) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUtente);</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">            if(!cookieAdmin.equals(&quot;&quot;))  loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="fc" id="L67">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
+<span class="fc" id="L68">            notizie.add(0, notizieDAO.findById(&quot;0000000001&quot;));</span>
+<span class="fc" id="L69">            notizie.add(1, notizieDAO.findById(&quot;0000000002&quot;));</span>
+<span class="fc" id="L70">            notizie.add(2, notizieDAO.findById(&quot;0000000003&quot;));</span>
+<span class="fc" id="L71">            notizie.add(3, notizieDAO.findById(&quot;0000000004&quot;));</span>
 
-<span class="fc" id="L68">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="fc" id="L69">            daoFactory.beginTransaction();</span>
-
-<span class="fc" id="L71">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
-<span class="fc" id="L72">            notizie.add(0, notizieDAO.findById(&quot;0000000001&quot;));</span>
-<span class="fc" id="L73">            notizie.add(1, notizieDAO.findById(&quot;0000000002&quot;));</span>
-<span class="fc" id="L74">            notizie.add(2, notizieDAO.findById(&quot;0000000003&quot;));</span>
-<span class="fc" id="L75">            notizie.add(3, notizieDAO.findById(&quot;0000000004&quot;));</span>
-
-
-
-<span class="fc" id="L79">            page.addObject(&quot;notizia1&quot;, notizie.get(0));</span>
-<span class="fc" id="L80">            page.addObject(&quot;notizia2&quot;, notizie.get(1));</span>
-<span class="fc" id="L81">            page.addObject(&quot;notizia3&quot;, notizie.get(2));</span>
-<span class="fc" id="L82">            page.addObject(&quot;notizia4&quot;, notizie.get(3));</span>
+<span class="fc" id="L73">            page.addObject(&quot;notizia1&quot;, notizie.get(0));</span>
+<span class="fc" id="L74">            page.addObject(&quot;notizia2&quot;, notizie.get(1));</span>
+<span class="fc" id="L75">            page.addObject(&quot;notizia3&quot;, notizie.get(2));</span>
+<span class="fc" id="L76">            page.addObject(&quot;notizia4&quot;, notizie.get(3));</span>
 
 
-<span class="fc" id="L85">            System.out.println(cookieUtente);</span>
-<span class="fc" id="L86">            System.out.println(cookieAdmin);</span>
+<span class="fc" id="L79">            System.out.println(cookieUtente);</span>
+<span class="fc" id="L80">            System.out.println(cookieAdmin);</span>
 
-<span class="fc" id="L88">            daoFactory.commitTransaction();</span>
+<span class="fc" id="L82">            daoFactory.commitTransaction();</span>
 
-<span class="fc bfc" id="L90" title="All 2 branches covered.">            page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="fc" id="L91">            page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">            page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
-<span class="fc" id="L93">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
-<span class="fc" id="L94">            page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L85">            page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            page.addObject(&quot;loggedAdminOn&quot;, loggedAdmin != null);</span>
+<span class="fc" id="L87">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="fc" id="L88">            page.setViewName(&quot;Pagina_InizialeCSS&quot;);</span>
 
-<span class="fc" id="L96">        } catch (Exception e) {</span>
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">            if (daoFactory != null) daoFactory.rollbackTransaction();</span>
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+<span class="fc" id="L90">        } catch (Exception e) {</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">            if (daoFactory != null) daoFactory.rollbackTransaction();</span>
 
-<span class="fc" id="L100">            e.printStackTrace();</span>
-<span class="fc" id="L101">            throw new RuntimeException(e);</span>
-<span class="fc" id="L102">        }</span>
-<span class="fc" id="L103">        return page;</span>
+<span class="fc" id="L93">            e.printStackTrace();</span>
+<span class="fc" id="L94">            throw new RuntimeException(e);</span>
+<span class="fc" id="L95">        }</span>
+<span class="fc" id="L96">        return page;</span>
 
     }
 
@@ -116,68 +109,62 @@ import java.util.logging.Logger;
             @RequestParam(value = &quot;Testo&quot;) Part Testo
         ){
 
-<span class="fc" id="L119">        ModelAndView page = new ModelAndView();</span>
+<span class="fc" id="L112">        ModelAndView page = new ModelAndView();</span>
 
-<span class="fc" id="L121">        DAOFactory sessionDAOFactory= null;</span>
-<span class="fc" id="L122">        DAOFactory daoFactory = null;</span>
+<span class="fc" id="L114">        DAOFactory daoFactory = null;</span>
 
-<span class="fc" id="L124">        Amministratore loggedAdmin = null;</span>
+<span class="fc" id="L116">        Amministratore loggedAdmin = null;</span>
 
         Notizie notizie;
 
         try {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if(!cookieAdmin.equals(&quot;&quot;)) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="fc" id="L122">            else throw new RuntimeException(&quot;Errore: cookie non settato&quot;);</span>
 
-<span class="fc" id="L130">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
-
-<span class="fc bfc" id="L132" title="All 2 branches covered.">            if(!cookieAdmin.equals(&quot;&quot;)) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
-<span class="fc" id="L133">            else throw new RuntimeException(&quot;Errore: cookie non settato&quot;);</span>
-
-<span class="fc" id="L135">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="fc" id="L136">            daoFactory.beginTransaction();</span>
+<span class="fc" id="L124">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L125">            daoFactory.beginTransaction();</span>
 
 
-<span class="fc" id="L139">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
-<span class="fc bfc" id="L140" title="All 2 branches covered.">            if(Id.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: Id non settato&quot;);</span>
-<span class="fc" id="L141">            notizie = notizieDAO.findById(Id);</span>
+<span class="fc" id="L128">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">            if(Id.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: Id non settato&quot;);</span>
+<span class="fc" id="L130">            notizie = notizieDAO.findById(Id);</span>
 
             /* Recupero Parametri */
 
-<span class="fc" id="L145">            int IdArt = Integer.parseInt(Id);</span>
+<span class="fc" id="L134">            int IdArt = Integer.parseInt(Id);</span>
 
-<span class="fc" id="L147">            String DirectoryDest = Configuration.getDIRECTORY_FILE();                   // directory dove salvo i file</span>
-<span class="fc" id="L148">            File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id</span>
-<span class="fc" id="L149">            Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file</span>
-<span class="fc" id="L150">            String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo</span>
+<span class="fc" id="L136">            String DirectoryDest = Configuration.getDIRECTORY_FILE();                   // directory dove salvo i file</span>
+<span class="fc" id="L137">            File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id</span>
+<span class="fc" id="L138">            Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file</span>
+<span class="fc" id="L139">            String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo</span>
 
-<span class="fc bfc" id="L152" title="All 2 branches covered.">            if(Oggetto.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: Oggetto non settato&quot;);</span>
-<span class="fc" id="L153">            notizie.setOggetto(Oggetto);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">            if(Oggetto.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: Oggetto non settato&quot;);</span>
+<span class="fc" id="L142">            notizie.setOggetto(Oggetto);</span>
 
-<span class="fc bfc" id="L155" title="All 2 branches covered.">            if(IdAdmin.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: IdAdmin non settato&quot;);</span>
-<span class="fc" id="L156">            notizie.setIdAdministrator(IdAdmin);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">            if(IdAdmin.equals(&quot;&quot;)) throw new RuntimeException(&quot;Errore: IdAdmin non settato&quot;);</span>
+<span class="fc" id="L145">            notizie.setIdAdministrator(IdAdmin);</span>
 
-<span class="pc bpc" id="L158" title="1 of 2 branches missed.">            if(Testo == null) throw new RuntimeException(&quot;Errore: Testo non settato&quot;);</span>
-<span class="fc" id="L159">            notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">            if(Testo == null) throw new RuntimeException(&quot;Errore: Testo non settato&quot;);</span>
+<span class="fc" id="L148">            notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));</span>
 
-<span class="fc" id="L161">            notizieDAO.update(notizie);</span>
+<span class="fc" id="L150">            notizieDAO.update(notizie);</span>
 
 
-<span class="fc" id="L164">            daoFactory.commitTransaction();</span>
+<span class="fc" id="L153">            daoFactory.commitTransaction();</span>
 
-<span class="fc" id="L166">            String notizia = &quot;notizia&quot; + Integer.parseInt(Id);</span>
-<span class="fc" id="L167">            page.addObject(notizia, notizie);</span>
+<span class="fc" id="L155">            String notizia = &quot;notizia&quot; + Integer.parseInt(Id);</span>
+<span class="fc" id="L156">            page.addObject(notizia, notizie);</span>
 
-<span class="fc" id="L169">            page.addObject(&quot;loggedAdminOn&quot;, true);</span>
-<span class="fc" id="L170">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="fc" id="L158">            page.addObject(&quot;loggedAdminOn&quot;, true);</span>
+<span class="fc" id="L159">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
 
-<span class="fc" id="L172">            page.setViewName(&quot;index&quot;);</span>
+<span class="fc" id="L161">            page.setViewName(&quot;index&quot;);</span>
 
-<span class="fc" id="L174">        } catch (Exception e) {</span>
-<span class="pc bpc" id="L175" title="1 of 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
-
-<span class="fc" id="L177">            e.printStackTrace();</span>
-<span class="fc" id="L178">            throw new RuntimeException(e);</span>
-<span class="fc" id="L179">        }</span>
-<span class="fc" id="L180">        return page;</span>
+<span class="fc" id="L163">        } catch (Exception e) {</span>
+<span class="fc" id="L164">            e.printStackTrace();</span>
+<span class="fc" id="L165">            throw new RuntimeException(e);</span>
+<span class="fc" id="L166">        }</span>
+<span class="fc" id="L167">        return page;</span>
     }
 
     @PostMapping(&quot;/viewArt&quot;)
@@ -187,47 +174,42 @@ import java.util.logging.Logger;
             @CookieValue(value = &quot;loggedUser&quot;, defaultValue = &quot;&quot;) String cookieUser,
             @RequestParam(value = &quot;Id&quot;, defaultValue = &quot;&quot;)  String NotiziaId
     ) {
-<span class="fc" id="L190">        DAOFactory sessionDAOFactory= null;</span>
-<span class="fc" id="L191">        DAOFactory daoFactory = null;</span>
+<span class="fc" id="L177">        DAOFactory daoFactory = null;</span>
 
-<span class="fc" id="L193">        UtenteRegistrato loggedUser = null;</span>
-<span class="fc" id="L194">        Amministratore loggedAdmin = null;</span>
+<span class="fc" id="L179">        UtenteRegistrato loggedUser = null;</span>
+<span class="fc" id="L180">        Amministratore loggedAdmin = null;</span>
 
-<span class="fc" id="L196">        ModelAndView page = new ModelAndView();</span>
+<span class="fc" id="L182">        ModelAndView page = new ModelAndView();</span>
 
         try {
+<span class="fc bfc" id="L185" title="All 4 branches covered.">            if(!cookieUser.equals(&quot;&quot;) &amp;&amp; !cookieAdmin.equals(&quot;&quot;)) throw new Exception(&quot;Errore: entrambi i cookie sono settati&quot;);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">            if(!cookieAdmin.equals(&quot;&quot;)) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">            if(!cookieUser.equals(&quot;&quot;))  loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
 
-<span class="fc" id="L200">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);</span>
+<span class="fc" id="L189">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
+<span class="fc" id="L190">            daoFactory.beginTransaction();</span>
 
-<span class="fc bfc" id="L202" title="All 4 branches covered.">            if(!cookieUser.equals(&quot;&quot;) &amp;&amp; !cookieAdmin.equals(&quot;&quot;)) throw new Exception(&quot;Errore: entrambi i cookie sono settati&quot;);</span>
-<span class="fc bfc" id="L203" title="All 2 branches covered.">            if(!cookieAdmin.equals(&quot;&quot;)) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);</span>
-<span class="fc bfc" id="L204" title="All 2 branches covered.">            if(!cookieUser.equals(&quot;&quot;))  loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
+<span class="fc" id="L192">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
 
-<span class="fc" id="L206">            daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);</span>
-<span class="fc" id="L207">            daoFactory.beginTransaction();</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">            if(NotiziaId.equals(&quot;&quot;)) throw new Exception(&quot;Errore: Id non settato&quot;);</span>
+<span class="fc" id="L195">            Notizie notizie = notizieDAO.findById(NotiziaId);</span>
 
-<span class="fc" id="L209">            NotizieDAO notizieDAO = daoFactory.getNotizieDAO();</span>
+<span class="fc" id="L197">            daoFactory.commitTransaction();</span>
 
-<span class="fc bfc" id="L211" title="All 2 branches covered.">            if(NotiziaId.equals(&quot;&quot;)) throw new Exception(&quot;Errore: Id non settato&quot;);</span>
-<span class="fc" id="L212">            Notizie notizie = notizieDAO.findById(NotiziaId);</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">            page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L200">            page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">            page.addObject(&quot;loggedAdminOn&quot;,loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false</span>
+<span class="fc" id="L202">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
+<span class="fc" id="L203">            page.addObject(&quot;NotiziaSelezionata&quot;, notizie);</span>
+<span class="fc" id="L204">            page.setViewName(&quot;viewArticoloCSS&quot;);</span>
 
-<span class="fc" id="L214">            daoFactory.commitTransaction();</span>
+<span class="fc" id="L206">        } catch (Exception e) {</span>
+<span class="fc" id="L207">            e.printStackTrace();</span>
 
-<span class="fc bfc" id="L216" title="All 2 branches covered.">            page.addObject(&quot;loggedOn&quot;,loggedUser!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="fc" id="L217">            page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
-<span class="fc bfc" id="L218" title="All 2 branches covered.">            page.addObject(&quot;loggedAdminOn&quot;,loggedAdmin!=null);  // loggedUser != null: attribuisce valore true o false</span>
-<span class="fc" id="L219">            page.addObject(&quot;loggedAdmin&quot;, loggedAdmin);</span>
-<span class="fc" id="L220">            page.addObject(&quot;NotiziaSelezionata&quot;, notizie);</span>
-<span class="fc" id="L221">            page.setViewName(&quot;viewArticoloCSS&quot;);</span>
+<span class="fc" id="L209">            throw new RuntimeException(e);</span>
+<span class="fc" id="L210">        }</span>
 
-<span class="fc" id="L223">        } catch (Exception e) {</span>
-<span class="pc bpc" id="L224" title="1 of 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
-<span class="fc" id="L225">            e.printStackTrace();</span>
-
-<span class="fc" id="L227">            throw new RuntimeException(e);</span>
-<span class="fc" id="L228">        }</span>
-
-<span class="fc" id="L230">        return page;</span>
+<span class="fc" id="L212">        return page;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -33,7 +33,7 @@ import java.util.logging.Logger;
             @RequestParam(value = &quot;inizialeSelezionata&quot;, defaultValue = &quot;&quot;) String inizialeSelezionata
     ) {
 
-<span class="fc" id="L36">        DAOFactory sessionDAOFactory = null;</span>
+        // DAOFactory sessionDAOFactory = null;
 <span class="fc" id="L37">        DAOFactory daoFactory = null;</span>
 <span class="fc" id="L38">        UtenteRegistrato loggedUser = null;</span>
 <span class="fc" id="L39">        String applicationMessage = null;</span>
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 <span class="fc" id="L41">        ModelAndView page = new ModelAndView();</span>
 
         try {
-<span class="fc" id="L44">            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);</span>
+            // sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
 
 <span class="fc bfc" id="L46" title="All 2 branches covered.">            if(!cookieUser.equals(&quot;&quot;))</span>
 <span class="fc" id="L47">                loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);</span>
@@ -71,14 +71,14 @@ import java.util.logging.Logger;
 
 <span class="fc" id="L72">            daoFactory.commitTransaction();</span>
 
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">            page.addObject(&quot;loggedOn&quot;, loggedUser != null);</span>
+<span class="fc" id="L74">            page.addObject(&quot;loggedOn&quot;, true);</span>
 <span class="fc" id="L75">            page.addObject(&quot;loggedUser&quot;, loggedUser);</span>
 <span class="fc" id="L76">            page.addObject(&quot;applicationMessage&quot;, applicationMessage);</span>
 <span class="fc" id="L77">            page.setViewName(&quot;Rubrica/viewCSS&quot;);</span>
 
 <span class="fc" id="L79">        } catch (Exception e) {</span>
 <span class="pc bpc" id="L80" title="1 of 2 branches missed.">            if (daoFactory != null) daoFactory.rollbackTransaction();</span>
-<span class="pc bpc" id="L81" title="1 of 2 branches missed.">            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();</span>
+            // if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
 <span class="fc" id="L83">            e.printStackTrace();</span>
 
