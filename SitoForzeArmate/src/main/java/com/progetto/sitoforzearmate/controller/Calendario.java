@@ -409,6 +409,8 @@ public class Calendario {
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
                 else throw new RuntimeException("Errore: non sei autorizzato ad inserire un bando");
 
+                if( dataBando.equals("") || oggettoBando.equals("") || numMaxIscritti.equals("") || dataScadenza.equals("") || locazione.equals("") || insBando == null ) throw new RuntimeException("Errore: vanno compilati tutti i campi obbligatori");
+
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
 
@@ -423,7 +425,7 @@ public class Calendario {
                 }
                 bandoId = caratteriRestanti + bandoId;
 
-                String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";   // directory dove salvo i file
+                String DirectoryDest = Configuration.getDIRECTORY_FILE();   // directory dove salvo i file
                 File file = new File(DirectoryDest + 'B' + bandoId);                  // vado a creare un file in quella directory con il nome 'B' + Id
                 insBando.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file
                 String RiferimentoTesto = file.getAbsolutePath();                               // recupero il riferimento al testo
@@ -455,7 +457,7 @@ public class Calendario {
                 }
 
             } catch (Exception e) {
-                if (daoFactory != null) daoFactory.rollbackTransaction();
+                //if (daoFactory != null) daoFactory.rollbackTransaction();
 
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -488,6 +490,9 @@ public class Calendario {
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
                 sessionDAOFactory.beginTransaction();
 
+                if( cookieUser.equals("") && cookieAdmin.equals("") ) throw new RuntimeException("Errore: non puoi accedere alle iscrizioni se non hai effettuato l'accesso");
+                if( !cookieUser.equals("") && !cookieAdmin.equals("") ) throw new RuntimeException("Errore: entrambi i cookies sono settati");
+
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )    
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
@@ -495,6 +500,9 @@ public class Calendario {
                 AmministratoreDAO amministratoreDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )    
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+
+                if( bandoId.equals("") ) throw new RuntimeException("Errore: non è stato trovato il bando selezionato");
+                if( iscrizione.equals("") ) throw new RuntimeException("Errore: non è stato trovato lo stato di iscrizione al bando");
 
                 sessionDAOFactory.commitTransaction();
 
@@ -538,7 +546,7 @@ public class Calendario {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
-                page.setViewName("Pagina_inizialeCSS");
+                throw new RuntimeException(e);
             }
 
             return page;
