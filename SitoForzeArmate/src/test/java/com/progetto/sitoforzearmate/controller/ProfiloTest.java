@@ -142,7 +142,7 @@ class ProfiloTest {
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','',passwordTest,'','','',''",
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','','','',000000000000,'',''",
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',sara.tullini@edu.unife.it,passwordTest,1234567890,000000000000,via delle rose 1,true",
-
+            "\"tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',sara.tullini@edu.unife.it,passwordTest,1234567890,'','',''",
             "'',nonlosoquanticar#1234567890#ciao1,mailTest,'','','','',''",
             "'',nonlosoquanticar#1234567890#ciao1,'',passwordTest,'','','',''",
             "'',nonlosoquanticar#1234567890#ciao1,mailTest,passwordTest,1234567890,'','',''",
