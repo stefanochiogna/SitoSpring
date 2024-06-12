@@ -79,7 +79,7 @@ public class Login {
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
 
-            page.addObject("loggedOn", loggedUser != null);
+            page.addObject("loggedOn", loggedUser);
             page.addObject("loggedUser", loggedUser);
             page.addObject("applicationMessage", applicationMessage);
 
