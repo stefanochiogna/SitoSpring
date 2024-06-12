@@ -453,7 +453,7 @@ public class Calendario {
                     page.setViewName("Calendario/reload");
                 }
                 else{
-                    throw new RuntimeException("Errore nell'inserimento del Bando");
+                    throw new RuntimeException("Errore nell'inserimento del bando");
                 }
 
             } catch (Exception e) {
@@ -471,17 +471,15 @@ public class Calendario {
         HttpServletResponse response,
         
         @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
-        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
-        @RequestParam(value = "bandoId") String bandoId,
-        @RequestParam(value = "Iscritto") String iscrizione
+        @RequestParam(value = "bandoId", defaultValue = "") String bandoId,
+        @RequestParam(value = "Iscritto", defaultValue = "") String iscrizione
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
             DAOFactory daoFactory = null;
 
             UtenteRegistrato loggedUser = null;
-            Amministratore loggedAdmin = null;
 
             String applicationMessage = null;
 
@@ -490,16 +488,10 @@ public class Calendario {
                 sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
                 sessionDAOFactory.beginTransaction();
 
-                if( cookieUser.equals("") && cookieAdmin.equals("") ) throw new RuntimeException("Errore: non puoi accedere alle iscrizioni se non hai effettuato l'accesso");
-                if( !cookieUser.equals("") && !cookieAdmin.equals("") ) throw new RuntimeException("Errore: entrambi i cookies sono settati");
-
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )    
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
-
-                AmministratoreDAO amministratoreDAO = sessionDAOFactory.getAmministratoreDAO();
-                if( ! cookieAdmin.equals("") )    
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+                else throw new RuntimeException("Errore: non sei autorizzato ad iscriverti al bando");
 
                 if( bandoId.equals("") ) throw new RuntimeException("Errore: non è stato trovato il bando selezionato");
                 if( iscrizione.equals("") ) throw new RuntimeException("Errore: non è stato trovato lo stato di iscrizione al bando");
@@ -529,13 +521,11 @@ public class Calendario {
                 boolean iscritto;
                 if (iscrizione.equalsIgnoreCase("True")) iscritto = true;
                 else if (iscrizione.equalsIgnoreCase("False")) iscritto = false;
-                else throw new RuntimeException();
+                else throw new RuntimeException("Errore: non è stato trovato lo stato di iscrizione al bando");
 
 
-                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject( "loggedAdminOn", loggedAdmin != null);
-                page.addObject( "loggedAdmin", loggedAdmin);
                 page.addObject("Iscritto", loggedUser.trovaBando(bandoId) || iscritto);
                 page.addObject("BandoSelezionato", bando);
                 page.setViewName("Calendario/viewBandoCSS");
