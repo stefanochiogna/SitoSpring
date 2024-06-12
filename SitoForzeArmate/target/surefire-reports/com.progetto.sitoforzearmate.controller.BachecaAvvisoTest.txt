@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.progetto.sitoforzearmate.controller.BachecaAvvisoTest
--------------------------------------------------------------------------------
-Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.890 s -- in com.progetto.sitoforzearmate.controller.BachecaAvvisoTest
