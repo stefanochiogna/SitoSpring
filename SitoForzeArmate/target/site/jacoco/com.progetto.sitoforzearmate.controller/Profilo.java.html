@@ -203,8 +203,8 @@ import java.util.logging.Logger;
 <span class="fc" id="L203">            UtenteRegistrato user = userDAO.findByMail(Mail);</span>
 <span class="fc bfc" id="L204" title="All 2 branches covered.">            if(user != null){</span>
 
-<span class="fc bfc" id="L206" title="All 4 branches covered.">                if(IBAN.equals(&quot;&quot;) || indirizzo.equals(&quot;&quot;))</span>
-<span class="fc" id="L207">                    throw new RuntimeException(&quot;Campi obbligatori non compilati&quot;);</span>
+<span class="pc bpc" id="L206" title="2 of 4 branches missed.">                if(IBAN.equals(&quot;&quot;) || indirizzo.equals(&quot;&quot;))</span>
+<span class="nc" id="L207">                    throw new RuntimeException(&quot;Campi obbligatori non compilati&quot;);</span>
 
 <span class="fc" id="L209">                user.setIBAN(IBAN);</span>
 

@@ -57,18 +57,19 @@ public class Calendario {
             String applicationMessage = null;
 
             try {
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                if( cookieUser.equals("") && cookieAdmin.equals("") ){
+                    throw new RuntimeException("Errore: non puoi visualizzare il calendario se non hai effettuato l'accesso");
+                }
 
-                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                if( !cookieAdmin.equals("") && !cookieUser.equals("") ) {
+                    throw new RuntimeException("Errore: entrambi i cookie sono settati");
+                }
+
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
-
-                sessionDAOFactory.commitTransaction();
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -80,21 +81,19 @@ public class Calendario {
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject("loggedAdminOn", loggedAdmin != null);
+                page.addObject("loggedAdminOn", true);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("Date", dateList);
                 page.addObject("Bandi", bandoList);
                 page.setViewName("Calendario/CalendarioCSS");
 
             } catch (Exception e) {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
                 
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS");
+                throw new RuntimeException(e);
             }
-
             return page;
         }
 
@@ -120,18 +119,24 @@ public class Calendario {
 
             try {
 
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                //sessionDAOFactory.beginTransaction();
 
-                UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+                //UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
+
+                if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new RuntimeException("Errore: entrambi i cookie sono settati");
+                if(cookieUser.equals("") && cookieAdmin.equals("")) throw new RuntimeException("Errore: non puoi visualizzare la bacheca se non sei registrato");
+
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if ( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
 
-                sessionDAOFactory.commitTransaction();
+                if( bandoId.equals("") ) throw new RuntimeException("Errore: non è stato selezionato alcun bando");
+
+                //sessionDAOFactory.commitTransaction();
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -151,9 +156,9 @@ public class Calendario {
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject("loggedAdminOn", loggedAdmin != null);
+                page.addObject("loggedAdminOn", true);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("BandoSelezionato", bando);
                 page.addObject("maxIscrittiRaggiunto", maxIscritti);
@@ -173,10 +178,9 @@ public class Calendario {
                 page.setViewName("Calendario/viewBandoCSS");
 
             } catch (Exception e) {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
                 
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS");
+                throw new RuntimeException(e);
             }
 
             return page;
@@ -200,14 +204,17 @@ public class Calendario {
 
             try {
 
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                //sessionDAOFactory.beginTransaction();
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+                else throw new RuntimeException("Errore: non sei autorizzato a cancellare il bando");
 
-                sessionDAOFactory.commitTransaction();
+                if( bandoId.equals("") ) throw new RuntimeException("Errore: non è stato selezionato alcun bando");
+
+                //sessionDAOFactory.commitTransaction();
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -230,7 +237,7 @@ public class Calendario {
                 page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
                 */
-                page.addObject("loggedAdminOn", loggedAdmin != null);
+                page.addObject("loggedAdminOn", true);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("BandoSelezionato", bando);
 
@@ -238,10 +245,9 @@ public class Calendario {
                 /* Da aggiungere pagina che ricarica la view di calendario */
 
             } catch (Exception e) {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS");
+                throw new RuntimeException(e);
             }
 
             return page;
@@ -265,14 +271,17 @@ public class Calendario {
             String applicationMessage = null;
 
             try {
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
+                //sessionDAOFactory.beginTransaction();
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )    
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+                else throw new RuntimeException("Errore: non sei autorizzato a modificare il bando");
 
-                sessionDAOFactory.commitTransaction();
+                if( bandoId.equals("") ) throw new RuntimeException("Errore: non è stato selezionato alcun bando");
+
+                //sessionDAOFactory.commitTransaction();
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -280,24 +289,23 @@ public class Calendario {
                 BandoDAO bandoDAO = daoFactory.getBandoDAO();
 
                 Bando bando = null;
-                if(!bandoId.equals("")) bando = bandoDAO.findbyId(bandoId);   // vado a modificare il bando selezionato tramite Id
+                bando = bandoDAO.findbyId(bandoId);   // vado a modificare il bando selezionato tramite Id
 
                 BaseDAO baseDAO = daoFactory.getBaseDAO();
                 listaBasi.addAll(baseDAO.stampaBasi());
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedAdminOn", loggedAdmin != null);
+                page.addObject("loggedAdminOn", true);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("BandoSelezionato", bando);
                 page.addObject("ListaBasi", listaBasi);
                 page.setViewName("Calendario/modificaBandoCSS");
 
-            } catch (Exception e) {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+            } catch (Exception e) {//sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS");
+                throw new RuntimeException(e);
             }
 
             return page;
@@ -328,14 +336,18 @@ public class Calendario {
 
 
         try {
-            sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
-            sessionDAOFactory.beginTransaction();
+            //sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL, response);
+            //sessionDAOFactory.beginTransaction();
 
-            AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+            //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
             if( ! cookieAdmin.equals("") )    
                 loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+            else throw new RuntimeException("Errore: non sei autorizzato a modificare il bando");
 
-            sessionDAOFactory.commitTransaction();
+            if( bandoId.equals("") ) throw new RuntimeException("Errore: non è stato selezionato alcun bando");
+            if( oggettoBando.equals("") || numMaxIscritti.equals("") || dataScadenza.equals("") || data.equals("") || locazione.equals("") || testoBando.equals("") ) throw new RuntimeException("Errore: i campi devono essere tutti compilati");
+
+            //sessionDAOFactory.commitTransaction();
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
@@ -356,15 +368,14 @@ public class Calendario {
             page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
             page.addObject("loggedUser", loggedUser);
             */
-            page.addObject("loggedAdminOn", loggedAdmin != null);
+            page.addObject("loggedAdminOn", true);
             page.addObject("loggedAdmin", loggedAdmin);
 
             page.setViewName("Calendario/reload");
         } catch (Exception e) {
-            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
             e.printStackTrace();
-            page.setViewName("Pagina_InizialeCSS");
+            throw new RuntimeException(e);
         } 
         
         return page;
@@ -390,12 +401,13 @@ public class Calendario {
             String applicationMessage = null;
 
             try {
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                //sessionDAOFactory.beginTransaction();
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+                else throw new RuntimeException("Errore: non sei autorizzato ad inserire un bando");
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -428,7 +440,7 @@ public class Calendario {
                 List<com.progetto.sitoforzearmate.model.mo.Base.Base> listaBasi = baseDAO.stampaBasi();
 
                 daoFactory.commitTransaction();
-                sessionDAOFactory.commitTransaction();
+                //sessionDAOFactory.commitTransaction();
 
                 page.addObject("loggedAdminOn",loggedAdmin!=null);
                 page.addObject("loggedAdmin", loggedAdmin);
@@ -446,7 +458,7 @@ public class Calendario {
                 if (daoFactory != null) daoFactory.rollbackTransaction();
 
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS");
+                throw new RuntimeException(e);
             }
 
             return page;

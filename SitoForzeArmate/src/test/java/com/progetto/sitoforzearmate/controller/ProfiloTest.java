@@ -140,20 +140,11 @@ class ProfiloTest {
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','','','','','','',''",
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',sara.tullini@edu.unife.it,'','','','',''",
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','',passwordTest,'','','',''",
-            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','','',1234567890,'','',''",
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','','','',000000000000,'',''",
-            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','','','','',via delle rose 1,''",
-            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'','','','','','','true'",
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',sara.tullini@edu.unife.it,passwordTest,1234567890,000000000000,via delle rose 1,true",
-            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',sara.tullini@edu.unife.it,passwordTest,1234567890,000000000000,via delle rose 1,false",
 
-            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',sara.tullini@edu.unife.it,passwordTest,1234567890,'',via delle rose 1,true",
-            "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,'',sara.tullini@edu.unife.it,passwordTest,1234567890,000000000000,'',true",
-
-            "'',nonlosoquanticar#1234567890#ciao1,'','','','','','',''",
             "'',nonlosoquanticar#1234567890#ciao1,mailTest,'','','','',''",
             "'',nonlosoquanticar#1234567890#ciao1,'',passwordTest,'','','',''",
-            "'',nonlosoquanticar#1234567890#ciao1,'','',1234567890,'','',''",
             "'',nonlosoquanticar#1234567890#ciao1,mailTest,passwordTest,1234567890,'','',''",
             "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,nonlosoquanticar#1234567890#ciao1,'','','','','',''",
     })

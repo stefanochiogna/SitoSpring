@@ -128,10 +128,10 @@ import java.util.List;
 <span class="nc" id="L128">        this.idBandi.addAll(idBandi);</span>
 <span class="nc" id="L129">    }</span>
     public boolean trovaBando(String idBandi){
-<span class="nc bnc" id="L131" title="All 2 branches missed.">        for(int i=0; i&lt;this.idBandi.size(); i++){</span>
-<span class="nc bnc" id="L132" title="All 2 branches missed.">            if(this.idBandi.get(i).equals(idBandi))   return true;</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        for(int i=0; i&lt;this.idBandi.size(); i++){</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">            if(this.idBandi.get(i).equals(idBandi))   return true;</span>
         }
-<span class="nc" id="L134">        return false;</span>
+<span class="fc" id="L134">        return false;</span>
     }
     public Integer getLunghezzaBando(){
 <span class="nc" id="L137">        return this.idBandi.size();</span>

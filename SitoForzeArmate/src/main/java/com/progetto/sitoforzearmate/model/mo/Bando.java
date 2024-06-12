@@ -32,7 +32,6 @@ public class Bando {
     // private List<String> Esito = new ArrayList<>();
 
     private HashMap<String, String> Esito = new HashMap<>();
-    // TODO: Esito come coppia <String, String> = <Matricola, Esito>
 
     /* SET */
     public void setId(String Id){

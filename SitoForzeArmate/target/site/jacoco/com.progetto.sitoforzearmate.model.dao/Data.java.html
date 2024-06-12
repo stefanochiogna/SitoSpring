@@ -12,13 +12,13 @@ public class Data{
 <span class="fc" id="L12">        this.Mese = Mese;</span>
 <span class="fc" id="L13">        this.Giorno = Giorno;</span>
 <span class="fc" id="L14">    }</span>
-<span class="nc" id="L15">    public Data(String data){</span>
-<span class="nc" id="L16">        String[] campi = data.split(&quot;-&quot;);</span>
+<span class="fc" id="L15">    public Data(String data){</span>
+<span class="fc" id="L16">        String[] campi = data.split(&quot;-&quot;);</span>
 
-<span class="nc" id="L18">        this.Anno = Integer.parseInt(campi[0]);</span>
-<span class="nc" id="L19">        this.Mese = Integer.parseInt(campi[1]);</span>
-<span class="nc" id="L20">        this.Giorno = Integer.parseInt(campi[2]);</span>
-<span class="nc" id="L21">    }</span>
+<span class="fc" id="L18">        this.Anno = Integer.parseInt(campi[0]);</span>
+<span class="fc" id="L19">        this.Mese = Integer.parseInt(campi[1]);</span>
+<span class="fc" id="L20">        this.Giorno = Integer.parseInt(campi[2]);</span>
+<span class="fc" id="L21">    }</span>
 
     public void setData(Data data){
 <span class="nc" id="L24">        this.Anno = data.getAnno();</span>
