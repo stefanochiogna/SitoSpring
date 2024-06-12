@@ -545,8 +545,7 @@ public class Calendario {
     @PostMapping(path = "/annullaIscrizione", params = {"bandoId"})
     public ModelAndView annullaIscrizione(
         HttpServletResponse response,
-        
-        @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
+    
         @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
         
         @RequestParam(value = "bandoId") String bandoId
@@ -556,7 +555,6 @@ public class Calendario {
             DAOFactory daoFactory = null;
 
             UtenteRegistrato loggedUser = null;
-            Amministratore loggedAdmin = null;
 
             String applicationMessage = null;
 
@@ -568,10 +566,9 @@ public class Calendario {
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )    
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+                else throw RuntimeException("Errore: non puoi annullare l'iscrizione se non hai effettuato l'accesso");
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
-                if( ! cookieAdmin.equals("") )    
-                    loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+                if( bando.equals("") ) throw new RuntimeException("Errore: bando non trovato");
 
                 sessionDAOFactory.commitTransaction();
 
@@ -588,7 +585,6 @@ public class Calendario {
                 userDAO.annullaIscrizione(loggedUser, bando);
                 boolean maxIscritti = userDAO.maxIscrittiRaggiunto(bando);
 
-
                 daoFactory.commitTransaction();
 
                 loggedUser.deleteIdBando(bando.getId());
@@ -596,10 +592,8 @@ public class Calendario {
 
                 sessionUserDAO.update(loggedUser);
 
-                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject("loggedAdminOn", loggedAdmin != null);
-                page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("Iscritto", false);
                 page.addObject("BandoSelezionato", bando);
                 page.setViewName("Calendario/viewBandoCSS");
@@ -609,7 +603,7 @@ public class Calendario {
                 if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS");
+                throw new RuntimeException(e);
             }
 
             return page;
@@ -634,14 +628,19 @@ public class Calendario {
             String applicationMessage = null;
 
             try {
-                sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
-                sessionDAOFactory.beginTransaction();
+                //sessionDAOFactory = DAOFactory.getDAOFactory(Configuration.COOKIE_IMPL,response);
+                //sessionDAOFactory.beginTransaction();
 
-                AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
+                //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( !cookieAdmin.equals("") )
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+                else throw new RuntimeException("Errore: non puoi accedere alle iscrizioni se non sei un admin");
 
-                sessionDAOFactory.commitTransaction();
+                if(utenteSelezionato.equals("")) throw new RuntimeException("Errore: non è stato selezionato alcun utente");
+                if(Esito.equals("")) throw new RuntimeException("Errore: esito non trovato");
+                if(bandoId.equals("")) throw new RuntimeException("Errore: id del bando non trovato");
+
+                //sessionDAOFactory.commitTransaction();
 
                 daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
                 daoFactory.beginTransaction();
@@ -666,7 +665,7 @@ public class Calendario {
                 Integer Id = Integer.parseInt(avvisoDAO.getID()) + 1;
                 String avvisoId = Id.toString();
 
-                String DirectoryDest = "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";
+                String DirectoryDest = Configuration.getDIRECTORY_FILE();
                 File file = new File(DirectoryDest + 'A' + avvisoId);
 
                 try{
@@ -684,7 +683,7 @@ public class Calendario {
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedAdminOn", loggedAdmin != null);
+                page.addObject("loggedAdminOn", true);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("BandoSelezionato", bandoId);
 
@@ -692,10 +691,10 @@ public class Calendario {
 
 
             } catch (Exception e) {
-                if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+                //if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
 
                 e.printStackTrace();
-                page.setViewName("Pagina_InizialeCSS");
+                throw new RuntimeException(e);
             }
 
             return page;

@@ -370,11 +370,91 @@ class CalendarioTest {
         }
     }
 
-    @Test
-    void annullaIscrizione() {
+    @ParameterizedTest
+    @CsvSource({
+        "'',''",
+        "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,''",
+        "'',0000000001",
+        "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&,0000000001"
+    })
+    void annullaIscrizione(
+        String cookieUser,
+        String bandoId
+    ) {
+        ModelAndView pageExpected = new ModelAndView();
+        pageExpected.setViewName("Calendario/viewBandoCSS");
+        BandoDAOmySQL bando_dao = Mockito.mock(BandoDAOmySQL.class);
+        Bando bando = new Bando();
+        UtenteRegistratoDAOcookie utente_cookie_dao = Mockito.mock(UtenteRegistratoDAOcookie.class);
+        UtenteRegistratoDAOmySQL utente_dao = Mockito.mock(UtenteRegistratoDAOmySQL.class);
+        boolean maxIscritti = false;
+
+        decode_mock.when(() -> UtenteRegistratoDAOcookie.decode(cookieUser)).thenReturn(utente);
+
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory(eq("CookieImpl"), any())).thenReturn(session_mock);
+
+        Mockito.when(session_mock.getUtenteRegistratoDAO()).thenReturn(utente_cookie_dao);
+        Mockito.doNothing().when(session_mock).beginTransaction();
+        Mockito.doNothing().when(session_mock).commitTransaction();
+        Mockito.doNothing().when(session_mock).rollbackTransaction();
+        Mockito.doNothing().when(utente_cookie_dao).update(new UtenteRegistrato());
+        
+        Mockito.when(db_mock.getBandoDAO()).thenReturn(bando_dao);
+        Mockito.when(db_mock.getUtenteRegistratoDAO()).thenReturn(utente_dao);
+        Mockito.when(bando_dao.findbyId(anyString())).thenReturn(bando);
+        Mockito.when(utente_dao.maxIscrittiRaggiunto(bando)).thenReturn(maxIscritti);
+
+        if( cookieUser.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().annullaIscrizione(null, cookieUser, bandoId));
+        }
+        else if( bandoId.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().annullaIscrizione(null, cookieUser, bandoId));
+        }
+        else {
+            ModelAndView page = new Calendario().annullaIscrizione(null, cookieUser, bandoId);
+
+            assertEquals(pageExpected.getViewName(), page.getViewName());
+        }
     }
 
-    @Test
-    void esitoPartecipante() {
+    @ParameterizedTest
+    @CsvSource({
+    })
+    void esitoPartecipante(
+        String cookieAdmin,
+        String utenteSelezionato,
+        String esito,
+        String bandoId
+    ) {
+        ModelAndView pageExpected = new ModelAndView();
+        pageExpected.setViewName("Calendario/reload");
+        BandoDAOmySQL bando_dao = Mockito.mock(BandoDAOmySQL.class);
+        Bando bando = new Bando();
+        UtenteRegistratoDAOmySQL utente_dao = Mockito.mock(UtenteRegistratoDAOmySQL.class);
+        AvvisiDAOmySQL avviso_dao = Mockito.mock(AvvisiDAOmySQL.class);
+        Avviso avviso = new Avviso();
+
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+
+        Mockito.when(db_mock.getBandoDAO()).thenReturn(bando_dao);
+        Mockito.when(db_mock.getUtenteRegistratoDAO()).thenReturn(utente_dao);
+        Mockito.when(db_mock.getAvvisoDAO()).thenReturn(avviso_dao);
+        Mockito.when(bando_dao.findbyId(anyString())).thenReturn(bando);
+        Mockito.when(avviso_dao.create(anyString(), anyString(), any(), anyString(), anyString())).thenReturn(avviso);
+   
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
+
+        if( cookieAdmin.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().esitoPartecipante(null, cookieAdmin, utenteSelezionato, esito, bandoId));
+        }
+        else if( bandoId.equals("") || utenteSelezionato.equals("") || esito.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().esitoPartecipante(null, cookieAdmin, utenteSelezionato, esito, bandoId));
+        }
+        else {
+            ModelAndView page = new Calendario().esitoPartecipante(null, cookieAdmin, utenteSelezionato, esito, bandoId);
+
+            assertEquals(pageExpected.getViewName(), page.getViewName());
+        }
     }
 }
