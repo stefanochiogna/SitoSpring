@@ -131,6 +131,7 @@ public class Login {
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             System.err.println("Errore Logout");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return page;
@@ -142,7 +143,6 @@ public class Login {
     public ModelAndView viewRegistrazione(
             HttpServletResponse response
     ){
-        DAOFactory sessionDAOFactory= null;
         DAOFactory daoFactory = null;
 
         ModelAndView page = new ModelAndView();
@@ -161,7 +161,6 @@ public class Login {
             page.setViewName("RegistrazioneCSS");
 
         } catch (Exception e) {
-            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             e.printStackTrace();
 
         }
