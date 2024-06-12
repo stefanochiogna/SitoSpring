@@ -39,12 +39,15 @@ class CalendarioTest {
     private MockedStatic<Configuration> configuration_mock;
     @Mock
     private DAOFactory db_mock;
+    @Mock
+    private DAOFactory session_mock;
 
     @BeforeEach
     void setUp() {
         dao_factory_mock = Mockito.mockStatic(DAOFactory.class);
         configuration_mock = Mockito.mockStatic(Configuration.class);
         db_mock = Mockito.mock(DAOFactory.class);
+        session_mock = Mockito.mock(DAOFactory.class);
     }
 
     @AfterEach
@@ -109,7 +112,6 @@ class CalendarioTest {
         UtenteRegistrato utente = new UtenteRegistrato();
         bando.AddEsito("Accettato", "0000000001");
         boolean maxIscritti = false;
-
 
         dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
 
@@ -179,12 +181,12 @@ class CalendarioTest {
             "'',0000000001"
 
     })
-    void modificaBandoView(
+    void inserisciBandoView(
             String cookieAdmin,
             String bandoId
     ) {
         ModelAndView pageExpected = new ModelAndView();
-        pageExpected.setViewName("Calendario/modificaBandoCSS");
+        pageExpected.setViewName("Calendario/inserisciBandoCSS");
         BandoDAOmySQL bandi_dao = Mockito.mock(BandoDAOmySQL.class);
         Bando bando = new Bando();
         BaseDAOmySQL base_dao = Mockito.mock(BaseDAOmySQL.class);
@@ -198,13 +200,13 @@ class CalendarioTest {
         Mockito.when(base_dao.stampaBasi()).thenReturn(basi);
 
         if( cookieAdmin.equals("") ) {
-            assertThrows(RuntimeException.class, () -> new Calendario().modificaBandoView(null, cookieAdmin, bandoId));
+            assertThrows(RuntimeException.class, () -> new Calendario().inserisciBandoView(null, cookieAdmin, bandoId));
         }
         else if( bandoId.equals("") ) {
-            assertThrows(RuntimeException.class, () -> new Calendario().modificaBandoView(null, cookieAdmin, bandoId));
+            assertThrows(RuntimeException.class, () -> new Calendario().inserisciBandoView(null, cookieAdmin, bandoId));
         }
         else {
-            ModelAndView page = new Calendario().modificaBandoView(null, cookieAdmin, bandoId);
+            ModelAndView page = new Calendario().inserisciBandoView(null, cookieAdmin, bandoId);
 
             assertEquals(pageExpected.getViewName(), page.getViewName());
         }
@@ -272,10 +274,74 @@ class CalendarioTest {
         ModelAndView pageExpected = new ModelAndView();
         pageExpected.setViewName("Calendario/reload");
         Part insBando = Mockito.mock(Part.class);
+        BandoDAOmySQL bando_dao = Mockito.mock(BandoDAOmySQL.class);
+
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+
+        Mockito.when(db_mock.getBandoDAO()).thenReturn(bandi_dao);
+        Mockito.when(bando_dao.getLastId()).thenReturn("0000000001");
+
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
+
+        if( cookieAdmin.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().inserisciBando(null, cookieAdmin, dataBando, oggetto, numMaxIscritti, dataScadenza, locazione));
+        }
+        else if( dataBando.equals("") || oggetto.equals("") || numMaxIscritti.equals("") || dataScadenza.equals("") || locazione.equals("") || insBando == null ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().inserisciBando(null, cookieAdmin, dataBando, oggetto, numMaxIscritti, dataScadenza, locazione));
+        }
+        else {
+            ModelAndView page = new Calendario().inserisciBando(null, cookieAdmin, dataBando, oggetto, numMaxIscritti, dataScadenza, locazione);
+
+            assertEquals(pageExpected.getViewName(), page.getViewName());
+        }
     }
 
-    @Test
-    void iscrizione() {
+    @ParameterizedTest
+    @CsvSource({
+
+    })
+    void iscrizione(
+        String cookieUser,
+        String cookieAdmin,
+        String bandoId, 
+        String iscritto
+    ) {
+        ModelAndView pageExpected = new ModelAndView();
+        pageExpected.setViewName("Calendario/viewBandoCSS");
+        BandoDAOmySQL bando_dao = Mockito.mock(BandoDAOmySQL.class);
+        Bando bando = new Bando();
+        UtenteRegistratoDAOmySQL utente_dao = Mockito.mock(UtenteRegistratoDAOmySQL.class);
+        UtenteRegistratoDAOcookie utente_cookie_dao = Mockito.mock(UtenteRegistratoDAOcookie.class);
+        UtenteRegistrato utente = new UtenteRegistrato();
+        boolean maxIscritti = false;
+        
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory("MySQLJDBCImpl", null)).thenReturn(db_mock);
+        dao_factory_mock.when(() -> DAOFactory.getDAOFactory(eq("CookieImpl"), any())).thenReturn(session_mock);
+
+        Mockito.when(session_mock.getUtenteRegistratoDAO()).thenReturn(utente_cookie_dao);
+        Mockito.doNothing().when(session_mock).beginTransaction();
+        Mockito.doNothing().when(session_mock).commitTransaction();
+        Mockito.doNothing().when(session_mock).rollbackTransaction();
+        Mockito.doNothing().when(utente_cookie_dao).update(new UtenteRegistrato());
+
+        Mockito.when(bando_dao.findbyId(anyString())).thenReturn(bando);
+        Mockito.when(utente_dao.maxIscrittiRaggiunto(bando)).thenReturn(maxIscritti);
+        Mockito.when(utente_dao)
+
+        if( cookieAdmin.equals("") && cookieUser.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().iscrizione(null, cookieUser, cookieAdmin, bandoId, iscritto));
+        }
+        else if( !cookieAdmin.equals("") && !cookieUser.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().iscrizione(null, cookieUser, cookieAdmin, bandoId, iscritto));
+        }
+        else if( bandoId.equals("") || iscritto.equals("") ) {
+            assertThrows(RuntimeException.class, () -> new Calendario().iscrizione(null, cookieUser, cookieAdmin, bandoId, iscritto));
+        }
+        else {
+            ModelAndView page = new Calendario().iscrizione(null, cookieUser, cookieAdmin, bandoId, iscritto);
+
+            assertEquals(pageExpected.getViewName(), page.getViewName());
+        }
     }
 
     @Test
