@@ -161,7 +161,7 @@ public class Login {
             page.setViewName("RegistrazioneCSS");
 
         } catch (Exception e) {
-            if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
+            //if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             e.printStackTrace();
 
         }
