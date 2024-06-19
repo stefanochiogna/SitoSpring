@@ -56,19 +56,24 @@ public class Login {
             sessionDAOFactory.beginTransaction();
 
             UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            if(!cookieUser.equals("")) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+            if(!cookieUser.equals("")) throw new RuntimeException("Errore cookie");
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
 
             UtenteRegistratoDAO userDAO = daoFactory.getUtenteRegistratoDAO();
+
+            if(Email.equals("")) throw new RuntimeException("Errore Email");
             UtenteRegistrato user = userDAO.findByMail(Email);
+
+            if(Password.equals("")) throw new RuntimeException("Errore Password");
 
             if (user == null || !user.getPassword().equals(Password)) {
                 sessionUserDAO.delete(null);
                 applicationMessage = "Email o password errati";
                 loggedUser=null;
-            } else {
+            }
+            else {
                 loggedUser = sessionUserDAO.create(user.getNome(), user.getCognome(),user.getCF(), user.getMail(), user.getTelefono(),user.getPassword(),
                         user.getSesso(), user.getDataNascita(), user.getMatricola(), user.getIBAN(), user.getRuolo(), user.getFotoByte(), user.getDocumentoByte(),
                         user.getIndirizzo(), user.getLocazioneServizio(), user.getIscrittoNewsletter(), userDAO.recuperaBandi(user.getMatricola()));
@@ -94,6 +99,7 @@ public class Login {
 
             System.err.println("Errore Login");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return page;
@@ -162,32 +168,31 @@ public class Login {
 
         } catch (Exception e) {
             e.printStackTrace();
-
+            throw new RuntimeException(e);
         }
         return page;
     }
 
-    @PostMapping(value = "/registrazione", params = {})
+    @PostMapping(value = "/registrazione")
     public ModelAndView Registrazione(
             HttpServletResponse response,
 
             @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
-            @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
 
-            @RequestParam(value = "Nome") String Nome,
-            @RequestParam(value = "Cognome") String Cognome,
-            @RequestParam(value = "CF") String CF,
-            @RequestParam(value = "Telefono") String Telefono,
-            @RequestParam(value = "Email") String Email,
-            @RequestParam(value = "Password") String Password,
-            @RequestParam(value = "Sesso") String sesso,
-            @RequestParam(value = "DataNascita") String dataNascita,
-            @RequestParam(value = "IBAN") String IBAN,
-            @RequestParam(value = "Ruolo") String Ruolo,
+            @RequestParam(value = "Nome", defaultValue = "") String Nome,
+            @RequestParam(value = "Cognome", defaultValue = "") String Cognome,
+            @RequestParam(value = "CF", defaultValue = "") String CF,
+            @RequestParam(value = "Telefono", defaultValue = "") String Telefono,
+            @RequestParam(value = "Email", defaultValue = "") String Email,
+            @RequestParam(value = "Password", defaultValue = "") String Password,
+            @RequestParam(value = "Sesso", defaultValue = "") String sesso,
+            @RequestParam(value = "DataNascita", defaultValue = "") String dataNascita,
+            @RequestParam(value = "IBAN", defaultValue = "") String IBAN,
+            @RequestParam(value = "Ruolo", defaultValue = "") String Ruolo,
             @RequestParam(value = "Foto") Part Foto,
             @RequestParam(value = "Documento") Part Documento,
-            @RequestParam(value = "Indirizzo") String Indirizzo,
-            @RequestParam(value = "LocazioneServizio") String LocazioneServizio,
+            @RequestParam(value = "Indirizzo", defaultValue = "") String Indirizzo,
+            @RequestParam(value = "LocazioneServizio", defaultValue = "") String LocazioneServizio,
             @RequestParam(value = "Newsletter", required = false) boolean Newsletter
     ){
         ModelAndView page = new ModelAndView();
@@ -202,7 +207,10 @@ public class Login {
             sessionDAOFactory.beginTransaction();
 
             UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
-            if(!cookieUser.equals("")) loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+            if(!cookieUser.equals("")) throw new RuntimeException("Errore cookie");
+
+            if(Nome.equals("") || Cognome.equals("") || CF.equals("") || Telefono.equals("") || Email.equals("") || Password.equals("") || sesso.equals("") || dataNascita.equals("") || IBAN.equals("") || Foto == null || Documento == null || Indirizzo.equals("") || LocazioneServizio.equals(""))
+                throw new RuntimeException("Errore campi vuoti");
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
@@ -230,6 +238,7 @@ public class Login {
                 loggedUser = sessionUserDAO.create(user.getNome(), user.getCognome(), user.getCF(), user.getMail(), user.getTelefono(), user.getPassword(),
                         user.getSesso(), user.getDataNascita(), user.getMatricola(), user.getIBAN(), user.getRuolo(), user.getFotoByte(), user.getDocumentoByte(),
                         user.getIndirizzo(), user.getLocazioneServizio(), Newsletter, userDAO.recuperaBandi(user.getMatricola()));
+
             }
 
             daoFactory.commitTransaction();
@@ -249,7 +258,7 @@ public class Login {
             if (sessionDAOFactory != null) sessionDAOFactory.rollbackTransaction();
             System.err.println("Errore Registrazione");
             e.printStackTrace();
-
+            throw new RuntimeException(e);
         }
         return page;
     }
@@ -268,8 +277,8 @@ public class Login {
     public ModelAndView loginAmministratore(
             HttpServletResponse response,
 
-            @RequestParam(value = "IdAdministrator") String IdAdministrator,
-            @RequestParam(value = "Password") String Password,
+            @RequestParam(value = "IdAdministrator", defaultValue = "") String IdAdministrator,
+            @RequestParam(value = "Password", defaultValue = "") String Password,
             @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin
     ){
         DAOFactory sessionDAOFactory= null;
@@ -285,29 +294,32 @@ public class Login {
 
             AmministratoreDAO sessionUserDAO = sessionDAOFactory.getAmministratoreDAO();
 
-            if(!cookieAdmin.equals("")) loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
+            if(!cookieAdmin.equals(""))    throw new RuntimeException("Errore cookie");
 
             daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
             daoFactory.beginTransaction();
 
             AmministratoreDAO adminDAO = daoFactory.getAmministratoreDAO();
+
+            if(IdAdministrator.equals("")) throw new RuntimeException("Errore Id");
             Amministratore admin = adminDAO.findById(IdAdministrator);
+
+            if(Password.equals("")) throw new RuntimeException("Errore Password");
 
             if (admin == null || !admin.getPassword().equals(Password)) {
                 sessionUserDAO.delete(null);
                 applicationMessage = "Id e password errati";
                 loggedAdmin=null;
-            } else {
+            }
+            else {
                 loggedAdmin = sessionUserDAO.create(admin.getNome(), admin.getCognome(), admin.getCF(), admin.getMail(), admin.getTelefono(),
                         admin.getPassword(), admin.getSesso(), admin.getDataNascita(), admin.getIdAdministrator());
-
-                //loggedUser.stampaBandi();
             }
 
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
 
-            page.addObject("loggedOn",loggedAdmin!=null);
+            page.addObject("loggedOn",true);
             page.addObject("loggedAdmin", loggedAdmin);
             page.addObject("applicationMessage", applicationMessage);
 
@@ -323,6 +335,7 @@ public class Login {
             System.err.println("Errore login amministratore");
             e.printStackTrace();
 
+            throw new RuntimeException(e);
         }
         return page;
     }
