@@ -387,6 +387,7 @@ class CalendarioTest {
         Bando bando = new Bando();
         UtenteRegistratoDAOcookie utente_cookie_dao = Mockito.mock(UtenteRegistratoDAOcookie.class);
         UtenteRegistratoDAOmySQL utente_dao = Mockito.mock(UtenteRegistratoDAOmySQL.class);
+        UtenteRegistrato utente = new UtenteRegistrato();
         boolean maxIscritti = false;
 
         decode_mock.when(() -> UtenteRegistratoDAOcookie.decode(cookieUser)).thenReturn(utente);
@@ -420,6 +421,10 @@ class CalendarioTest {
 
     @ParameterizedTest
     @CsvSource({
+            "'','','','',''",
+            "nonlosoquanticar#1234567890#ciao1,'','','',''",
+            "nonlosoquanticar#1234567890#ciao1,matricola,Accettato,0000000001",
+            "nonlosoquanticar#1234567890#ciao1,matricola,Accettato,''",
     })
     void esitoPartecipante(
         String cookieAdmin,
@@ -442,7 +447,8 @@ class CalendarioTest {
         Mockito.when(db_mock.getAvvisoDAO()).thenReturn(avviso_dao);
         Mockito.when(bando_dao.findbyId(anyString())).thenReturn(bando);
         Mockito.when(avviso_dao.create(anyString(), anyString(), any(), anyString(), anyString())).thenReturn(avviso);
-   
+        Mockito.when(avviso_dao.getID()).thenReturn("0000000001");
+
         configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
 
         if( cookieAdmin.equals("") ) {

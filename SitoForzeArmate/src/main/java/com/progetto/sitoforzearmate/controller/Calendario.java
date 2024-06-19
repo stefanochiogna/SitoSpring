@@ -566,9 +566,9 @@ public class Calendario {
                 UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
                 if( ! cookieUser.equals("") )    
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
-                else throw RuntimeException("Errore: non puoi annullare l'iscrizione se non hai effettuato l'accesso");
+                else throw new RuntimeException("Errore: non puoi annullare l'iscrizione se non hai effettuato l'accesso");
 
-                if( bando.equals("") ) throw new RuntimeException("Errore: bando non trovato");
+                if( bandoId.equals("") ) throw new RuntimeException("Errore: bando non trovato");
 
                 sessionDAOFactory.commitTransaction();
 
@@ -615,9 +615,9 @@ public class Calendario {
         
         @CookieValue(value = "loggedAdmin", defaultValue = "") String cookieAdmin,
         
-        @RequestParam(value = "utenteSelezionato") String utenteSelezionato,
-        @RequestParam(value = "inAttesa") String Esito,
-        @RequestParam(value = "bandoId") String bandoId
+        @RequestParam(value = "utenteSelezionato", defaultValue = "") String utenteSelezionato,
+        @RequestParam(value = "inAttesa", defaultValue = "") String Esito,
+        @RequestParam(value = "bandoId", defaultValue = "") String bandoId
         ){
             ModelAndView page = new ModelAndView();
             DAOFactory sessionDAOFactory= null;
