@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -202,7 +203,10 @@ class BachecaNewsletterTest {
         Mockito.when(db_mock.getNewsletterDAO()).thenReturn(newsletter_dao);
         Mockito.when(newsletter_dao.getID()).thenReturn("00000001");
 
-        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
+        String relativePath = ".." + File.separator +"raccolta_file"+ File.separator +"test" + File.separator;
+        String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
+
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(fullPath);
 
         if(cookieAdmin.equals("")) assertThrows(RuntimeException.class, () -> new BachecaNewsletter().inviaNewsletter(null, cookieAdmin, oggetto, testo));
         else if(oggetto.equals("") || testo.equals("")) assertThrows(RuntimeException.class, () -> new BachecaNewsletter().inviaNewsletter(null, cookieAdmin, oggetto, testo));

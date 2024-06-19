@@ -1,0 +1,73 @@
+Gli header di protocolli di rete contengono delle informazioni codificati in singoli (0/1) o gruppi di bit di diverso valore. Dobbiamo quindi estrapolare le informazioni partendo da un tipo di dato rappresentato come più bytes.
+Per farlo dobbiamo utilizzare operatori di shifting '<<' e '>>', e le maschere binarie per selezionare solamente le porzioni di bit che ci interessa.
+
+Esempio di esercizio:
+L'header è memorizzato in un buffer di byte e il suo contenuto è codificato come big-endian. La parte di header ha dimensione 8 bit e comprende:
+* Q/R: 1 bit
+* Q_Type: 2 bit
+* Q_URG: 1 bit
+* R_Format: 4 bit
+
+Le operazioni di maschera e di bit shifting per reperire il valore delle diverse componenti sono le seguenti:
+
+0000 0000
+len(head) = 8 bit
+
+1) 1000 0000
+   0x80	# rappresentazione in esadecimale
+   Q/R = (head & 0x80) >> 7
+	# dove msg = 8 bit, e lo shifting viene effettuato con >>
+	# lo shift viene fatto del numero di bit rimanenti
+2) 0110 0000
+   0x60	# rappresentazione esadecimale
+   Q_Type = (head & 0x60) >> 5
+3) 0001 0000
+   0x10
+   Q_URG = (head & 0x10) >> 4
+4) 0000 1111
+   0x0F
+   R_Format = (head & 0x0F)	# per l'ultimo non ci va lo shifting
+
+Nel caso Big Endian, shift right >>
+Nel caso Little Endian, si ha shift left: <<
+
+##
+Conversione esadecimale:
+0000: 0		0100: 4		1000: 8		1100: C
+0001: 1		0101: 5 	1001: 9		1101: D
+0010: 2		0110: 6		1010: A		1110: E
+0011: 3		0111: 7		1011: B		1111: F
+##
+
+Viene poi chiesto:
+Si supponga che dopo gli 8 bit letti, se il bit Q/R è a 1, i successivi 16 bit presenti nel messaggio codificano un tipo di dato short. Si implementi la lettura di tale numero dal buffer:
+
+len(body) = 16 bit -> len(buffer) = 24 bit = 3 byte di cui il primo è già stato letto
+if Q/R == 1:
+	num = struct.unpack('! h', buffer[1:])
+
+#############
+
+struct.unpack(formato, buffer)
+
+Dove il formato può essere:
+ * primo parametro: solitamente ! per indicare ordinamento Big Endian, tipico per network bit order
+	Può sennò essere:
+		@: byte order native;		size native;	alignment native
+		=: byte order native;		size standard;	alignment none
+		<: byte order little endian;	size standard;	alignment none
+		>: byte order big endian;	size standard;	alignment none
+ * i restanti caratteri del formato specificano il tipo di dato ad leggere:
+	x: pad byte (C),	  no value (Python)
+	c: char (C),		  bytes di lunghezza 1 (Python)
+	b: signed char (C),	  integer (Python)		dim standard: 1
+	B: unsigned char(C),	  integer (Python)		dim standard: 1
+	?: _Bool (C),		  bool (Python)			dim standard: 1
+	h: short (C),		  integer (Python)		dim standard: 2
+	H: unsigned shord (C),	  integer (Python)		dim standard: 2
+	i: int (C),		  integer (Python)		dim standard: 4
+	I: unsigned int (C),	  integer (Python)		dim standard: 4
+	l: long (C),		  integer (Python)		dim standard: 4
+	L: unsigned long(C), 	  integer (Python)		dim standard: 4
+	q: long long (C),	  integer (Python)		dim standard: 8
+	Q: unsigned long long(C), integer (Python)		dim standard: 8

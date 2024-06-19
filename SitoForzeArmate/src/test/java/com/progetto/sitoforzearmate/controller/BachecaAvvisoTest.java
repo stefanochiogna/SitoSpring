@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -218,7 +219,10 @@ class BachecaAvvisoTest {
         Mockito.when(db_mock.getAvvisoDAO()).thenReturn(avviso_dao);
         Mockito.when(avviso_dao.getID()).thenReturn("00000001");
 
-        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
+        String relativePath = ".." + File.separator +"raccolta_file"+ File.separator +"test"+ File.separator;
+        String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
+
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(fullPath);
 
 
         if(cookieAdmin.equals("")) assertThrows(RuntimeException.class, () -> new BachecaAvviso().inviaAvviso(null, cookieAdmin, scelta, oggetto, testo, RuoloArray, MatricolaArray));

@@ -449,7 +449,10 @@ class CalendarioTest {
         Mockito.when(avviso_dao.create(anyString(), anyString(), any(), anyString(), anyString())).thenReturn(avviso);
         Mockito.when(avviso_dao.getID()).thenReturn("0000000001");
 
-        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
+        String relativePath = ".." + File.separator +"raccolta_file"+ File.separator +"test"+ File.separator;
+        String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
+
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(fullPath);
 
         if( cookieAdmin.equals("") ) {
             assertThrows(RuntimeException.class, () -> new Calendario().esitoPartecipante(null, cookieAdmin, utenteSelezionato, esito, bandoId));

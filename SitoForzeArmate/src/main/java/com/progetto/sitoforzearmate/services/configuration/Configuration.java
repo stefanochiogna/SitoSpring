@@ -1,5 +1,7 @@
 package com.progetto.sitoforzearmate.services.configuration;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.logging.Level;
 
@@ -10,7 +12,9 @@ public class Configuration {
     /* Database Configruation */
     public static final String DAO_IMPL=DAOFactory.MYSQLJDBCIMPL;
     public static String getDIRECTORY_FILE(){
-        return "C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\";
+        String relativePath = ".." + File.separator +"raccolta_file"+ File.separator;
+        String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
+        return fullPath;
     }
     public static final String DATABASE_DRIVER="com.mysql.cj.jdbc.Driver";
     public static final String SERVER_TIMEZONE=Calendar.getInstance().getTimeZone().getID();
