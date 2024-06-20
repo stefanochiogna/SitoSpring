@@ -8,7 +8,7 @@
 %>
 <html>
 <head>
-    <%@include file="../../../static/html_daIncludere/Header.inc"%>
+    <%@include file="../../html_daIncludere/Header.inc"%>
 
     <style>
         body {

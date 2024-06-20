@@ -4,7 +4,7 @@
 <%@ page import="java.io.BufferedReader" %>
 <%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="../../../static/html_daIncludere/Header.inc"%>
+<%@include file="../../html_daIncludere/Header.inc"%>
 <%
   Newsletter newsletter = (Newsletter) request.getAttribute("NewsletterSelezionata");
 %>

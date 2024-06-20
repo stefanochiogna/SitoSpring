@@ -4,7 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <%@include file="../../../static/html_daIncludere/Header.inc"%>
+    <%@include file="../../../html_daIncludere/Header.inc"%>
     <%
         List<Avviso> avvisoList = new ArrayList<>();
         if(loggedOn) avvisoList.addAll((List<Avviso>) request.getAttribute("Avvisi"));
@@ -17,7 +17,7 @@
 </head>
 <body>
     <!-- Navbar -->
-    <%@include file="../../../static/html_daIncludere/navbar.inc"%>
+    <%@include file="../../../html_daIncludere/navbar.inc"%>
 
     <section class="pagina avvisi">
         <ul>

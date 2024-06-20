@@ -5,7 +5,7 @@
 <% List<Base> basi = (List<Base>) request.getAttribute("listaBasi"); %>
 <html>
 <head>
-  <%@include file="../../static/html_daIncludere/Header.inc"%>
+  <%@include file="../html_daIncludere/Header.inc"%>
   <style>
     .hidden{
       display: none;

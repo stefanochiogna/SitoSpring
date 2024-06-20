@@ -11,7 +11,7 @@
 
 <html>
 <head>
-    <%@include file="../../../static/html_daIncludere/Header.inc"%>
+    <%@include file="../../html_daIncludere/Header.inc"%>
     <style>
         #cercaBase {
             width: 100%; /* Full-width */
@@ -72,7 +72,7 @@
 </head>
 <body>
 <!-- Navbar -->
-<%@include file="../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../html_daIncludere/navbar.inc"%>
 <main>
     <% if(loggedAdminOn){%>
         <a href="/registraBase"> Registra Nuova Base </a>
@@ -113,5 +113,5 @@
     </div>
 </main>
 </body>
-<%@include file="../../../static/html_daIncludere/footer.inc"%>
+<%@include file="../../../html_daIncludere/footer.inc"%>
 </html>

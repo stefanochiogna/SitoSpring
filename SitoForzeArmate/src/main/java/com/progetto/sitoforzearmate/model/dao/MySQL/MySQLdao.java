@@ -39,8 +39,16 @@ public class MySQLdao extends DAOFactory {
 
 
             /* restituisce una istanza della classe avente come nome quello passato come parametro */
+            String url = Configuration.DATABASE_URL;
+            System.out.println(Configuration.DATABASE_HOSTNAME);
 
-            this.connection = DriverManager.getConnection(Configuration.DATABASE_URL);
+            if(Configuration.DATABASE_HOSTNAME != null) {
+                String DATABASE_URL = url.replace("localhost", Configuration.DATABASE_HOSTNAME);
+                System.out.println(DATABASE_URL);
+                this.connection = DriverManager.getConnection(DATABASE_URL);
+            }
+            else
+                this.connection = DriverManager.getConnection(url);
             /* tramite getConnection si tenta di stabilire una connessione con l'url del database fornito. Restituisce una connessione all'url */
 
             this.connection.setAutoCommit(false);

@@ -4,7 +4,7 @@
 <%@ page import="java.io.*" %>
 <%@ page import="java.time.LocalDate" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="../../../static/html_daIncludere/Header.inc"%>
+<%@include file="../../html_daIncludere/Header.inc"%>
 <%
   Bando bando = (Bando) request.getAttribute("BandoSelezionato");
   boolean Iscritto = false;

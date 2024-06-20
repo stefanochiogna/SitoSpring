@@ -1,23 +1,22 @@
-version: '1'
+version: '3.9'
 
 networks: 
   forze_armate_net: 
 
 services:
-  db: mysql:8.0
-  container_name: db_forze_armate
-  environment:
-      MYSQL_ROOT_PASSWORD: DataBase1203!
-      MYSQL_DATABASE: forze_armate
-      MYSQL_USER: root
-      MYSQL_PASSWORD: DataBasse1203!
-      MYSQL_TCP_PORT: 6033
-    ports: 
-      - 6033:3306
+  db_sito:
+    image: stefanochiogna/db:latest
+    container_name: db_forze_armate
+    environment:
+      - MYSQL_USER=db_user
+      - MYSQL_PASSWORD=db_password
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=caching_sha2_password
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-    - forze_armate_net
+      - forze_armate_net
     healthcheck:
           test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
           start_period: 5s
@@ -25,6 +24,17 @@ services:
           timeout: 5s
           retries: 20
 
+  forze_armate:
+    image: stefanochiogna/forze_armate:latest
+    container_name: sito_forze_armate
+    environment:
+      DB_HOST: db_sito
+    ports:
+      - 8080:8080
+    depends_on:
+      db_sito:
+        condition: service_healthy
+    networks:
+      - forze_armate_net
 volumes: 
   dbdata: 
-    driver: local

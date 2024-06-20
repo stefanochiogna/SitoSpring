@@ -10,7 +10,7 @@
 
 <html>
 <head>
-    <%@include file="../../../static/html_daIncludere/Header.inc"%>
+    <%@include file="../../html_daIncludere/Header.inc"%>
 
     <style>
         .Utente{
@@ -25,7 +25,7 @@
 <body style="background-color: #f3f4f6;">
 
 <!-- Navbar -->
-<%@include file="../../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../../../html_daIncludere/navbar.inc"%>
 
 <%if(loggedOn){%>
 <div style="display: flex; justify-content: flex-end; padding: 1rem;">

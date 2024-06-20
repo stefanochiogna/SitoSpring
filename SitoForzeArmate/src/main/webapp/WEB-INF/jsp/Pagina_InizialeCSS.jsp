@@ -7,7 +7,7 @@
 
 <html>
 <head>
-  <%@include file="../../static/html_daIncludere/Header.inc"%>
+  <%@include file="../html_daIncludere/Header.inc"%>
   <style>
 
     /* SFONDO */
@@ -91,7 +91,7 @@
 </head>
 <body>
 <!-- Navbar -->
-<%@include file="../../static/html_daIncludere/navbar.inc"%>
+<%@include file="../html_daIncludere/navbar.inc"%>
 <main>
 <div class="immagine">
   <div class="container"></div>
@@ -139,7 +139,7 @@
   <% } %>
 </section>
 </main>
-<%@include file="../../static/html_daIncludere/footer.inc"%>
+<%@include file="../html_daIncludere/footer.inc"%>
 
 </body>
 </html>

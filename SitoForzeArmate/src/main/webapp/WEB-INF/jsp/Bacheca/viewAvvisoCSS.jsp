@@ -1,12 +1,15 @@
-<%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Notizie" %>
-<%@ page import="java.io.*" %>
+<%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Avviso" %>
+<%@ page import="java.io.InputStreamReader" %>
+<%@ page import="java.io.FileInputStream" %>
+<%@ page import="java.io.BufferedReader" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="../../html_daIncludere/Header.inc"%>
 <%
-    Notizie notizia = (Notizie) request.getAttribute("NotiziaSelezionata");
+    Avviso avviso = (Avviso) request.getAttribute("AvvisoSelezionato");
 %>
 <html>
 <head>
-    <%@include file="../../static/html_daIncludere/Header.inc"%>
+    <title><%=avviso.getOggetto()%></title>
 
     <style>
         div.container{
@@ -43,22 +46,30 @@
 </head>
 <body style="background-color: #f7fafc;">
 <div class="container">
-    <h1 class="titolo"><%=notizia.getOggetto()%></h1>
+    <h1 class="titolo">
+        <%=avviso.getOggetto()%>
+    </h1>
 
-    <% try{
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(notizia.getRiferimentoTesto().toString()), "UTF-8"));
-        String line = br.readLine();
-        while(line != null){%>
-            <p class="testo"><%=line%></p>
-            <% line = br.readLine();
-        }
+    <%
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(avviso.getRiferimentoTesto().toString()), "UTF-8"));
+
+            String line = br.readLine();
+            while(line != null){%>
+    <p class="testo">
+        <%=line%>
+        <%line = br.readLine();%>
+    </p>
+    <%}
     }
     catch (Exception e){
         throw new RuntimeException(e);
     }
     %>
 
-    <a href="/homepage" class="indietro"> Indietro </a>
+    <a href="/viewBachecaAvviso" class="indietro"> Indietro </a>
+
 </div>
+
 </body>
 </html>

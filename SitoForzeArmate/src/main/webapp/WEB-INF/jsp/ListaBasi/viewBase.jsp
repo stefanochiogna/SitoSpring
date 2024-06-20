@@ -1,7 +1,7 @@
 <%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
 <%@ page import="java.util.Base64" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="../../../static/html_daIncludere/Header.inc"%>
+<%@include file="../../html_daIncludere/Header.inc"%>
 <%
     Base base = (Base) request.getAttribute("BaseSelezionata");
 %>
