@@ -57,9 +57,6 @@ public class Calendario {
             String applicationMessage = null;
 
             try {
-                if( cookieUser.equals("") && cookieAdmin.equals("") ){
-                    throw new RuntimeException("Errore: non puoi visualizzare il calendario se non hai effettuato l'accesso");
-                }
 
                 if( !cookieAdmin.equals("") && !cookieUser.equals("") ) {
                     throw new RuntimeException("Errore: entrambi i cookie sono settati");
@@ -125,8 +122,7 @@ public class Calendario {
                 //UtenteRegistratoDAO sessionUserDAO = sessionDAOFactory.getUtenteRegistratoDAO();
 
                 if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new RuntimeException("Errore: entrambi i cookie sono settati");
-                if(cookieUser.equals("") && cookieAdmin.equals("")) throw new RuntimeException("Errore: non puoi visualizzare la bacheca se non sei registrato");
-
+                
                 if( ! cookieUser.equals("") )
                     loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
 

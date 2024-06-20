@@ -84,10 +84,7 @@ class CalendarioTest {
         Mockito.when(bandi_dao.show()).thenReturn(bandi);
         Mockito.when(bandi_dao.getDate()).thenReturn(dateList);
 
-        if( cookieAdmin.equals("") && cookieUser.equals("")) {
-            assertThrows(RuntimeException.class, () -> new Calendario().view(null, cookieAdmin, cookieUser));
-        }
-        else if( !cookieAdmin.equals("") && !cookieUser.equals("")) {
+        if( !cookieAdmin.equals("") && !cookieUser.equals("")) {
             assertThrows(RuntimeException.class, () -> new Calendario().view(null, cookieAdmin, cookieUser));
         }
         else {
@@ -132,10 +129,7 @@ class CalendarioTest {
         Mockito.when(utente_dao.findByMatricola(anyString())).thenReturn(utente);
         Mockito.when(utente_dao.maxIscrittiRaggiunto(bando)).thenReturn(maxIscritti);
 
-        if( cookieAdmin.equals("") && cookieUser.equals("") ) {
-            assertThrows(RuntimeException.class, () -> new Calendario().viewBando(null, cookieAdmin, cookieUser, bandoId));
-        }
-        else if( !cookieAdmin.equals("") && !cookieUser.equals("") ) {
+        if( !cookieAdmin.equals("") && !cookieUser.equals("") ) {
             assertThrows(RuntimeException.class, () -> new Calendario().viewBando(null, cookieAdmin, cookieUser, bandoId));
         }
         else if( bandoId.equals("") ) {
