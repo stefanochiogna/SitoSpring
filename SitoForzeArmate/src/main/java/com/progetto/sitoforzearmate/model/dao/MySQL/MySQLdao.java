@@ -44,8 +44,9 @@ public class MySQLdao extends DAOFactory {
 
             if(Configuration.DATABASE_HOSTNAME != null) {
                 String DATABASE_URL = url.replace("localhost", Configuration.DATABASE_HOSTNAME);
-                System.out.println(DATABASE_URL);
-                this.connection = DriverManager.getConnection(DATABASE_URL);
+                String CORRECT_URL = DATABASE_URL.replace("DataBase1203!", "root_password");
+                System.out.println(CORRECT_URL);
+                this.connection = DriverManager.getConnection(CORRECT_URL);
             }
             else
                 this.connection = DriverManager.getConnection(url);

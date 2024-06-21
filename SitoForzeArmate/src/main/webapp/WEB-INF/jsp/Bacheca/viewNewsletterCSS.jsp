@@ -3,6 +3,7 @@
 <%@ page import="java.io.FileInputStream" %>
 <%@ page import="java.io.BufferedReader" %>
 <%@ page import="com.progetto.sitoforzearmate.model.mo.Notizie.Newsletter" %>
+<%@ page import="com.progetto.sitoforzearmate.services.configuration.Configuration" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="../../html_daIncludere/Header.inc"%>
 <%
@@ -53,7 +54,7 @@
 
   <%
     try{
-      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(newsletter.getRiferimentoTesto().toString()), "UTF-8"));
+      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Configuration.getPATH(newsletter.getRiferimentoTesto().toString())), "UTF-8"));
 
       String line = br.readLine();
       while(line != null){%>

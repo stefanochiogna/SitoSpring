@@ -7,7 +7,7 @@ ENV MYSQL_PASSWORD=db_password
 ENV MYSQL_TCP_PORT=3306
 
 # Copia gli script SQL nella directory di avvio
-COPY Dumps/Dump1705.sql /docker-entrypoint-initdb.d/
+COPY dump/UpdateDB.sql /docker-entrypoint-initdb.d/
 
 
 # Esponi la porta 3306 per consentire le connessioni al database MySQL

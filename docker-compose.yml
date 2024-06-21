@@ -1,6 +1,4 @@
-version: '3.9'
-
-networks: 
+networks:
   forze_armate_net: 
 
 services:

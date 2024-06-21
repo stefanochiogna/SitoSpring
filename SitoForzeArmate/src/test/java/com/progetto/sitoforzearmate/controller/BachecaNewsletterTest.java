@@ -204,7 +204,7 @@ class BachecaNewsletterTest {
         Mockito.when(newsletter_dao.getID()).thenReturn("00000001");
 
         String relativePath = ".." + File.separator +"raccolta_file"+ File.separator +"test" + File.separator;
-        String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
+        String fullPath = Paths.get(relativePath).toString() + File.separator;
 
         configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(fullPath);
 
