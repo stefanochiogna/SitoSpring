@@ -42,6 +42,15 @@ public class MySQLdao extends DAOFactory {
             String url = Configuration.DATABASE_URL;
             System.out.println(Configuration.DATABASE_HOSTNAME);
 
+            String port = System.getProperty("porta");
+            String host = System.getProperty("host");
+            if(port != null){
+                url = url.replace("3306", port);
+            }
+            if(host != null){
+                url = url.replace("localhost", host);
+            }
+
             if(Configuration.DATABASE_HOSTNAME != null) {
                 String DATABASE_URL = url.replace("localhost", Configuration.DATABASE_HOSTNAME);
                 System.out.println(DATABASE_URL);
@@ -50,6 +59,9 @@ public class MySQLdao extends DAOFactory {
             else
                 this.connection = DriverManager.getConnection(url);
             /* tramite getConnection si tenta di stabilire una connessione con l'url del database fornito. Restituisce una connessione all'url */
+
+            System.out.println("Connessione al database: " + url);
+            System.out.println("Connessione stabilita: " + this.connection);
 
             this.connection.setAutoCommit(false);
             /* se si avesse autocommit(true): tutte le transazioni vengono eseguite ed effettuato commit individualmente */
