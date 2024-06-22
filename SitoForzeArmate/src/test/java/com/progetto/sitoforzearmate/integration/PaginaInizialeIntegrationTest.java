@@ -47,15 +47,15 @@ public class PaginaInizialeIntegrationTest {
     private MockMvc mockMvc;
 
     @Container
-    private final GenericContainer<?> mysql = new GenericContainer<>(DockerImageName.parse("stefanochiogna/db:latest"))
+    private static GenericContainer<?> mysql = new GenericContainer<>(DockerImageName.parse("stefanochiogna/db:latest"))
             .withExposedPorts(3306);
 
     @BeforeAll
-    public void initContainer(){
+    public static void initContainer(){
         this.mysql.start();
     }
     @AfterAll
-    public void stopContainer(){
+    public static void stopContainer(){
         this.mysql.stop();
     }
 
@@ -90,5 +90,50 @@ public class PaginaInizialeIntegrationTest {
                 .andExpect(model().attributeExists("notizia2"))
                 .andExpect(model().attributeExists("notizia3"))
                 .andExpect(model().attributeExists("notizia4"));
+    }
+
+    @Test
+    public void integration_modifyArticolo() throws Exception {
+        System.setProperty("host", mysql.getHost());
+        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
+
+        MockMultipartFile testoFile = new MockMultipartFile(
+            "Testo",
+            "testo.txt",
+            "text/plain",
+            "Questo è il contenuto del file di testo.".getBytes()
+        );
+    
+        String cookieAdminValue = "nonlosoquanticar#1234567890#ciao1";  
+        String id = "0000000001";
+        String oggetto = "Nuovo Oggetto";
+        String idAdmin = "1234567890";
+
+        this.mockMvc.perform(multipart("/modifyArticolo")
+            .file(testoFile)
+            .param("Id", id)
+            .param("Oggetto", oggetto)
+            .param("IdAdministrator", idAdmin)
+            .cookie(new Cookie("loggedAdmin", cookieAdminValue)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("index")) 
+            .andExpect(model().attributeExists("notizia" + id)) 
+            .andExpect(model().attribute("loggedAdminOn", true)) 
+            .andExpect(model().attribute("loggedAdmin", Matchers.notNullValue()));
+    }
+
+    @Test 
+    public void integration_viewArt() throws Exception {
+        System.setProperty("host", mysql.getHost());
+        System.setProperty("porta", mysql.valueOf(mysql.getMappedPort(3306)));
+
+        String id = "0000000001";
+
+        this.mockMvc.perform(get("/viewArt"))
+            .param("Id", id)
+            .andExpect(status().isOk())
+            .andExpect(view().name("viewArticoloCSS"))
+            .andExpect(model().attributeExists("NotiziaSelezionata"));
     }
 }
