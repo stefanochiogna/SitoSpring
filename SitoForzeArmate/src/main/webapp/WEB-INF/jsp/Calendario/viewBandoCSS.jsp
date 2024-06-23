@@ -3,6 +3,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.time.LocalDate" %>
+<%@ page import="com.progetto.sitoforzearmate.services.configuration.Configuration" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="../../html_daIncludere/Header.inc"%>
 <%
@@ -72,7 +73,7 @@
 
   <%
     try{
-      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(bando.getRiferimentoTesto().toString()), "UTF-8"));
+      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Configuration.getPATH(bando.getRiferimentoTesto().toString())), "UTF-8"));
 
       String line = br.readLine();
       while(line != null){%>

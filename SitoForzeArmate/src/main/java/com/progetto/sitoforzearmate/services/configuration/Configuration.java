@@ -13,8 +13,12 @@ public class Configuration {
     public static final String DAO_IMPL=DAOFactory.MYSQLJDBCIMPL;
     public static String getDIRECTORY_FILE(){
         String relativePath = ".." + File.separator +"raccolta_file"+ File.separator;
-        String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
-        return fullPath;
+        // String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
+        return Paths.get(relativePath).toString() + File.separator;
+    }
+    public static String getPATH(String relativePath){
+        String absolutePath =  Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
+        return absolutePath;
     }
     public static final String DATABASE_DRIVER="com.mysql.cj.jdbc.Driver";
     public static final String SERVER_TIMEZONE=Calendar.getInstance().getTimeZone().getID();
