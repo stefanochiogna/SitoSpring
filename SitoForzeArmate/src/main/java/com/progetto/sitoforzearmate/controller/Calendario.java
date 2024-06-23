@@ -78,9 +78,9 @@ public class Calendario {
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject("loggedAdminOn", true);
+                page.addObject("loggedAdminOn", loggedAdmin!=null);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("Date", dateList);
                 page.addObject("Bandi", bandoList);
@@ -152,9 +152,9 @@ public class Calendario {
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject("loggedAdminOn", true);
+                page.addObject("loggedAdminOn", loggedAdmin!=null);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("BandoSelezionato", bando);
                 page.addObject("maxIscrittiRaggiunto", maxIscritti);
@@ -440,7 +440,7 @@ public class Calendario {
                 daoFactory.commitTransaction();
                 //sessionDAOFactory.commitTransaction();
 
-                page.addObject("loggedAdminOn",loggedAdmin!=null);
+                page.addObject("loggedAdminOn",true);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("applicationMessage", applicationMessage);
                 page.addObject("ListaBasi", listaBasi);
