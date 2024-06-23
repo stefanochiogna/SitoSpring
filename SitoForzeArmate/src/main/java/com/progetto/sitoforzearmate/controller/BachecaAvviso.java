@@ -239,7 +239,9 @@ public class BachecaAvviso {
 
 
                 String DirectoryDest = Configuration.getDIRECTORY_FILE();
-                File file = new File(DirectoryDest + 'A' + avvisoId);
+                String RiferimentoTesto = Configuration.getPATH(DirectoryDest);
+
+                File file = new File(RiferimentoTesto + 'A' + avvisoId);
 
                 try{
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
@@ -249,17 +251,15 @@ public class BachecaAvviso {
 
                 }
                 catch(IOException e){
-                    throw new RuntimeException("Eccezione scrittura");
+                    throw new RuntimeException(e);
                 }
-
-                String RiferimentoTesto = file.getAbsolutePath();
 
 
                 if(scelta.equals("Tutti")){
                     listUser.addAll(userDAO.getUtenti());
 
                     for(int i=0; i<listUser.size(); i++){
-                        avvisoDAO.create(avvisoId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), listUser.get(i).getMatricola());
+                        avvisoDAO.create(avvisoId, oggetto, Paths.get(DirectoryDest), loggedAdmin.getIdAdministrator(), listUser.get(i).getMatricola());
 
                         Id = Integer.parseInt(avvisoDAO.getID()) + 1;
                         avvisoId = Id.toString();
@@ -272,7 +272,7 @@ public class BachecaAvviso {
                     for(int k=0; k<Ruolo.length; k++) {
                         listUser.addAll(userDAO.getUtentiRuolo(Ruolo[k]));
                         for (int i = 0; i < listUser.size(); i++) {
-                            avvisoDAO.create(avvisoId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), listUser.get(i).getMatricola());
+                            avvisoDAO.create(avvisoId, oggetto, Paths.get(DirectoryDest), loggedAdmin.getIdAdministrator(), listUser.get(i).getMatricola());
 
                             Id = Integer.parseInt(avvisoDAO.getID()) + 1;
                             avvisoId = Id.toString();
@@ -281,7 +281,7 @@ public class BachecaAvviso {
                 }
                 else if(scelta.equals("Utente")){
                     for(int k=0; k<Matricola.length; k++){
-                        avvisoDAO.create(avvisoId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), Matricola[k]);
+                        avvisoDAO.create(avvisoId, oggetto, Paths.get(DirectoryDest), loggedAdmin.getIdAdministrator(), Matricola[k]);
 
                         Id = Integer.parseInt(avvisoDAO.getID()) + 1;
                         avvisoId = Id.toString();

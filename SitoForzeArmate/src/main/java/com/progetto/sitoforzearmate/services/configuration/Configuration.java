@@ -12,7 +12,7 @@ public class Configuration {
     /* Database Configruation */
     public static final String DAO_IMPL=DAOFactory.MYSQLJDBCIMPL;
     public static String getDIRECTORY_FILE(){
-        String relativePath = ".." + File.separator + "SitoSpring" + File.separator +"raccolta_file"+ File.separator;
+        String relativePath = ".." + File.separator +"raccolta_file"+ File.separator;
         // String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
         return Paths.get(relativePath).toString() + File.separator;
     }
@@ -23,9 +23,9 @@ public class Configuration {
     public static final String DATABASE_DRIVER="com.mysql.cj.jdbc.Driver";
     public static final String SERVER_TIMEZONE=Calendar.getInstance().getTimeZone().getID();
     public static final String DATABASE_HOSTNAME = System.getenv("DB_HOST");
-
+    public static final String DATABASE_PORT = System.getenv("DB_PORT");
     public static final String
-            DATABASE_URL="jdbc:mysql://localhost:3306/forze_armate?user=root&password=DataBase1203!&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone="+SERVER_TIMEZONE;
+            DATABASE_URL="jdbc:mysql://localhost:3306/forze_armate?user=root&password=root_password&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone="+SERVER_TIMEZONE;
             // DATABASE_URL = "jdbc:mysql://" + System.getenv("DB_HOST") + [":" + System.getenv("DB_PORT")] "/" + System.getenv("DB_NAME") + "?user=" + System.getenv("DB_USER") +
             //                  + "&password=" + System.getenv("DB_PASS") + "..."
             // DataBase1203!

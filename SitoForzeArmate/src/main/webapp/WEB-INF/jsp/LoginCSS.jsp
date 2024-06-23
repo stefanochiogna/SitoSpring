@@ -49,7 +49,7 @@ spessore di -1px: l'ombra si estende leggermente all'interno dell'elemento
                        maxlength="40" required>
             </div>
 
-            <button type="submit" style="width: 100%; padding: 0.5rem 1rem; background-color: #3b82f6; color: #fff; font-weight: 600; border-radius: 0.375rem; outline: none; cursor: pointer; transition: background-color 0.2s ease-in-out;">Ok</button>
+            <button type="submit" id="login-button" style="width: 100%; padding: 0.5rem 1rem; background-color: #3b82f6; color: #fff; font-weight: 600; border-radius: 0.375rem; outline: none; cursor: pointer; transition: background-color 0.2s ease-in-out;">Ok</button>
 
          </form>
         <%if(applicationMessage != null){%>

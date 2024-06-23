@@ -130,13 +130,13 @@ public class PaginaIniziale {
             notizie = notizieDAO.findById(Id);
 
             /* Recupero Parametri */
-
+            if(Testo == null) throw new RuntimeException("Errore: Testo non settato");
             int IdArt = Integer.parseInt(Id);
 
             String DirectoryDest = Configuration.getDIRECTORY_FILE();                   // directory dove salvo i file
-            File file = new File(DirectoryDest + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id
+            String DirectoryDestPath = Configuration.getPATH(DirectoryDest);           // path della directory
+            File file = new File(DirectoryDestPath + 'A' + IdArt);                 // vado a creare un file in quella directory con il nome 'B' + Id
             Testo.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file
-            String RiferimentoTesto = file.getAbsolutePath();                           // recupero il riferimento al testo
 
             if(Oggetto.equals("")) throw new RuntimeException("Errore: Oggetto non settato");
             notizie.setOggetto(Oggetto);
@@ -144,8 +144,7 @@ public class PaginaIniziale {
             if(IdAdmin.equals("")) throw new RuntimeException("Errore: IdAdmin non settato");
             notizie.setIdAdministrator(IdAdmin);
 
-            if(Testo == null) throw new RuntimeException("Errore: Testo non settato");
-            notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));
+            notizie.setRiferimentoTesto(Paths.get(DirectoryDest));
 
             notizieDAO.update(notizie);
 

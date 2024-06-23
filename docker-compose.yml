@@ -1,4 +1,4 @@
-networks:
+networks: 
   forze_armate_net: 
 
 services:

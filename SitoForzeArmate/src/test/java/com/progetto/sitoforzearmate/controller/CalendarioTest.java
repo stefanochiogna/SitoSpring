@@ -292,7 +292,11 @@ class CalendarioTest {
         Mockito.when(db_mock.getBaseDAO()).thenReturn(basi_dao);
         Mockito.when(basi_dao.stampaBasi()).thenReturn(basi);
 
-        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
+        String relativePath = ".." + File.separator + "SitoSpring" + File.separator +"raccolta_file"+ File.separator +"test"+ File.separator;
+        String fullPath = Configuration.getPATH(relativePath);
+
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(relativePath);
+        configuration_mock.when(() -> Configuration.getPATH(anyString())).thenReturn(fullPath);
 
         if( cookieAdmin.equals("") ) {
             assertThrows(RuntimeException.class, () -> new Calendario().inserisciBando(null, cookieAdmin, dataBando, oggetto, numMaxIscritti, dataScadenza, locazione, insBando));
@@ -446,7 +450,8 @@ class CalendarioTest {
         String relativePath = ".." + File.separator + "SitoSpring" + File.separator +"raccolta_file"+ File.separator +"test"+ File.separator;
         String fullPath = Configuration.getPATH(relativePath);
 
-        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(fullPath);
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(relativePath);
+        configuration_mock.when(() -> Configuration.getPATH(anyString())).thenReturn(fullPath);
 
         if( cookieAdmin.equals("") ) {
             assertThrows(RuntimeException.class, () -> new Calendario().esitoPartecipante(null, cookieAdmin, utenteSelezionato, esito, bandoId));

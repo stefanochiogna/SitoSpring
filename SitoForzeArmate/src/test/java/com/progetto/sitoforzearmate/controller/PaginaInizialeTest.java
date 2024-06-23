@@ -18,6 +18,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -117,7 +119,11 @@ class PaginaInizialeTest {
         Mockito.when(db_mock.getNotizieDAO()).thenReturn(notizie_dao);
         Mockito.when(notizie_dao.findById(anyString())).thenReturn(notizia);
 
-        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn("C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\Test\\");
+        String relativePath = ".." + File.separator +"raccolta_file"+ File.separator +"test"+ File.separator;
+        String fullPath = Paths.get(relativePath).toString() + File.separator;
+
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(relativePath);
+        configuration_mock.when(() -> Configuration.getPATH(anyString())).thenReturn(fullPath);
 
         if(id.equals("")) assertThrows(RuntimeException.class, () -> new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo));
         else if(oggetto.equals(""))  assertThrows(RuntimeException.class, () -> new PaginaIniziale().sostituisciArticolo(null, cookieAdmin, id, oggetto, idAdmin, testo));
