@@ -206,7 +206,8 @@ class BachecaNewsletterTest {
         String relativePath = ".." + File.separator +"raccolta_file"+ File.separator +"test" + File.separator;
         String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
 
-        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(fullPath);
+        configuration_mock.when(() -> Configuration.getDIRECTORY_FILE()).thenReturn(relativePath);
+        configuration_mock.when(() -> Configuration.getPATH(anyString())).thenReturn(fullPath);
 
         if(cookieAdmin.equals("")) assertThrows(RuntimeException.class, () -> new BachecaNewsletter().inviaNewsletter(null, cookieAdmin, oggetto, testo));
         else if(oggetto.equals("") || testo.equals("")) assertThrows(RuntimeException.class, () -> new BachecaNewsletter().inviaNewsletter(null, cookieAdmin, oggetto, testo));
