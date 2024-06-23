@@ -5,11 +5,17 @@ import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.MySQL.Notizie.NotizieDAOmySQL;
 import com.progetto.sitoforzearmate.model.mo.Notizie.Notizie;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.Part;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,6 +27,7 @@ import org.testcontainers.containers.*;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.org.hamcrest.Matchers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
@@ -28,8 +35,10 @@ import java.sql.DriverManager;
 import java.time.Duration;
 import java.util.ArrayList;
 
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
+@AutoConfigureMockMvc
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PaginaInizialeIntegrationTest {
@@ -52,16 +62,16 @@ public class PaginaInizialeIntegrationTest {
 
     @BeforeAll
     public static void initContainer(){
-        this.mysql.start();
+        mysql.start();
     }
     @AfterAll
     public static void stopContainer(){
-        this.mysql.stop();
+        mysql.stop();
     }
 
     @Test
     public void container_running() {
-        assertTrue(this.mysql.isRunning());
+        assertTrue(mysql.isRunning());
     }
 
 
@@ -97,20 +107,27 @@ public class PaginaInizialeIntegrationTest {
         System.setProperty("host", mysql.getHost());
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
-        MockMultipartFile testoFile = new MockMultipartFile(
+        MockPart testoFile = new MockPart(
             "Testo",
             "testo.txt",
-            "text/plain",
-            "Questo è il contenuto del file di testo.".getBytes()
+            "text/plain Questo è il contenuto del file di testo.".getBytes()
         );
-    
+
+        MockPart testo = Mockito.mock(MockPart.class);
+        Mockito.when(testo.getInputStream()).thenReturn(testoFile.getInputStream());
+        Mockito.when(testo.getSubmittedFileName()).thenReturn(testoFile.getSubmittedFileName());
+        Mockito.when(testo.getContentType()).thenReturn(testoFile.getContentType());
+        Mockito.when(testo.getSize()).thenReturn(testoFile.getSize());
+        Mockito.when(testo.getName()).thenReturn(testoFile.getName());
+        Mockito.doNothing().when(testo).write(anyString());
+
         String cookieAdminValue = "nonlosoquanticar#1234567890#ciao1";  
         String id = "0000000001";
         String oggetto = "Nuovo Oggetto";
         String idAdmin = "1234567890";
 
         this.mockMvc.perform(multipart("/modifyArticolo")
-            .file(testoFile)
+            .part(testo)
             .param("Id", id)
             .param("Oggetto", oggetto)
             .param("IdAdministrator", idAdmin)
@@ -118,20 +135,20 @@ public class PaginaInizialeIntegrationTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(view().name("index")) 
-            .andExpect(model().attributeExists("notizia" + id)) 
+            .andExpect(model().attributeExists("notizia1"))
             .andExpect(model().attribute("loggedAdminOn", true)) 
-            .andExpect(model().attribute("loggedAdmin", Matchers.notNullValue()));
+            .andExpect(model().attribute("loggedAdmin", notNullValue()));
     }
 
     @Test 
     public void integration_viewArt() throws Exception {
         System.setProperty("host", mysql.getHost());
-        System.setProperty("porta", mysql.valueOf(mysql.getMappedPort(3306)));
+        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
         String id = "0000000001";
 
-        this.mockMvc.perform(get("/viewArt"))
-            .param("Id", id)
+        this.mockMvc.perform(post("/viewArt")
+            .param("Id", id))
             .andExpect(status().isOk())
             .andExpect(view().name("viewArticoloCSS"))
             .andExpect(model().attributeExists("NotiziaSelezionata"));

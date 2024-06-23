@@ -5,9 +5,11 @@ import com.progetto.sitoforzearmate.model.dao.DAOFactory;
 import com.progetto.sitoforzearmate.model.dao.MySQL.Notizie.NotizieDAOmySQL;
 import com.progetto.sitoforzearmate.model.mo.Notizie.Notizie;
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,6 +24,8 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.junit.jupiter.params.ParameterizedTest;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -52,16 +56,16 @@ public class BachecaAvvisoIntegrationTest {
 
     @BeforeAll
     public static void initContainer(){
-        this.mysql.start();
+        mysql.start();
     }
     @AfterAll
     public static void stopContainer(){
-        this.mysql.stop();
+        mysql.stop();
     }
 
     @Test
     public void container_running() {
-        assertTrue(this.mysql.isRunning());
+        assertTrue(mysql.isRunning());
     }
 
 
@@ -96,12 +100,16 @@ public class BachecaAvvisoIntegrationTest {
                 .andExpect(view().name("Bacheca/AvvisiCSS"))
                 .andExpect(model().attribute("loggedAdminOn", loggedAdminOn))
                 .andExpect(model().attribute("loggedOn", loggedUserOn));
-        
+
         if (loggedAdminOn) {
-            this.mockMvc.perform(requestBuilder)
+            this.mockMvc.perform(get("/viewBachecaAvviso")
+                            .cookie(new Cookie("loggedAdmin", cookieAdmin))
+                            .cookie(new Cookie("loggedUser", cookieUser)))
                 .andExpect(model().attributeExists("listaUtenti"));
         } else if (loggedUserOn) { 
-            this.mockMvc.perform(requestBuilder) 
+            this.mockMvc.perform(get("/viewBachecaAvviso")
+                            .cookie(new Cookie("loggedAdmin", cookieAdmin))
+                            .cookie(new Cookie("loggedUser", cookieUser)))
                 .andExpect(model().attributeExists("Avvisi"));
         }
     }
@@ -145,21 +153,17 @@ public class BachecaAvvisoIntegrationTest {
     @Test 
     public void integration_inviaAvviso() throws Exception {
         System.setProperty("host", mysql.getHost());
-        System.setProperty("porta", mysql.valueOf(mysql.getMappedPort(3306)));
+        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
         String cookieAdmin = "nonlosoquanticar#1234567890#ciao1";
         String scelta = "Tutti";
         String oggetto = "Integration test";
         String testo = "prova per integration test";
-        String[] ruolo = [];
-        String[] matricola = [];
 
         this.mockMvc.perform(post("/inviaAvviso")
             .param("Scelta", scelta)
             .param("Oggetto", oggetto)
             .param("Testo", testo)
-            .param("RuoloSelezionato", ruolo)
-            .param("Matricola", matricola)
             .cookie(new Cookie("loggedAdmin", cookieAdmin)))
             .andExpect(status().isOk())
             .andExpect(view().name("Bacheca/reload"))

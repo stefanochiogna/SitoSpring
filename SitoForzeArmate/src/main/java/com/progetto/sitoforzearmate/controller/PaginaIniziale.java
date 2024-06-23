@@ -130,7 +130,7 @@ public class PaginaIniziale {
             notizie = notizieDAO.findById(Id);
 
             /* Recupero Parametri */
-
+            if(Testo == null) throw new RuntimeException("Errore: Testo non settato");
             int IdArt = Integer.parseInt(Id);
 
             String DirectoryDest = Configuration.getDIRECTORY_FILE();                   // directory dove salvo i file
@@ -144,7 +144,6 @@ public class PaginaIniziale {
             if(IdAdmin.equals("")) throw new RuntimeException("Errore: IdAdmin non settato");
             notizie.setIdAdministrator(IdAdmin);
 
-            if(Testo == null) throw new RuntimeException("Errore: Testo non settato");
             notizie.setRiferimentoTesto(Paths.get(RiferimentoTesto));
 
             notizieDAO.update(notizie);
