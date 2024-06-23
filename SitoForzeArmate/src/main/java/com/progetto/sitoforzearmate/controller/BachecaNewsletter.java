@@ -226,8 +226,9 @@ public class BachecaNewsletter {
                 Integer Id = Integer.parseInt(newsletterDAO.getID()) + 1;
                 String NewsId = Id.toString();
 
-                String DirectoryDest = Configuration.getDIRECTORY_FILE();
-                File file = new File(DirectoryDest + 'N' + NewsId);
+                String DirectoryDest = Configuration.getDIRECTORY_FILE(); 
+                String RiferimentoTesto = Configuration.getPATH(DirectoryDest); 
+                File file = new File(RiferimentoTesto + 'N' + NewsId);
 
                 try{
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
@@ -238,11 +239,9 @@ public class BachecaNewsletter {
                     throw new RuntimeException("Eccezione scrittura");
                 }
 
-                String RiferimentoTesto = file.getAbsolutePath();
-
                 listUser.addAll(userDAO.getUtentiNewsletter());
                 for(int i=0; i<listUser.size(); i++){
-                    newsletterDAO.create(NewsId, oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), listUser.get(i).getMail(), listUser.get(i).getMatricola());
+                    newsletterDAO.create(NewsId, oggetto, Paths.get(DirectoryDest), loggedAdmin.getIdAdministrator(), listUser.get(i).getMail(), listUser.get(i).getMatricola());
 
                     Id = Integer.parseInt(newsletterDAO.getID()) + 1;
                     NewsId = Id.toString();
