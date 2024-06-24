@@ -42,6 +42,7 @@ public class MySQLdao extends DAOFactory {
             String url = Configuration.DATABASE_URL;
             System.out.println(Configuration.DATABASE_HOSTNAME);
 
+
             String port = System.getProperty("porta");
             String host = System.getProperty("host");
             if(port != null){

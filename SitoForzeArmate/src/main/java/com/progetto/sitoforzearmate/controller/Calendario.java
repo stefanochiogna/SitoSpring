@@ -78,9 +78,9 @@ public class Calendario {
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject("loggedAdminOn", true);
+                page.addObject("loggedAdminOn", loggedAdmin!=null);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("Date", dateList);
                 page.addObject("Bandi", bandoList);
@@ -152,9 +152,9 @@ public class Calendario {
 
                 daoFactory.commitTransaction();
 
-                page.addObject("loggedOn",true);  // loggedUser != null: attribuisce valore true o false
+                page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
                 page.addObject("loggedUser", loggedUser);
-                page.addObject("loggedAdminOn", true);
+                page.addObject("loggedAdminOn", loggedAdmin!=null);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("BandoSelezionato", bando);
                 page.addObject("maxIscrittiRaggiunto", maxIscritti);
@@ -422,15 +422,16 @@ public class Calendario {
                 bandoId = caratteriRestanti + bandoId;
 
                 String DirectoryDest = Configuration.getDIRECTORY_FILE();   // directory dove salvo i file
-                File file = new File(DirectoryDest + 'B' + bandoId);                  // vado a creare un file in quella directory con il nome 'B' + Id
+                String RiferimentoTesto = Configuration.getPATH(DirectoryDest);                 // recupero il riferimento al testo
+
+                File file = new File(RiferimentoTesto + 'B' + bandoId);                  // vado a creare un file in quella directory con il nome 'B' + Id
                 insBando.write(file.getAbsolutePath());                                        // vado a scriverci il contenuto del file
-                String RiferimentoTesto = file.getAbsolutePath();                               // recupero il riferimento al testo
 
                 Data data = new Data(dataBando);
                 Data dataScadenzaBando = new Data(dataScadenza);
 
 
-                Bando bando = bandoDAO.create(data, bandoId, oggettoBando, Paths.get(RiferimentoTesto),
+                Bando bando = bandoDAO.create(data, bandoId, oggettoBando, Paths.get(DirectoryDest),
                         locazione, Integer.parseInt(numMaxIscritti), dataScadenzaBando, loggedAdmin.getIdAdministrator());
 
 
@@ -440,7 +441,7 @@ public class Calendario {
                 daoFactory.commitTransaction();
                 //sessionDAOFactory.commitTransaction();
 
-                page.addObject("loggedAdminOn",loggedAdmin!=null);
+                page.addObject("loggedAdminOn",true);
                 page.addObject("loggedAdmin", loggedAdmin);
                 page.addObject("applicationMessage", applicationMessage);
                 page.addObject("ListaBasi", listaBasi);
@@ -662,7 +663,9 @@ public class Calendario {
                 String avvisoId = Id.toString();
 
                 String DirectoryDest = Configuration.getDIRECTORY_FILE();
-                File file = new File(DirectoryDest + 'A' + avvisoId);
+                String RiferimentoTesto = Configuration.getPATH(DirectoryDest);
+
+                File file = new File(RiferimentoTesto + 'A' + avvisoId);
 
                 try{
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
@@ -673,9 +676,7 @@ public class Calendario {
                     throw new RuntimeException(e);
                 }
 
-                String RiferimentoTesto = file.getAbsolutePath();
-
-                avvisoDAO.create(avvisoId, Oggetto, Paths.get(RiferimentoTesto), loggedAdmin.getIdAdministrator(), utenteSelezionato);
+                avvisoDAO.create(avvisoId, Oggetto, Paths.get(DirectoryDest), loggedAdmin.getIdAdministrator(), utenteSelezionato);
 
                 daoFactory.commitTransaction();
 

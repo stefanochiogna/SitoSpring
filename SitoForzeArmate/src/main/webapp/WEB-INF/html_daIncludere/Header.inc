@@ -21,14 +21,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <!-- <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbarCSS.css"> -->
 <link rel="stylesheet" href="/css/styleCSS.css">
-<%
-    String relativePath = ".." + File.separator +"raccolta_file"+ File.separator;
-    String fullPath = Paths.get(relativePath).toAbsolutePath().toString() + File.separator;
-    System.out.println(fullPath);
-    System.out.println(request.getServletPath() + " " + request.getContextPath());
 
-    String pathProva = request.getContextPath() + File.separator + "META-INF" + File.separator + "resources" + File.separator + "static" + File.separator + "css" + File.separator;
-
-%>
 
 

@@ -3,6 +3,7 @@
 <%@ page import="com.progetto.sitoforzearmate.model.mo.Utente.Amministratore" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.progetto.sitoforzearmate.model.mo.Base.Base" %>
+<%@ page import="com.progetto.sitoforzearmate.services.configuration.Configuration" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Bando bando = (Bando) request.getAttribute("BandoSelezionato");
@@ -54,7 +55,7 @@
     <% if(bando != null){ %>
     <label for="testoBando" style="font-weight: bold;">Testo: </label>
     <textarea class="testo" id="testoBando" name="testoBando" required><%try{
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(bando.getRiferimentoTesto().toString()), "UTF-8"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Configuration.getPATH(bando.getRiferimentoTesto().toString())), "UTF-8"));
         String line = br.readLine();
         while(line != null){%><%=line+'\n'%><%line = br.readLine();%><%}
         br.close();

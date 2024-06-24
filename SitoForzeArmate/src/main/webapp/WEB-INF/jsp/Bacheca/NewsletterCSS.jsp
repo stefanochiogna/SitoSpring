@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.io.*" %>
+<%@ page import="com.progetto.sitoforzearmate.services.configuration.Configuration" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     List<Newsletter> newsletterList = new ArrayList<>();
@@ -88,7 +89,7 @@
 
                 <%
                     try{
-                        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(newsletterList.get(i).getRiferimentoTesto().toString()), "UTF-8"));
+                        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(Configuration.getPATH(newsletterList.get(i).getRiferimentoTesto().toString())), "UTF-8"));
                         int CaratteriLetti = 0;
                         String line = br.readLine();
                         while((line != null) && (CaratteriLetti < 200)){%>

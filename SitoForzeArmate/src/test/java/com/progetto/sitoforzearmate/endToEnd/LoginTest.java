@@ -1,5 +1,7 @@
 package com.progetto.sitoforzearmate.endToEnd;
 
+import com.progetto.sitoforzearmate.services.configuration.Configuration;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
@@ -16,11 +18,12 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 // import io.github.bonigarcia.wdm.WebDriverManager;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
+import java.io.File;
 import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 @Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
@@ -36,35 +39,42 @@ public class LoginTest{
     private static GenericContainer<?> mysql = new GenericContainer<>(DockerImageName.parse("stefanochiogna/db:latest"))
             .withExposedPorts(3306);
 
-    @Container
-    private static GenericContainer<?> sito = new GenericContainer<>(DockerImageName.parse("stefanochiogna/forze_armate:latest"))
-            .withExposedPorts(8080)
-            .withEnv("DB_HOST", mysql.getHost())
-            .withEnv("DB_PORT", String.valueOf(mysql.getMappedPort(3306)))
-            .dependsOn(mysql);
 
-    @Container
-    private static GenericContainer<?> selenium = new GenericContainer<>(DockerImageName.parse("selenium/standalone-chrome:latest"))
-            .withExposedPorts(4444)
-            .withReuse(true)
-            .dependsOn(sito);
+    private static GenericContainer<?> sito;
 
+    private static BrowserWebDriverContainer selenium = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
+            .withCapabilities(new ChromeOptions())
+            .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL, new File(Configuration.getPATH(Configuration.getDIRECTORY_FILE())))
+            .dependsOn(sito)
+            .withNetworkAliases("chrome");
 
     @BeforeAll
     public static void setUpAll() {
         mysql.start();
-        sito.start();
-        selenium.start();
+
+        sito = new GenericContainer<>(DockerImageName.parse("stefanochiogna/forze_armate:latest"))
+                .withExposedPorts(8080)
+                .withEnv("DB_HOST", mysql.getHost())
+                .withEnv("DB_PORT", String.valueOf(mysql.getMappedPort(3306)))
+                .dependsOn(mysql);
+
     }
     @AfterAll
     public static void tearDownAll() {
         mysql.stop();
-        sito.stop();
-        selenium.stop();
     }
 
     @BeforeEach
     public void setUp() {
+
+
+        System.out.println("Db setup: "+ "http://" + mysql.getHost() + ":" + mysql.getMappedPort(3306));
+
+        sito.start();
+
+        selenium.start();
+
+        WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         try {
             URL url = new URL("http://" + selenium.getHost() + ":" + selenium.getMappedPort(4444) + "/wd/hub");
@@ -72,6 +82,7 @@ public class LoginTest{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @AfterEach
@@ -79,46 +90,36 @@ public class LoginTest{
         if (driver != null) {
             driver.quit();
         }
+
+        sito.stop();
+        selenium.stop();
     }
 
     @Test
     public void testLoginSuccesso() {
-
-        System.setProperty("host", mysql.getHost());
-        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
+        System.out.println("proprietà host" + System.getProperty("host"));
+        System.out.println("e porta" + System.getProperty("porta"));
+        System.out.println("Db metodo: "+ "http://" + mysql.getHost() + ":" + mysql.getMappedPort(3306));
 
         System.out.println("http://" + sito.getHost() + ":" + sito.getMappedPort(8080) + "/viewLogin");
-
-        ChromeOptions options = new ChromeOptions();
-        try {
-            URL url = new URL("http://" + selenium.getHost() + ":" + selenium.getMappedPort(4444) + "/wd/hub");
-            driver = new RemoteWebDriver(url, options);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         driver.get("http://" + sito.getHost() + ":" + sito.getMappedPort(8080) + "/viewLogin");
 
         // Compila il form
-        try {
-            WebElement usernameInput = driver.findElement(By.id("Email"));
-            WebElement passwordInput = driver.findElement(By.id("Password"));
 
-            usernameInput.sendKeys("sara.tullini@edu.unife.it");
-            Thread.sleep(1000);
-            passwordInput.sendKeys("password");
-            Thread.sleep(1000);
-            // Invio del form
-            WebElement submit = driver.findElement(By.id("login-button"));
-            submit.click();
+        WebElement usernameInput = driver.findElement(By.id("Email"));
+        WebElement passwordInput = driver.findElement(By.id("Password"));
 
-            // Verifica il risultato
-            String expectedUrl = "http://localhost:8080/homepage";
-            assertEquals(expectedUrl, driver.getCurrentUrl());
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // Altre asserzioni per verificare la registrazione riuscita
+        usernameInput.sendKeys("sara.tullini@edu.unife.it");
+        passwordInput.sendKeys("password");
+
+        // Invio del form
+        WebElement submit = driver.findElement(By.id("login-button"));
+        submit.click();
+
+        // Verifica il risultato
+        String expectedUrl = "http://localhost:8080/homepage";
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+    // Altre asserzioni per verificare la registrazione riuscita
     }
 }
