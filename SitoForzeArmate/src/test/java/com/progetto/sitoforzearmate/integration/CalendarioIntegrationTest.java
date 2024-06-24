@@ -90,7 +90,7 @@ public class CalendarioIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("Calendario/CalendarioCSS"))
                 .andExpect(model().attribute("loggedAdminOn", loggedAdminOn))
-                .andExpect(model().attribute("loggedOn", loggedUserOn));
+                .andExpect(model().attribute("loggedOn", loggedUserOn))
                 .andExpect(model().attributeExists("Date"))
                 .andExpect(model().attributeExists("Bandi"));
     }

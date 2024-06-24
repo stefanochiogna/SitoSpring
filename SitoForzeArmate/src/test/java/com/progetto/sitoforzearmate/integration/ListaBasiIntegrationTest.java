@@ -10,8 +10,10 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -148,7 +150,7 @@ public class ListaBasiIntegrationTest {
 
         String cookieAdmin = "nonlosoquanticar#1234567890#ciao1";
 
-        this.mockMvc.perform(post("/registraBase")
+        this.mockMvc.perform(get("/registraBase")
             .cookie(new Cookie("loggedAdmin", cookieAdmin)))
             .andExpect(status().isOk())
             .andExpect(view().name("ListaBasi/NewBaseCSS"))
@@ -163,12 +165,15 @@ public class ListaBasiIntegrationTest {
         MockPart fotoFile = new MockPart(
             "Foto",
             "foto.jpg",
-            "image/jpeg",
-            any(byte[].class)
+            "image/jpeg".getBytes()
         );
 
         MockPart foto = Mockito.mock(MockPart.class);
         Mockito.when(foto.getInputStream()).thenReturn(fotoFile.getInputStream());
+        Mockito.when(foto.getSubmittedFileName()).thenReturn(fotoFile.getSubmittedFileName());
+        Mockito.when(foto.getContentType()).thenReturn(fotoFile.getContentType());
+        Mockito.when(foto.getSize()).thenReturn(fotoFile.getSize());
+        Mockito.when(foto.getName()).thenReturn(fotoFile.getName());
 
         String cookieAdmin = "nonlosoquanticar#1234567890#ciao1";
         String email = "marsala@gmail.com";
@@ -181,8 +186,8 @@ public class ListaBasiIntegrationTest {
         String longitudine = "0";
 
         this.mockMvc.perform(multipart("/newBase")
-            .cookie(new Cookie("loggedAdmin", cookieAdmin))
             .part(foto)
+            .cookie(new Cookie("loggedAdmin", cookieAdmin))
             .param("Email", email)
             .param("Telefono", telefono)
             .param("Locazione", locazione)

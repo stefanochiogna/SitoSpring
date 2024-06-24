@@ -115,7 +115,7 @@ CREATE TABLE `bando` (
   KEY `LocazioneBando_idx` (`Locazione`),
   KEY `IdAdministratorBando_idx` (`IdAdministrator`),
   CONSTRAINT `IdAdministratorBando` FOREIGN KEY (`IdAdministrator`) REFERENCES `amministratore` (`IdAdministrator`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `LocazioneBando` FOREIGN KEY (`Locazione`) REFERENCES `base` (`Locazione`) ON UPDATE CASCADE
+  CONSTRAINT `LocazioneBando` FOREIGN KEY (`Locazione`) REFERENCES `base` (`Locazione`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -125,7 +125,7 @@ CREATE TABLE `bando` (
 
 LOCK TABLES `bando` WRITE;
 /*!40000 ALTER TABLE `bando` DISABLE KEYS */;
-INSERT INTO `bando` VALUES ('2023-07-12','0000000002','Corso2',0,'C:/Users/stefa/Desktop/Sito_SistemiWeb/Robba.txt','Poggio Renatico',5,'2022-07-15','1234567890'),('2023-08-20','0000000003','Bando_20230820',5,'C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\B0000000003','Pisa',31,'2024-07-21','1234567890'),('2023-08-20','0000000004','BandoPoggio',0,'C:/Users/stefa/Desktop/Sito_SistemiWeb/Robba.txt','Poggio Renatico',18,'2026-04-13','1234567890'),('2024-09-01','0000000005','Tech Support',0,'C:\\Users\\stefa\\Desktop\\Sito_SistemiWeb\\File\\B0000000005','Poggio Renatico',29,'2024-07-28','1234567890');
+INSERT INTO `bando` VALUES ('2023-07-12','0000000002','Corso2',0,'../raccolta_file/B0000000003','Poggio Renatico',5,'2022-07-15','1234567890'),('2023-08-20','0000000003','Bando_20230820',5,'../raccolta_file/B0000000003','Pisa',31,'2024-07-21','1234567890'),('2023-08-20','0000000004','BandoPoggio',0,'../raccolta_file/B0000000005','Poggio Renatico',18,'2026-04-13','1234567890'),('2024-09-01','0000000005','Tech Support',0,'../raccolta_file/B0000000005','Poggio Renatico',29,'2024-07-28','1234567890');
 /*!40000 ALTER TABLE `bando` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -554,4 +554,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-23 19:49:00
+-- Dump completed on 2024-06-24 14:58:16

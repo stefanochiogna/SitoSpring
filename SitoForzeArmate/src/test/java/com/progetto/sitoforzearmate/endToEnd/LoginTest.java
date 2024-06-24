@@ -1,5 +1,7 @@
 package com.progetto.sitoforzearmate.endToEnd;
 
+import com.progetto.sitoforzearmate.services.configuration.Configuration;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
@@ -16,7 +18,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 // import io.github.bonigarcia.wdm.WebDriverManager;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
+import java.io.File;
 import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,12 +42,22 @@ public class LoginTest{
 
     private static GenericContainer<?> sito;
 
-    private static GenericContainer<?> selenium;
-
+    private static BrowserWebDriverContainer selenium = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
+            .withCapabilities(new ChromeOptions())
+            .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL, new File(Configuration.getPATH(Configuration.getDIRECTORY_FILE())))
+            .dependsOn(sito)
+            .withNetworkAliases("chrome");
 
     @BeforeAll
     public static void setUpAll() {
         mysql.start();
+
+        sito = new GenericContainer<>(DockerImageName.parse("stefanochiogna/forze_armate:latest"))
+                .withExposedPorts(8080)
+                .withEnv("DB_HOST", mysql.getHost())
+                .withEnv("DB_PORT", String.valueOf(mysql.getMappedPort(3306)))
+                .dependsOn(mysql);
+
     }
     @AfterAll
     public static void tearDownAll() {
@@ -52,21 +66,15 @@ public class LoginTest{
 
     @BeforeEach
     public void setUp() {
-        sito = new GenericContainer<>(DockerImageName.parse("stefanochiogna/forze_armate:latest"))
-                .withExposedPorts(8080)
-                .withEnv("DB_HOST", mysql.getHost())
-                .withEnv("DB_PORT", String.valueOf(mysql.getMappedPort(3306)))
-                .dependsOn(mysql);
 
-        selenium = new GenericContainer<>(DockerImageName.parse("selenium/standalone-chrome:latest"))
-                .withExposedPorts(4444)
-                .dependsOn(sito);
 
         System.out.println("Db setup: "+ "http://" + mysql.getHost() + ":" + mysql.getMappedPort(3306));
 
         sito.start();
+
         selenium.start();
 
+        WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         try {
             URL url = new URL("http://" + selenium.getHost() + ":" + selenium.getMappedPort(4444) + "/wd/hub");
@@ -74,6 +82,7 @@ public class LoginTest{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @AfterEach
