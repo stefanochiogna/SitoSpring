@@ -53,5 +53,6 @@ jobs:
       with: 
         context: . 
         file: ./DockerfileSQL
+        push: true
         tags: stefanochiogna/db:latest
       
