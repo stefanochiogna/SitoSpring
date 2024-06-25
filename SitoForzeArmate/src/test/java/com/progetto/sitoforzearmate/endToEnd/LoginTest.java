@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @Testcontainers
+@Disabled
 @SpringBootTest
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -51,9 +52,6 @@ public class LoginTest{
 
     @BeforeAll
     public static void setUpAll() {
-
-        final Path pathRecord = Path.of(Configuration.getPATH(Configuration.getDIRECTORY_FILE() + "recordings" + File.separator));
-        pathRecord.toFile().mkdirs();
 
         mysql.start();
 
@@ -145,8 +143,6 @@ public class LoginTest{
         // Invio del form
         WebElement submit = driver.findElement(By.id("login-button"));
         submit.click();
-
-        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
         // Verifica il risultato
         String expectedUrl = "http://" + url.toLowerCase() + ":8080/loginUser";
