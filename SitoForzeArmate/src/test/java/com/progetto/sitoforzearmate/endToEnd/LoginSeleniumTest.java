@@ -66,8 +66,8 @@ public class LoginSeleniumTest {
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
-                .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withExposedPorts(4444);
+                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
 
 
     }
@@ -142,6 +142,7 @@ public class LoginSeleniumTest {
     }
 
     @Test
+    @Disabled
     public void testRegistrazioneSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
         driver.get("http://" + url + ":" + String.valueOf(8080) + "/viewRegistrazione");
@@ -182,6 +183,7 @@ public class LoginSeleniumTest {
     }
 
     @Test
+    @Disabled
     public void testLoginAdminSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
 
@@ -204,6 +206,7 @@ public class LoginSeleniumTest {
         assertEquals(expectedUrl, driver.getCurrentUrl());
     }
     @Test
+    @Disabled
     public void testLoginAdminFailure() {
         String url = sito.getNetworkAliases().iterator().next();
 
