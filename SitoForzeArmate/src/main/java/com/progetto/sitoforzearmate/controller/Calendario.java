@@ -516,8 +516,7 @@ public class Calendario {
                 sessionUserDAO.update(loggedUser);
 
                 boolean iscritto;
-                if (iscrizione.equalsIgnoreCase("True")) iscritto = true;
-                else if (iscrizione.equalsIgnoreCase("False")) iscritto = false;
+                if (iscrizione.equalsIgnoreCase("True") || iscrizione.equals("False")) iscritto = Boolean.getBoolean(iscrizione);
                 else throw new RuntimeException("Errore: non è stato trovato lo stato di iscrizione al bando");
 
 

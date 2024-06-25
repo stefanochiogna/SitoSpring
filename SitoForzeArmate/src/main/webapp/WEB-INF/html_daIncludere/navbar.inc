@@ -8,7 +8,7 @@
                 <a href="/viewBachecaAvviso" id="Bacheca" <%=menuActiveLink.equals("Avvisi")?"class=\"active\"":""%>>Bacheca Avvisi</a>
                 <a href="/viewListaBasi" <%=menuActiveLink.equals("Basi")?"class=\"active\"":""%>>Basi Militari Attive</a>
                 <a href="/viewProfilo" <%=menuActiveLink.equals("Profilo")?"class=\"active\"":""%>>Profilo</a>
-                <a class="login" href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log out</a>
+                <a class="login" href="/logout" id="logout-button"><span class="glyphicon glyphicon-log-out"></span> Log out</a>
             <%}%>
             <%if (!loggedOn && !loggedAdminOn) {%>
                <a class="login" href="/viewLogin"><span class="glyphicon glyphicon-log-in"></span> Log in</a>

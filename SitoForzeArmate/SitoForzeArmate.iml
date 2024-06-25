@@ -160,6 +160,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: com.github.docker-java:docker-java-transport:3.3.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.java.dev.jna:jna:5.13.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.testcontainers:selenium:1.17.6" level="project" />
+    <orderEntry type="library" name="Maven: software.xdev:testcontainers-selenium:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: io.github.bonigarcia:webdrivermanager:4.4.3" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.10.1" level="project" />
