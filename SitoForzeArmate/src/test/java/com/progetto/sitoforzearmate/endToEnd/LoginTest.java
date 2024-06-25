@@ -75,7 +75,7 @@ public class LoginTest{
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
                 .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getPATH(Configuration.getDIRECTORY_FILE()), "/home/raccolta_file", BindMode.READ_ONLY);;
+                .withFileSystemBind(Configuration.getPATH(Configuration.getDIRECTORY_FILE()), "/home/raccolta_file", BindMode.READ_ONLY);
 
 
     }
