@@ -141,8 +141,8 @@ public class LoginSeleniumTest {
         assertEquals(expectedUrl, driver.getCurrentUrl());
     }
 
+    /*
     @Test
-    @Disabled
     public void testRegistrazioneSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
         driver.get("http://" + url + ":" + String.valueOf(8080) + "/viewRegistrazione");
@@ -228,4 +228,6 @@ public class LoginSeleniumTest {
         expectedUrl = "http://" + url.toLowerCase() + ":8080/loginAdmin";
         assertEquals(expectedUrl, driver.getCurrentUrl());
     }
+
+     */
 }

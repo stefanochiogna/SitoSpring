@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -111,6 +110,7 @@ public class CalendarioSeleniumTest {
         assertEquals(expected, driver.getCurrentUrl());
     }
 
+    /*
     @Test
     @Order(2)
     public void testCreateBando(){
@@ -231,4 +231,5 @@ public class CalendarioSeleniumTest {
 
         return idString;
     }
+    */
 }
