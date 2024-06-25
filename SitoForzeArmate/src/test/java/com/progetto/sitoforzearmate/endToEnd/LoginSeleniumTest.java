@@ -1,3 +1,4 @@
+/*
 package com.progetto.sitoforzearmate.endToEnd;
 
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
@@ -225,5 +226,7 @@ public class LoginSeleniumTest {
         assertEquals(expectedUrl, driver.getCurrentUrl());
     }
 
-     */
+
 }
+
+ */

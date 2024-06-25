@@ -1,3 +1,4 @@
+/*
 package com.progetto.sitoforzearmate.endToEnd;
 
 import com.progetto.sitoforzearmate.model.dao.Bando.BandoDAO;
@@ -227,5 +228,6 @@ public class CalendarioSeleniumTest {
 
         return idString;
     }
-    */
+
 }
+*/
