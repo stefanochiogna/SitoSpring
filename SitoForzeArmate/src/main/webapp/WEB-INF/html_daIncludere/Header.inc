@@ -10,11 +10,19 @@
 <title>Aeronautica Militare</title>
 
 <%
-    boolean loggedOn = (Boolean) request.getAttribute("loggedOn");
-    UtenteRegistrato loggedUser = (UtenteRegistrato) request.getAttribute("loggedUser");
+    boolean loggedOn = false;
+    UtenteRegistrato loggedUser = null;
+    if(request.getAttribute("loggedOn") != null) {
+        loggedOn = (Boolean) request.getAttribute("loggedOn");
+        loggedUser = (UtenteRegistrato) request.getAttribute("loggedUser");
+    }
 
-    boolean loggedAdminOn = (Boolean) request.getAttribute("loggedAdminOn");
-    Amministratore loggedAdmin = (Amministratore) request.getAttribute("loggedAdmin");
+    boolean loggedAdminOn = false;
+    Amministratore loggedAdmin = null;
+    if(request.getAttribute("loggedAdminOn") != null) {
+        loggedAdminOn = (Boolean) request.getAttribute("loggedAdminOn");
+        loggedAdmin = (Amministratore) request.getAttribute("loggedAdmin");
+    }
 %>
 
 <link rel="shortcut icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Coat_of_arms_of_the_Italian_Air_Force.svg/804px-Coat_of_arms_of_the_Italian_Air_Force.svg.png">

@@ -10,6 +10,7 @@
   Bando bando = (Bando) request.getAttribute("BandoSelezionato");
   boolean Iscritto = false;
   boolean maxIscrittiRaggiunto = (boolean) request.getAttribute("maxIscrittiRaggiunto");
+
   if (loggedOn) Iscritto = (boolean) request.getAttribute("Iscritto");
   String inAttesa = (String) request.getAttribute("inAttesa");
 
@@ -17,6 +18,10 @@
   if(loggedAdminOn){
     partecipanti.addAll( (List<UtenteRegistrato>) request.getAttribute("partecipanti") );
   }
+
+  System.out.println("loggedOn: " + loggedOn);
+  System.out.println("iscritto: " + Iscritto);
+
 %>
 <html>
 <head>
