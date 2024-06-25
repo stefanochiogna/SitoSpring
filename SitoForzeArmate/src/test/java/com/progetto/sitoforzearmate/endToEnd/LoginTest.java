@@ -24,6 +24,7 @@ import org.testcontainers.utility.DockerImageName;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @Testcontainers
-@Disabled
 @SpringBootTest
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -68,14 +68,14 @@ public class LoginTest{
                 .withCapabilities(new ChromeOptions())
                 .withRecordingMode(
                         BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
-                        new File(Configuration.getPATH(Configuration.getDIRECTORY_FILE() + "recordings" + File.separator)),
+                        new File(Configuration.getDIRECTORY_FILE() + "recordings" + File.separator),
                         VncRecordingContainer.VncRecordingFormat.MP4
                 )
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
                 .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getPATH(Configuration.getDIRECTORY_FILE()), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
 
 
     }
