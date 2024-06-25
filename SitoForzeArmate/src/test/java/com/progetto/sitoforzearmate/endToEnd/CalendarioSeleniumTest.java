@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CalendarioSeleniumTest {
+
     private RemoteWebDriver driver;
     @Container
     private static GenericContainer<?> mysql = new GenericContainer<>(DockerImageName.parse("stefanochiogna/db:latest"))
@@ -63,11 +64,6 @@ public class CalendarioSeleniumTest {
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
                 .withCapabilities(new ChromeOptions())
-                .withRecordingMode(
-                        BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
-                        new File(Configuration.getDIRECTORY_FILE() + "recordings" + File.separator),
-                        VncRecordingContainer.VncRecordingFormat.MP4
-                )
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")

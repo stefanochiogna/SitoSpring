@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LoginSeleniumTest {
+
     private RemoteWebDriver driver;
     @Container
     private static GenericContainer<?> mysql = new GenericContainer<>(DockerImageName.parse("stefanochiogna/db:latest"))
@@ -58,11 +59,6 @@ public class LoginSeleniumTest {
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
                 .withCapabilities(new ChromeOptions())
-                .withRecordingMode(
-                        BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
-                        new File(Configuration.getDIRECTORY_FILE() + "recordings" + File.separator),
-                        VncRecordingContainer.VncRecordingFormat.MP4
-                )
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
