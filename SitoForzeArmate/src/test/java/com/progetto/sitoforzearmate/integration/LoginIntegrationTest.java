@@ -88,7 +88,10 @@ public class LoginIntegrationTest {
                 .andExpect(view().name("LoginCSS"));
     }
 
-    /*@Test 
+    @ParameterizedTest
+    @CsvSource({
+        ""
+    }) 
     public void integration_login() throws Exception {
         System.setProperty("host", mysql.getHost());
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
@@ -103,5 +106,5 @@ public class LoginIntegrationTest {
             .param("Password", password);
 
             
-    }*/
+    }
 }

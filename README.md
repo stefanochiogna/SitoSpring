@@ -9,7 +9,7 @@ Sito web non ufficiale dell'aeronautica militare svolto come progetto per l'esam
 Il portale web presenta le seguenti caratteristiche:
 
 - Una pagina principale come pagina di default che si visualizza non appena viene richiesto di visualizzare il sito e a cui si può tornare in ogni momento durante la navigazione;
-- Una barra di selezione che permette di visitare tutte le funzionalità del sito (calendario, bacheca, lista basi e profilo utente);
+- Una barra di selezione che permette di visitare tutte le funzionalità del sito (homepage, calendario, bacheca, lista basi e profilo utente, oltre al tasto per effettuare il login);
 - Ogni utente registrato ed interessato all’utilizzo del sito deve effettuare l’accesso. A seconda del grado associato l’utente registrato presenta un numero di permessi differenti; 
 - L’amministratore del sito presenta un codice univoco utilizzato al momento dell’accesso; 
 - Un utente non registrato può leggere articoli relativi o eventi in programma; 
@@ -34,7 +34,11 @@ Il portale web presenta le seguenti caratteristiche:
 - Jacoco 
 - Maven 
 - Mockito 
+- JUnit
 - Selenium
+- Github
+- Docker
+- Docker Compose
 
 
 ## Contatti:

@@ -36,3 +36,4 @@ services:
       - forze_armate_net
 volumes: 
   dbdata: 
+  

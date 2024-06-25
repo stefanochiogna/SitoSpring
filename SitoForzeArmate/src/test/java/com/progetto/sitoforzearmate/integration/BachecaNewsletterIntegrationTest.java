@@ -95,11 +95,11 @@ public class BachecaNewsletterIntegrationTest {
         this.mockMvc.perform(get("/viewBachecaNewsletter")
                 .cookie(new Cookie("loggedAdmin", cookieAdmin))
                 .cookie(new Cookie("loggedUser", cookieUser))) 
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("Bacheca/NewsletterCSS"))
-                .andExpect(model().attribute("loggedAdminOn", loggedAdminOn))
-                .andExpect(model().attribute("loggedOn", loggedUserOn));
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("Bacheca/NewsletterCSS"))
+            .andExpect(model().attribute("loggedAdminOn", loggedAdminOn))
+            .andExpect(model().attribute("loggedOn", loggedUserOn));
 
         if (loggedUserOn) { 
             this.mockMvc.perform(get("/viewBachecaNewsletter")
