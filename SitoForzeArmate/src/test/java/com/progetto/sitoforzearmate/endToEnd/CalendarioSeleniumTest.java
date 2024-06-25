@@ -72,8 +72,8 @@ public class CalendarioSeleniumTest {
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
-                .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withExposedPorts(4444);
+                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
 
     }
     @AfterAll
