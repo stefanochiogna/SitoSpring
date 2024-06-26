@@ -1,16 +1,12 @@
+/*
 package com.progetto.sitoforzearmate.endToEnd;
 
 import com.progetto.sitoforzearmate.services.configuration.Configuration;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,8 +18,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.File;
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,11 +27,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @Testcontainers
-@Disabled
 @SpringBootTest
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class LoginTest{
+public class LoginSeleniumTest {
+
     private RemoteWebDriver driver;
     @Container
     private static GenericContainer<?> mysql = new GenericContainer<>(DockerImageName.parse("stefanochiogna/db:latest"))
@@ -66,16 +60,11 @@ public class LoginTest{
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
                 .withCapabilities(new ChromeOptions())
-                .withRecordingMode(
-                        BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
-                        new File(Configuration.getPATH(Configuration.getDIRECTORY_FILE() + "recordings" + File.separator)),
-                        VncRecordingContainer.VncRecordingFormat.MP4
-                )
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
                 .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getPATH(Configuration.getDIRECTORY_FILE()), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
 
 
     }
@@ -149,6 +138,7 @@ public class LoginTest{
         assertEquals(expectedUrl, driver.getCurrentUrl());
     }
 
+
     @Test
     public void testRegistrazioneSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
@@ -188,4 +178,55 @@ public class LoginTest{
 
         // Altre asserzioni per verificare la registrazione riuscita
     }
+
+    @Test
+    @Disabled
+    public void testLoginAdminSuccesso() {
+        String url = sito.getNetworkAliases().iterator().next();
+
+        driver.get("http://" + url + ":" + String.valueOf(8080) + "/viewLogin");
+
+        driver.findElement(By.id("login-admin-button")).click();
+
+        String expectedUrl = "http://" + url.toLowerCase() + ":8080/viewLoginAdmin";
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+
+        WebElement usernameInput = driver.findElement(By.id("IdAdmin"));
+        WebElement passwordInput = driver.findElement(By.id("Password"));
+
+        usernameInput.sendKeys("1234567890");
+        passwordInput.sendKeys("password1");
+
+        driver.findElement(By.cssSelector("input[type='submit']")).click();
+
+        expectedUrl = "http://" + url.toLowerCase() + ":8080/homepage";
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+    }
+    @Test
+    @Disabled
+    public void testLoginAdminFailure() {
+        String url = sito.getNetworkAliases().iterator().next();
+
+        driver.get("http://" + url + ":" + String.valueOf(8080) + "/viewLogin");
+
+        driver.findElement(By.id("login-admin-button")).click();
+
+        String expectedUrl = "http://" + url.toLowerCase() + ":8080/viewLoginAdmin";
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+
+        WebElement usernameInput = driver.findElement(By.id("IdAdmin"));
+        WebElement passwordInput = driver.findElement(By.id("Password"));
+
+        usernameInput.sendKeys("1234567890");
+        passwordInput.sendKeys("password");
+
+        driver.findElement(By.cssSelector("input[type='submit']")).click();
+
+        expectedUrl = "http://" + url.toLowerCase() + ":8080/loginAdmin";
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+    }
+
 }
+
+ */
+

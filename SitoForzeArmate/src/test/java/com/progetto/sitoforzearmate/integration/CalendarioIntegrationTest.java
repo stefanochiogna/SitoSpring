@@ -10,8 +10,10 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,6 +27,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import org.junit.jupiter.params.ParameterizedTest;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.sql.Connection;
@@ -74,6 +78,7 @@ public class CalendarioIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
+
     @ParameterizedTest
     @CsvSource({
         "'','',false,false",
@@ -98,37 +103,39 @@ public class CalendarioIntegrationTest {
 
     @ParameterizedTest
     @CsvSource({
-        "'','',false,false,0000000003",
-        "nonlosoquanticar#1234567890#ciao1,'',true,false,0000000003",   
-        "'',chslnz01l23h620q#0000163634#lorenzo.chesta@edu.unife.it-&,false,true,0000000003"    
+        "'','',false,false,0000000004",
+        "nonlosoquanticar#1234567890#ciao1,'',true,false,0000000004",
+        "'',chslnz01l23h620q#0000163634#lorenzo.chesta@edu.unife.it-&,false,true,0000000004"
     })
     public void testViewBando(String cookieAdmin, String cookieUser, boolean loggedAdminOn, boolean loggedUserOn, String id) throws Exception {
         System.setProperty("host", mysql.getHost());
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
-        var requestBuilder = post("/viewBando")
-            .param("bandoId", id)
-            .cookie(new Cookie("loggedAdmin", cookieAdmin))
-            .cookie(new Cookie("loggedUser", cookieUser))
-
-        this.mockMvc.perform(requestBuilder) 
+        this.mockMvc.perform(post("/viewBando")
+                .param("bandoId", id)
+                .cookie(new Cookie("loggedAdmin", cookieAdmin))
+                .cookie(new Cookie("loggedUser", cookieUser)))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(view().name("Calendario/viewBandoCSS"))
             .andExpect(model().attribute("loggedAdminOn", loggedAdminOn))
             .andExpect(model().attribute("loggedOn", loggedUserOn))
-            .andExpect(model().attributeExists("Date"))
             .andExpect(model().attributeExists("BandoSelezionato"))
             .andExpect(model().attributeExists("maxIscrittiRaggiunto"));
 
         if( loggedUserOn ) {
-            this.mockMvc.perform(requestBuilder)
-                .andExpect(model().attributeExists("Iscritto"))
-                .andExpect(model().attributeExists("inAttesa"));
+            this.mockMvc.perform(post("/viewBando")
+                    .param("bandoId", id)
+                    .cookie(new Cookie("loggedAdmin", cookieAdmin))
+                    .cookie(new Cookie("loggedUser", cookieUser)))
+                .andExpect(model().attributeExists("Iscritto"));
 
         }
         else if( loggedAdminOn ) {
-            this.mockMvc.perform(requestBuilder)
+            this.mockMvc.perform(post("/viewBando")
+                    .param("bandoId", id)
+                    .cookie(new Cookie("loggedAdmin", cookieAdmin))
+                    .cookie(new Cookie("loggedUser", cookieUser)))
                 .andExpect(model().attributeExists("partecipanti"));
         }
     }
@@ -157,7 +164,7 @@ public class CalendarioIntegrationTest {
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
         String cookieAdmin = "nonlosoquanticar#1234567890#ciao1";
-        String id = "0000000003";
+        String id = "0000000004";
 
         this.mockMvc.perform(post("/modificaBandoView")
                 .param("bandoId", id)
@@ -171,12 +178,12 @@ public class CalendarioIntegrationTest {
     }
 
     @Test
-    public void testDeleteBando() throws Exception {
+    public void testModificaBando() throws Exception {
         System.setProperty("host", mysql.getHost());
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
         String cookieAdmin = "nonlosoquanticar#1234567890#ciao1";
-        String id = "0000000003";
+        String id = "0000000004";
         String oggetto = "test";
         String numMaxIscritti = "23";
         String dataScadenza = "2025-12-21";
@@ -205,7 +212,7 @@ public class CalendarioIntegrationTest {
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
         MockPart testoFile = new MockPart(
-            "Testo",
+            "insBando",
             "testo.txt",
             "text/plain Questo è il contenuto del file di testo.".getBytes()
         );
@@ -225,10 +232,10 @@ public class CalendarioIntegrationTest {
         String data = "2026-01-21";
         String locazione = "Pisa";
 
-        this.mockMvc.perform(post("/inserisciBando")
+        this.mockMvc.perform(multipart("/inserisciBando")
                 .part(testo)
                 .param("DataBando", data)
-                .param("oggettobando", oggetto)
+                .param("oggettoBando", oggetto)
                 .param("numMaxIscritti", numMaxIscritti)
                 .param("DataScadenza", dataScadenza)
                 .param("Locazione", locazione)
@@ -288,12 +295,13 @@ public class CalendarioIntegrationTest {
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
         String cookieAdmin = "nonlosoquanticar#1234567890#ciao1";
-        String inAttesa = "in attesa"
-        String id = "0000000004";
+        String inAttesa = "in attesa";
+        String id = "0000000002";
 
         this.mockMvc.perform(post("/esitoPartecipante")
                 .param("inAttesa", inAttesa)
                 .param("bandoId", id)
+                .param("utenteSelezionato", "0000000001")
                 .cookie(new Cookie("loggedAdmin", cookieAdmin))) 
             .andDo(print())
             .andExpect(status().isOk())

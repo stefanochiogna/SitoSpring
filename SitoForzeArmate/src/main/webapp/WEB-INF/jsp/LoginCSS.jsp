@@ -61,7 +61,7 @@ spessore di -1px: l'ombra si estende leggermente all'interno dell'elemento
             </p>
             <p>
                 <%// Invece che Dispatche?.... mettere solo link, es /homepage per andare alla homepage %>
-                Se invece sei un <a href="/viewLoginAdmin" style="color: #3b82f6; font-weight: 600;">Amministratore</a>
+                Se invece sei un <a href="/viewLoginAdmin" id="login-admin-button" style="color: #3b82f6; font-weight: 600;">Amministratore</a>
             </p>
 
             <br>

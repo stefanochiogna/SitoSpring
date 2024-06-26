@@ -275,7 +275,6 @@ public class Calendario {
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
                 else throw new RuntimeException("Errore: non sei autorizzato a modificare il bando");
 
-                if( bandoId.equals("") ) throw new RuntimeException("Errore: non è stato selezionato alcun bando");
 
                 //sessionDAOFactory.commitTransaction();
 
@@ -285,7 +284,8 @@ public class Calendario {
                 BandoDAO bandoDAO = daoFactory.getBandoDAO();
 
                 Bando bando = null;
-                bando = bandoDAO.findbyId(bandoId);   // vado a modificare il bando selezionato tramite Id
+                   // vado a modificare il bando selezionato tramite Id
+                if( !bandoId.equals("") )   bando = bandoDAO.findbyId(bandoId);
 
                 BaseDAO baseDAO = daoFactory.getBaseDAO();
                 listaBasi.addAll(baseDAO.stampaBasi());
