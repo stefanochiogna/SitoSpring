@@ -63,8 +63,8 @@ public class LoginSeleniumTest {
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
-                .withExposedPorts(4444);
-                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withExposedPorts(4444)
+                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
 
 
     }
@@ -138,7 +138,7 @@ public class LoginSeleniumTest {
         assertEquals(expectedUrl, driver.getCurrentUrl());
     }
 
-    /*
+
     @Test
     public void testRegistrazioneSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
@@ -226,7 +226,7 @@ public class LoginSeleniumTest {
         assertEquals(expectedUrl, driver.getCurrentUrl());
     }
 
-
 }
 
  */
+

@@ -68,8 +68,8 @@ public class CalendarioSeleniumTest {
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
-                .withExposedPorts(4444);
-                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withExposedPorts(4444)
+                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
 
     }
     @AfterAll
@@ -107,7 +107,7 @@ public class CalendarioSeleniumTest {
         assertEquals(expected, driver.getCurrentUrl());
     }
 
-    /*
+
     @Test
     @Order(2)
     public void testCreateBando(){
@@ -124,7 +124,7 @@ public class CalendarioSeleniumTest {
         String expected = "http://" + url.toLowerCase() + ":8080/modificaBandoView";
         assertEquals(expected, driver.getCurrentUrl());
 
-        WebElement formIns = driver.findElement(By.cssSelector("form[action='/inserisciBando']"));
+        WebElement formIns = driver.findElement(By.cssSelector("form[action='/modificaBando']"));
         driver.findElement(By.id("oggettoBando")).sendKeys("Bando di prova");
         driver.findElement(By.id("numMaxIscritti")).sendKeys("1");
         driver.findElement(By.id("DataScadenza")).sendKeys(oggi.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -209,7 +209,7 @@ public class CalendarioSeleniumTest {
         passwordInput.sendKeys("password1");
 
         driver.findElement(By.cssSelector("input[type='submit']")).click();
-
+        assertEquals("http://" + url.toLowerCase() + ":8080/homepage", driver.getCurrentUrl());
     }
 
     private String getLastId(){
@@ -230,4 +230,5 @@ public class CalendarioSeleniumTest {
     }
 
 }
-*/
+
+ */
