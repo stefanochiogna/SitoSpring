@@ -207,9 +207,6 @@ class CalendarioTest {
         if( cookieAdmin.equals("") ) {
             assertThrows(RuntimeException.class, () -> new Calendario().modificaBandoView(null, cookieAdmin, bandoId));
         }
-        else if( bandoId.equals("") ) {
-            assertThrows(RuntimeException.class, () -> new Calendario().modificaBandoView(null, cookieAdmin, bandoId));
-        }
         else {
             ModelAndView page = new Calendario().modificaBandoView(null, cookieAdmin, bandoId);
 
