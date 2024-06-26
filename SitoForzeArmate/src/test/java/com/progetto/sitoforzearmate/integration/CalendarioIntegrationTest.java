@@ -106,30 +106,6 @@ public class CalendarioIntegrationTest {
         System.setProperty("host", mysql.getHost());
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
-        this.mockMvc.perform(get("/viewBando")
-                .param("bandoId", id)
-                .cookie(new Cookie("loggedAdmin", cookieAdmin))
-                .cookie(new Cookie("loggedUser", cookieUser))) 
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("Calendario/viewBandoCSS"))
-                .andExpect(model().attribute("loggedAdminOn", loggedAdminOn))
-                .andExpect(model().attribute("loggedOn", loggedUserOn))
-                .andExpect(model().attributeExists("Date"))
-                .andExpect(model().attributeExists("BandoSelezionato"))
-                .andExpect(model().attributeExists("maxIscrittiRaggiunto"));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "'','',false,false,0000000003",
-        "nonlosoquanticar#1234567890#ciao1,'',true,false,0000000003",   
-        "'',chslnz01l23h620q#0000163634#lorenzo.chesta@edu.unife.it-&,false,true,0000000003"    
-    })
-    public void testViewBando(String cookieAdmin, String cookieUser, boolean loggedAdminOn, boolean loggedUserOn, String id) throws Exception {
-        System.setProperty("host", mysql.getHost());
-        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
-
         var requestBuilder = post("/viewBando")
             .param("bandoId", id)
             .cookie(new Cookie("loggedAdmin", cookieAdmin))

@@ -85,26 +85,174 @@ public class LoginIntegrationTest {
     public void integration_viewLogin() throws Exception {
         this.mockMvc.perform(get("/viewLogin"))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(view().name("LoginCSS"));
     }
 
     @ParameterizedTest
     @CsvSource({
-        ""
+        "sara.tullini@edu.unife.it, ciao1",
+        "sara.tullini@edu.unife.it, ciao"
     }) 
-    public void integration_login() throws Exception {
+    public void integration_login(String email, String password) throws Exception {
         System.setProperty("host", mysql.getHost());
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
-        String cookieUser = "tllsra01m57a944b#2722674591#sara.tullini@edu.unife.it-0000000003&";
-        String email = "sara.tullini@edu.unife.it";
-        String password = "ciao1";
-
         var requestBuilder = post("/loginUser")
-            .cookie(new Cookie("loggedUser", cookieUser))
             .param("Email", email)
             .param("Password", password);
 
-            
+        String emailCorretta = "sara.tullini@edu.unife.it";
+        String passwordCorretta = "ciao1";
+
+        if( (email == emailCorretta) && (password == passwordCorretta) ) {
+            this.mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"))
+                .andExpect(model().attribute("loggedOn", true));
+        }
+        else if( (email != emailCorretta) || (password != passwordCorretta)) {
+            this.mockMvc.perform(requestBuilder)
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("LoginCSS"))
+            .andExpect(model().attribute("loggedOn", false));
+        }
+    }
+
+    @Test
+    public void integration_logout() throws Exception {
+        System.setProperty("host", mysql.getHost());
+        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
+
+        this.mockMvc.perform(get("/logout"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("index"))
+            .andExpect(model().attribute("loggedOn", false))
+            .andExpect(model().attribute("loggedUser", null))
+            .andExpect(model().attribute("loggedAdminOn", false))
+            .andExpect(model().attribute("loggedAdmin", null));
+    }
+
+    @Test
+    public void integration_viewRegistrazione() throws Exception {
+        System.setProperty("host", mysql.getHost());
+        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
+
+        this.mockMvc.perform(get("/viewRegistrazione"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("RegistrazioneCSS"))
+            .andExpect(model().attributeExists("listaBasi"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Matilda,Toma,RSSMTL90H55F205,3245081441,matilda@gmail.com,passwordDiMatilda,F,2000-08-10,IT60A1234567890123456789012,Sottoufficiale,via la spezia 12,Pisa"
+        "Matilda,Toma,RSSMTL90H55F205,3245081441,matilda@gmail.com,passwordDiMatilda,F,2000-08-10,'',Sottoufficiale,via la spezia 12,Pisa",
+    }) 
+    public void integration_registrazione(String nome, String cognome, String cf, String telefono, String email, String password, String sesso, String dataNascita, String iban, String ruolo, String indirizzo, String locazione) throws Exception {
+        System.setProperty("host", mysql.getHost());
+        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
+
+        MockPart fotoFile = new MockPart(
+            "Foto",
+            "foto.jpg",
+            "image/jpeg".getBytes()
+        );
+
+        MockPart foto = Mockito.mock(MockPart.class);
+        Mockito.when(foto.getInputStream()).thenReturn(fotoFile.getInputStream());
+        Mockito.when(foto.getSubmittedFileName()).thenReturn(fotoFile.getSubmittedFileName());
+        Mockito.when(foto.getContentType()).thenReturn(fotoFile.getContentType());
+        Mockito.when(foto.getSize()).thenReturn(fotoFile.getSize());
+        Mockito.when(foto.getName()).thenReturn(fotoFile.getName());
+
+        MockPart documentoFile = new MockPart(
+            "Documento",
+            "documento.jpg",
+            "image/jpeg".getBytes()
+        );
+
+        MockPart documento = Mockito.mock(MockPart.class);
+        Mockito.when(documento.getInputStream()).thenReturn(documentoFile.getInputStream());
+        Mockito.when(documento.getSubmittedFileName()).thenReturn(documentoFile.getSubmittedFileName());
+        Mockito.when(documento.getContentType()).thenReturn(documentoFile.getContentType());
+        Mockito.when(documento.getSize()).thenReturn(documentoFile.getSize());
+        Mockito.when(documento.getName()).thenReturn(documentoFile.getName());
+
+        var requestBuilder = multipart("/registrazione")
+            .part(foto)
+            .part(documento)
+            .param("Nome", nome)
+            .param("Cognome", cognome)
+            .param("CF", cf)
+            .param("Telefono", telefono)
+            .param("Email", email)
+            .param("Password", password)
+            .param("Sesso", sesso)
+            .param("DataNascita", dataNascita)
+            .param("IBAN", iban)
+            .param("Ruolo", ruolo)
+            .param("Indirizzo", indirizzo)
+            .param("LocazioneServizio", locazione)
+            .param("Newsletter", true)
+
+        if(nome.equals("") || cognome.equals("") || cf.equals("") || telefono.equals("") || email.equals("") || password.equals("") || sesso.equals("") || dataNascita.equals("") || iban.equals("") || foto == null || documento == null || indirizzo.equals("") || locazione.equals("")){
+            this.mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("LoginCSS"))
+                .andExpect(model().attribute("loggedOn", false));
+        }
+        else {
+            this.mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"))
+                .andExpect(model()attribute("loggedOn", true));
+        }
+    }
+
+    @Test
+    public void integration_viewAmministratore() throws Exception {
+        this.mockMvc.perform(get("/viewLoginAdmin"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("LoginAmministratoreCSS"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1234567890, password1",
+        "1234567890, password"
+    }) 
+    public void integration_loginAdmin(String id, String password) throws Exception {
+        System.setProperty("host", mysql.getHost());
+        System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
+
+        var requestBuilder = post("/loginAdmin")
+            .param("IdAdministrator", id)
+            .param("Password", password);
+
+        String idCorretto = "1234567890";
+        String passwordCorretta = "password1";
+
+        if( (id == idCorretto) && (password == passwordCorretta) ) {
+            this.mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"))
+                .andExpect(model().attribute("loggedOn", true));
+        }
+        else if( (id != idCorretto) || (password != passwordCorretta) ) {
+            this.mockMvc.perform(requestBuilder)
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("LoginAmministratoreCSS"))
+            .andExpect(model().attribute("loggedOn", false));
+        }
     }
 }

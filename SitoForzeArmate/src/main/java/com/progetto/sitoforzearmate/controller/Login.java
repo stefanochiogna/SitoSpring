@@ -319,7 +319,7 @@ public class Login {
             daoFactory.commitTransaction();
             sessionDAOFactory.commitTransaction();
 
-            page.addObject("loggedOn",true);
+            page.addObject("loggedOn",loggedAdmin!=null);
             page.addObject("loggedAdmin", loggedAdmin);
             page.addObject("applicationMessage", applicationMessage);
 
