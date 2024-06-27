@@ -38,6 +38,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -133,9 +134,9 @@ public class LoginIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
             .andExpect(model().attribute("loggedOn", false))
-            .andExpect(model().attribute("loggedUser", null))
+            .andExpect(model().attribute("loggedUser", nullValue()))
             .andExpect(model().attribute("loggedAdminOn", false))
-            .andExpect(model().attribute("loggedAdmin", null));
+            .andExpect(model().attribute("loggedAdmin", nullValue()));
     }
 
     @Test
@@ -152,8 +153,8 @@ public class LoginIntegrationTest {
 
     @ParameterizedTest
     @CsvSource({
-        "Matilda,Toma,RSSMTL90H55F205,3245081441,matilda@gmail.com,passwordDiMatilda,F,2000-08-10,IT60A1234567890123456789012,Sottoufficiale,via la spezia 12,Pisa"
-        "Matilda,Toma,RSSMTL90H55F205,3245081441,matilda@gmail.com,passwordDiMatilda,F,2000-08-10,'',Sottoufficiale,via la spezia 12,Pisa",
+        "Matilda,Toma,RSSMTL90H55F205,3245081441,matilda@gmail.com,passwordDiMatilda,F,2000-08-10,IT60A1234567890123456789012,Sottoufficiale,via la spezia 12,Pisa",
+        "Matilda,Toma,RSSMTL90H55F205,3245081441,sara.tullini@edu.unife.it,passwordDiMatilda,F,2000-08-10,IT60A1234567890123456789012,Sottoufficiale,via la spezia 12,Pisa"
     }) 
     public void integration_registrazione(String nome, String cognome, String cf, String telefono, String email, String password, String sesso, String dataNascita, String iban, String ruolo, String indirizzo, String locazione) throws Exception {
         System.setProperty("host", mysql.getHost());
@@ -200,9 +201,9 @@ public class LoginIntegrationTest {
             .param("Ruolo", ruolo)
             .param("Indirizzo", indirizzo)
             .param("LocazioneServizio", locazione)
-            .param("Newsletter", true)
+            .param("Newsletter", "True");
 
-        if(nome.equals("") || cognome.equals("") || cf.equals("") || telefono.equals("") || email.equals("") || password.equals("") || sesso.equals("") || dataNascita.equals("") || iban.equals("") || foto == null || documento == null || indirizzo.equals("") || locazione.equals("")){
+        if(email.equals("sara.tullini@edu.unife.it")){
             this.mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -214,7 +215,7 @@ public class LoginIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(model()attribute("loggedOn", true));
+                .andExpect(model().attribute("loggedOn", true));
         }
     }
 
@@ -228,8 +229,8 @@ public class LoginIntegrationTest {
 
     @ParameterizedTest
     @CsvSource({
-        "1234567890, password1",
-        "1234567890, password"
+        "1234567890,password1",
+        "1234567890,password"
     }) 
     public void integration_loginAdmin(String id, String password) throws Exception {
         System.setProperty("host", mysql.getHost());
@@ -242,14 +243,14 @@ public class LoginIntegrationTest {
         String idCorretto = "1234567890";
         String passwordCorretta = "password1";
 
-        if( (id == idCorretto) && (password == passwordCorretta) ) {
+        if( (id.equals(idCorretto)) && (password.equals(passwordCorretta)) ) {
             this.mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("loggedOn", true));
         }
-        else if( (id != idCorretto) || (password != passwordCorretta) ) {
+        else{
             this.mockMvc.perform(requestBuilder)
             .andDo(print())
             .andExpect(status().isOk())

@@ -1,4 +1,3 @@
-/*
 package com.progetto.sitoforzearmate.endToEnd;
 
 import com.progetto.sitoforzearmate.model.dao.Bando.BandoDAO;
@@ -124,7 +123,7 @@ public class CalendarioSeleniumTest {
         String expected = "http://" + url.toLowerCase() + ":8080/modificaBandoView";
         assertEquals(expected, driver.getCurrentUrl());
 
-        WebElement formIns = driver.findElement(By.cssSelector("form[action='/modificaBando']"));
+        WebElement formIns = driver.findElement(By.cssSelector("form[action='/inserisciBando']"));
         driver.findElement(By.id("oggettoBando")).sendKeys("Bando di prova");
         driver.findElement(By.id("numMaxIscritti")).sendKeys("1");
         driver.findElement(By.id("DataScadenza")).sendKeys(oggi.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -134,7 +133,7 @@ public class CalendarioSeleniumTest {
         if(selectForm.isDisplayed()){
             selectForm.sendKeys("Pisa");
         }
-        driver.findElement(By.id("insBando")).sendKeys("/home/raccolta_file/B3");
+        driver.findElement(By.id("insBando")).sendKeys("/home/raccolta_file/B0000000003");
 
         formIns.findElement(By.cssSelector("input[type='submit']")).click();
 
@@ -150,9 +149,7 @@ public class CalendarioSeleniumTest {
 
         driver.findElement(By.id("Calendario")).click();
 
-        String idString = getLastId();
-
-        WebElement formBando = driver.findElement(By.cssSelector("form[name='bandoView" + idString + "']"));
+        WebElement formBando = driver.findElement(By.cssSelector("form[name='bandoView0000000005']"));
         formBando.findElement(By.cssSelector("input[type='submit']")).click();
 
         String expected = "http://" + url.toLowerCase() + ":8080/viewBando";
@@ -169,13 +166,36 @@ public class CalendarioSeleniumTest {
     @Test
     @Order(4)
     public void testModificaBando(){
+        String url = sito.getNetworkAliases().iterator().next();
+        loginAdmin(url);
 
+        driver.findElement(By.id("Calendario")).click();
+
+        WebElement modifyForm = driver.findElement(By.cssSelector("form[name='bandoModify0000000005']"));
+        modifyForm.findElement(By.cssSelector("input[type='submit']")).click();
+
+        String expected = "http://" + url.toLowerCase() + ":8080/modificaBandoView";
+        assertEquals(expected, driver.getCurrentUrl());
+
+        WebElement formIns = driver.findElement(By.cssSelector("form[action='/modificaBando']"));
+        driver.findElement(By.id("oggettoBando")).sendKeys("Bando di prova modificato");
+        driver.findElement(By.id("numMaxIscritti")).sendKeys("2");
+
+        formIns.findElement(By.cssSelector("input[type='submit']")).click();
     }
 
     @Test
     @Order(5)
     public void testCancellazioneBando(){
+        String url = sito.getNetworkAliases().iterator().next();
+        loginAdmin(url);
 
+        driver.findElement(By.id("Calendario")).click();
+        WebElement deleteForm = driver.findElement(By.cssSelector("form[name='bandoDelete0000000005']"));
+        deleteForm.findElement(By.cssSelector("input[type='submit']")).click();
+
+        String expected = "http://" + url.toLowerCase() + ":8080/viewCalendario";
+        assertEquals(expected, driver.getCurrentUrl());
     }
 
 
@@ -212,23 +232,4 @@ public class CalendarioSeleniumTest {
         assertEquals("http://" + url.toLowerCase() + ":8080/homepage", driver.getCurrentUrl());
     }
 
-    private String getLastId(){
-        DAOFactory daoFactory = DAOFactory.getDAOFactory(Configuration.DAO_IMPL,null);
-
-        daoFactory.beginTransaction();
-        BandoDAO bandoDAO = daoFactory.getBandoDAO();
-        Integer Id = Integer.parseInt(bandoDAO.getLastId());
-        daoFactory.commitTransaction();
-
-        String idString = String.valueOf(Id);
-
-        while(idString.length() < 10){
-            idString = "0" + idString;
-        }
-
-        return idString;
-    }
-
 }
-
- */

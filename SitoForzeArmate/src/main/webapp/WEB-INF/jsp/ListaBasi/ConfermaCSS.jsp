@@ -66,7 +66,7 @@ else if(alloggio != null){%>
 <script>
     document.getElementById("Conferma").addEventListener("click", onclick)
     function onclick(){
-        window.location.href = "<%=contextPath%>/Dispatcher?controllerAction=ListaBasi.view";
+        window.location.href = "/viewListaBasi";
     }
 </script>
 </body>

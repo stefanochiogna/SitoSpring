@@ -66,7 +66,7 @@ public class PrenotaAlloggio {
             HttpServletResponse response,
             @CookieValue(value = "loggedUser", defaultValue = "") String cookieUser,
 
-            @RequestParam(value = "logazioneAlloggio", defaultValue = "") String locazione,
+            @RequestParam(value = "locazioneAlloggio", defaultValue = "") String locazione,
             @RequestParam(value = "NumeroPersone", defaultValue = "") String NumPersone,
             @RequestParam(value = "NumeroNotti", defaultValue = "") String NumNotti,
             @RequestParam(value = "DataArrivo", defaultValue = "") String data_arrivo
@@ -92,6 +92,11 @@ public class PrenotaAlloggio {
             PostoLettoDAO alloggioDAO = daoFactory.getPostoLettoDAO();
 
             PostoLetto alloggio;
+
+            System.out.println("locazione: " + locazione);
+            System.out.println("NumPersone: " + NumPersone);
+            System.out.println("NumNotti: " + NumNotti);
+            System.out.println("data_arrivo: " + data_arrivo);
 
             if(locazione.equals("") || NumPersone.equals("") || NumNotti.equals("") || data_arrivo.equals(""))
                 throw new RuntimeException("Errore nella selezione della locazione");
