@@ -273,7 +273,8 @@ public class Calendario {
                 //AmministratoreDAO sessionAdminDAO = sessionDAOFactory.getAmministratoreDAO();
                 if( ! cookieAdmin.equals("") )    
                     loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
-                else throw new RuntimeException("Errore: non sei autorizzato a modificare il bando");
+                else 
+                    throw new RuntimeException("Errore: non sei autorizzato a modificare il bando");
 
 
                 //sessionDAOFactory.commitTransaction();
