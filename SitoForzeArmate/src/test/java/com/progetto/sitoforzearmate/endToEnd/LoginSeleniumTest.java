@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 // import software.xdev.testcontainers.selenium.containers.browser.BrowserWebDriverContainer;
 // import software.xdev.testcontainers.selenium.containers.browser.CapabilitiesBrowserWebDriverContainer;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
