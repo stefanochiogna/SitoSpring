@@ -55,4 +55,6 @@ jobs:
         file: ./DockerfileSQL
         push: true
         tags: stefanochiogna/db:latest
-      
+    - name: Esecuzione su macchina locale
+      with:
+        runs-on: self-hosted
