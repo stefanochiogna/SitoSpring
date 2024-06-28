@@ -4,6 +4,7 @@ import com.progetto.sitoforzearmate.services.configuration.Configuration;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -18,6 +19,7 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import static org.junit.jupiter.api.Assertions.*;
 // import io.github.bonigarcia.wdm.WebDriverManager;
@@ -61,7 +63,11 @@ public class BachecaAvvisoSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
                 .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(Configuration.getDIRECTORY_FILE()),
+                        "/home/raccolta_file"
+                );
     }
 
     @AfterAll
@@ -124,7 +130,7 @@ public class BachecaAvvisoSeleniumTest {
         WebElement formView = driver.findElement(By.cssSelector("form[action='/viewAvviso']"));
         
         formView.findElement(By.cssSelector("input[type='submit']")).click();
-        System.out.println(driver.getPageSource());
+        //System.out.println(driver.getPageSource());
         assertEquals("http://"+ url.toLowerCase() +":8080/viewAvviso", driver.getCurrentUrl());
         assertTrue(driver.findElement(By.cssSelector("a[href='/viewBachecaAvviso']")).isDisplayed());
     }
@@ -136,7 +142,7 @@ public class BachecaAvvisoSeleniumTest {
         loginUser(url);
 
         driver.findElement(By.id("Bacheca")).click();
-
+        System.out.println(driver.getPageSource());
         driver.findElement(By.cssSelector("a[href='/viewBachecaNewsletter']")).isDisplayed();
         System.out.println(driver.getPageSource());
         WebElement formDelete = driver.findElement(By.cssSelector("form[name='avvisoDelete100000023']"));

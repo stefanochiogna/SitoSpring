@@ -18,6 +18,7 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,7 +63,11 @@ public class PrenotaAlloggioSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
                 .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(Configuration.getDIRECTORY_FILE()),
+                        "/home/raccolta_file"
+                );
     }
 
     @AfterAll

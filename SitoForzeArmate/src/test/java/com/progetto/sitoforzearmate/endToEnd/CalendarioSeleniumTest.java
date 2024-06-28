@@ -19,6 +19,7 @@ import org.testcontainers.containers.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.File;
 import java.time.LocalDate;
@@ -68,8 +69,11 @@ public class CalendarioSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
                 .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
-
+                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(Configuration.getDIRECTORY_FILE()),
+                        "/home/raccolta_file"
+                );
     }
     @AfterAll
     public static void tearDownAll() {
@@ -110,7 +114,7 @@ public class CalendarioSeleniumTest {
 
 
     @Test
-    @Order(2)
+    @Order(5)
     public void testCreateBando(){
         String url = sito.getNetworkAliases().iterator().next();
         loginAdmin(url);
@@ -147,7 +151,7 @@ public class CalendarioSeleniumTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     public void testIscrizioneBando(){
         String url = sito.getNetworkAliases().iterator().next();
         loginUser(url);
@@ -171,7 +175,7 @@ public class CalendarioSeleniumTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void testModificaBando(){
         String url = sito.getNetworkAliases().iterator().next();
         loginAdmin(url);
@@ -194,7 +198,7 @@ public class CalendarioSeleniumTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public void testCancellazioneBando(){
         String url = sito.getNetworkAliases().iterator().next();
         loginAdmin(url);

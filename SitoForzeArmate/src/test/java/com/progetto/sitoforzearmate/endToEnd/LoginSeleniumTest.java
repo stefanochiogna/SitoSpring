@@ -15,6 +15,7 @@ import org.testcontainers.containers.*;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginSeleniumTest {
 
     private RemoteWebDriver driver;
@@ -62,7 +64,11 @@ public class LoginSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
                 .withExposedPorts(4444)
-                .withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                //.withFileSystemBind(Configuration.getDIRECTORY_FILE(), "/home/raccolta_file", BindMode.READ_ONLY);
+                .withCopyFileToContainer(
+                        MountableFile.forHostPath(Configuration.getDIRECTORY_FILE()),
+                        "/home/raccolta_file"
+                );
 
 
     }
@@ -90,6 +96,7 @@ public class LoginSeleniumTest {
     }
 
     @Test
+    @Order(1)
     public void testLoginSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
 
@@ -117,6 +124,7 @@ public class LoginSeleniumTest {
         //System.out.println(driver.getPageSource());
     }
     @Test
+    @Order(2)
     public void testLoginFailure(){
         String url = sito.getNetworkAliases().iterator().next();
 
@@ -140,6 +148,7 @@ public class LoginSeleniumTest {
 
 
     @Test
+    @Order(5)
     public void testRegistrazioneSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
         driver.get("http://" + url + ":" + String.valueOf(8080) + "/viewRegistrazione");
@@ -178,6 +187,7 @@ public class LoginSeleniumTest {
     }
 
     @Test
+    @Order(3)
     public void testLoginAdminSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
 
@@ -201,6 +211,7 @@ public class LoginSeleniumTest {
         //System.out.println(driver.getPageSource());
     }
     @Test
+    @Order(4)
     public void testLoginAdminFailure() {
         String url = sito.getNetworkAliases().iterator().next();
 
