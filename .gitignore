@@ -29,6 +29,7 @@ SitoForzeArmate/target/*
 
 # Generated files
 .idea/**/contentModel.xml
+./reports/
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
