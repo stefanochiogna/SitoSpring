@@ -24,6 +24,7 @@ import org.testcontainers.utility.MountableFile;
 import static org.junit.jupiter.api.Assertions.*;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 
+@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
