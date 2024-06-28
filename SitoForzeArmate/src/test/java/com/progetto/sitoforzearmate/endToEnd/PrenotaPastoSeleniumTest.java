@@ -20,6 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 
 
@@ -114,7 +115,7 @@ public class PrenotaPastoSeleniumTest {
         formPrenota.findElement(By.cssSelector("input[type='submit']")).click();
 
         WebElement prenotazioneCorretta = driver.findElement(By.id("Conferma"));
-        assertEquals(prenotazioneCorretta.isDisplayed(), true);
+        assertTrue(prenotazioneCorretta.isDisplayed());
     }
 
 

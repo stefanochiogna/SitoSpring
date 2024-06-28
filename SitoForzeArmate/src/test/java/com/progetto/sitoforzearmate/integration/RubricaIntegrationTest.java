@@ -46,14 +46,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
 @AutoConfigureMockMvc
 @WebAppConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ProfiloIntegrationTest {
+public class RubricaIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -93,7 +92,7 @@ public class ProfiloIntegrationTest {
                 .cookie(new Cookie("loggedUser", cookieUser)))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(view().name("Rubrica/ViewCSS"))
+            .andExpect(view().name("Rubrica/viewCSS"))
             .andExpect(model().attributeExists("Contatti"))
             .andExpect(model().attribute("loggedOn", true))
             .andExpect(model().attributeExists("inizialeSelezionata"))

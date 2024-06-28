@@ -20,9 +20,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 
-
+@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -88,7 +89,6 @@ public class PrenotaAlloggioSeleniumTest {
     }
 
     @Test
-    @Disabled
     public void testPrenotaAlloggio(){
         String url = sito.getNetworkAliases().iterator().next();
         loginUser(url);
@@ -119,11 +119,8 @@ public class PrenotaAlloggioSeleniumTest {
 
         formPrenota.findElement(By.cssSelector("input[type='submit']")).click();
 
-        System.out.println(driver.getPageSource());
-        System.out.println(driver.getCurrentUrl());
-
         WebElement prenotazioneCorretta = driver.findElement(By.id("Conferma"));
-        assertEquals(prenotazioneCorretta.isDisplayed(), true);
+        assertTrue(prenotazioneCorretta.isDisplayed());
     }
 
     private void loginUser(String url){

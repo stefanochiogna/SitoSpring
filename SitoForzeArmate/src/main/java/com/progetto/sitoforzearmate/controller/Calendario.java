@@ -219,11 +219,13 @@ public class Calendario {
 
                 Bando bando = bandoDAO.findbyId(bandoId);   // vado a recuperare il bando selezionato tramite Id
 
+                /*
                 File file = new File(bando.getRiferimentoTesto().toString());
                 if(file.exists()){
                     if(file.delete());
                     else    System.err.println("Errore nella cancellazione del file");
                 }
+                 */
 
                 bandoDAO.delete(bando);                     // lo passo poi al metodo delete per cancellarlo
 

@@ -20,6 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 
 
@@ -114,7 +115,7 @@ public class ProfiloSeleniumTest {
 
         driver.findElement(By.cssSelector("a[href='/prenotazioniView']")).click();
 
-        assertEquals(driver.findElement(By.cssSelector("a[href='/viewProfilo']")).isDisplayed(), true);
+        assertTrue(driver.findElement(By.cssSelector("a[href='/viewProfilo']")).isDisplayed());
     }
 
     @Test
@@ -148,7 +149,7 @@ public class ProfiloSeleniumTest {
 
         driver.findElement(By.cssSelector("a[href='/viewRubrica']")).click();
 
-        assertEquals(driver.findElement(By.cssSelector("a[href='/viewProfilo']")).isDisplayed(), true);
+        assertTrue(driver.findElement(By.cssSelector("a[href='/viewProfilo']")).isDisplayed());
     }
 
     private void loginUser(String url){

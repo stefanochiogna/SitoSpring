@@ -46,7 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -137,6 +136,8 @@ public class ProfiloIntegrationTest {
 
         this.mockMvc.perform(post("/modificaProfilo")
                 .param("userPassword", password)
+                .param("userMail", "lorenzo.chesta@edu.unife.it")
+                .param("userTelefono", "0000163634")
                 .cookie(new Cookie("loggedUser", cookieUser)))
             .andDo(print())
             .andExpect(status().isOk())
@@ -165,6 +166,6 @@ public class ProfiloIntegrationTest {
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
 
         String cookieAdmin = "nonlosoquanticar#1234567890#ciao1";
-        String id = ""
+        String id = "";
     }
 }

@@ -145,6 +145,8 @@ public class Profilo {
 
             page.addObject("loggedAdminOn", loggedAdmin != null);
             page.addObject("loggedAdmin", loggedAdmin);
+            page.addObject("loggedOn", loggedUser != null);
+            page.addObject("loggedUser", loggedUser);
             page.addObject("UserSelezionato", user);
             page.addObject("AdminSelezionato", admin);
             page.setViewName("Profilo/modificaProfiloCSS");
@@ -166,11 +168,11 @@ public class Profilo {
             @RequestParam(value = "userMail") String Mail,
             @RequestParam(value = "userPassword") String password,
             @RequestParam(value = "userTelefono") String telefono,
-            @RequestParam(value = "userIBAN", required = false) String IBAN,
+            @RequestParam(value = "userIBAN", defaultValue = "", required = false) String IBAN,
             @RequestParam(value = "userFoto", required = false) Part foto,
             @RequestParam(value = "userDocumenti", required = false) Part documenti,
-            @RequestParam(value = "userIndirizzo", required = false) String indirizzo,
-            @RequestParam(value = "Newsletter", required = false) boolean Newsletter
+            @RequestParam(value = "userIndirizzo", defaultValue = "", required = false) String indirizzo,
+            @RequestParam(value = "Newsletter", defaultValue = "", required = false) String Newsletter
     ){
         DAOFactory daoFactory = null;
 
@@ -185,8 +187,11 @@ public class Profilo {
             if(cookieUser.equals("") && cookieAdmin.equals("")) throw new RuntimeException("Utente non loggato");
             else if(!cookieUser.equals("") && !cookieAdmin.equals("")) throw new RuntimeException("Entrambi i cookie non possono essere settati contemporaneamente");
 
-            if(!cookieUser.equals(""))
+            System.out.println("cookieUtente: " + cookieUser);
+            if(!cookieUser.equals("")){
                 loggedUser = UtenteRegistratoDAOcookie.decode(cookieUser);
+                System.out.println("decode utente profilo effettuata");
+            }
 
             if(!cookieAdmin.equals(""))
                 loggedAdmin = AmministratoreDAOcookie.decode(cookieAdmin);
@@ -203,10 +208,7 @@ public class Profilo {
             UtenteRegistrato user = userDAO.findByMail(Mail);
             if(user != null){
 
-                if(IBAN.equals("") || indirizzo.equals(""))
-                    throw new RuntimeException("Campi obbligatori non compilati");
-
-                user.setIBAN(IBAN);
+                if(!IBAN.equals("")) user.setIBAN(IBAN);
 
                 if(foto != null && foto.getSize() > 0){
                     user.setFotoByte(foto.getInputStream().readAllBytes());
@@ -214,8 +216,8 @@ public class Profilo {
                 if(documenti != null && documenti.getSize() > 0){
                     user.setDocumentoByte(documenti.getInputStream().readAllBytes());
                 }
-                user.setIndirizzo(indirizzo);
-                user.setIscrittoNewsletter(Newsletter);
+                if(!indirizzo.equals(""))   user.setIndirizzo(indirizzo);
+                if(!Newsletter.equals("") ) user.setIscrittoNewsletter(Boolean.getBoolean(Newsletter));
                 user.setTelefono(telefono);
                 user.setPassword(password);
 
@@ -231,7 +233,6 @@ public class Profilo {
             }
 
             daoFactory.commitTransaction();
-
 
             page.addObject("loggedOn",loggedUser!=null);  // loggedUser != null: attribuisce valore true o false
             page.addObject("loggedUser", loggedUser);

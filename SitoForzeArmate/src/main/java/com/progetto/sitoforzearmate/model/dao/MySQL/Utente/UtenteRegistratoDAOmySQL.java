@@ -991,6 +991,7 @@ public class UtenteRegistratoDAOmySQL implements UtenteRegistratoDAO {
 
         return contatto;
     }
+
     private UtenteRegistrato readUtente(ResultSet resultSet){
         UtenteRegistrato user = new UtenteRegistrato();
 

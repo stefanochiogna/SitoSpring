@@ -115,6 +115,7 @@ public class LoginSeleniumTest {
         assertEquals(expectedUrl, driver.getCurrentUrl());
 
         // Altre asserzioni per verificare la registrazione riuscita
+        //System.out.println(driver.getPageSource());
     }
     @Test
     public void testLoginFailure(){
@@ -135,6 +136,7 @@ public class LoginSeleniumTest {
         // Verifica il risultato
         String expectedUrl = "http://" + url.toLowerCase() + ":8080/loginUser";
         assertEquals(expectedUrl, driver.getCurrentUrl());
+        //System.out.println(driver.getPageSource());
     }
 
 
@@ -159,12 +161,12 @@ public class LoginSeleniumTest {
         // Seleziona locazione servizio se visibile
         WebElement locazione = driver.findElement(By.id("LocazioneServizio"));
         if (locazione.isDisplayed()) {
-            locazione.sendKeys("Base di Pisa");
+            locazione.sendKeys("base aerea di Pisa");
         }
 
         // Carica file foto e documento
-        driver.findElement(By.id("Foto")).sendKeys("/home/raccolta_file/test/image_test.jpg");
-        driver.findElement(By.id("Documento")).sendKeys("/home/raccolta_file/test/image_test.jpg");
+        driver.findElement(By.id("Foto")).sendKeys("/home/raccolta_file/test/immagine_test.jpg");
+        driver.findElement(By.id("Documento")).sendKeys("/home/raccolta_file/test/immagine_test.jpg");
 
         // Seleziona Newsletter
         driver.findElement(By.id("Newsletter")).click();
@@ -172,14 +174,11 @@ public class LoginSeleniumTest {
         // Invio del form
         driver.findElement(By.cssSelector("input[type='submit']")).click();
 
-        String expectedUrl = "http://" + url.toLowerCase() + ":8080/registrazione";
+        String expectedUrl = "http://" + url.toLowerCase() + ":8080/homepage";
         assertEquals(expectedUrl, driver.getCurrentUrl());
-
-        // Altre asserzioni per verificare la registrazione riuscita
     }
 
     @Test
-    @Disabled
     public void testLoginAdminSuccesso() {
         String url = sito.getNetworkAliases().iterator().next();
 
@@ -200,9 +199,9 @@ public class LoginSeleniumTest {
 
         expectedUrl = "http://" + url.toLowerCase() + ":8080/homepage";
         assertEquals(expectedUrl, driver.getCurrentUrl());
+        //System.out.println(driver.getPageSource());
     }
     @Test
-    @Disabled
     public void testLoginAdminFailure() {
         String url = sito.getNetworkAliases().iterator().next();
 
@@ -223,6 +222,7 @@ public class LoginSeleniumTest {
 
         expectedUrl = "http://" + url.toLowerCase() + ":8080/loginAdmin";
         assertEquals(expectedUrl, driver.getCurrentUrl());
+        //System.out.println(driver.getPageSource());
     }
 
 }

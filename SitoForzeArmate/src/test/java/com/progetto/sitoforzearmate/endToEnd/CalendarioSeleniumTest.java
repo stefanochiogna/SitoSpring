@@ -104,6 +104,8 @@ public class CalendarioSeleniumTest {
 
         String expected = "http://" + url.toLowerCase() + ":8080/viewCalendario";
         assertEquals(expected, driver.getCurrentUrl());
+
+        System.out.println(driver.getPageSource());
     }
 
 
@@ -126,8 +128,8 @@ public class CalendarioSeleniumTest {
         WebElement formIns = driver.findElement(By.cssSelector("form[action='/inserisciBando']"));
         driver.findElement(By.id("oggettoBando")).sendKeys("Bando di prova");
         driver.findElement(By.id("numMaxIscritti")).sendKeys("1");
-        driver.findElement(By.id("DataScadenza")).sendKeys(oggi.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        driver.findElement(By.id("DataBando")).sendKeys(oggi.plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        driver.findElement(By.id("DataScadenza")).sendKeys("2026-01-01");
+        driver.findElement(By.id("DataBando")).sendKeys("2026-02-01");
 
         WebElement selectForm = driver.findElement(By.id("base"));
         if(selectForm.isDisplayed()){
@@ -139,6 +141,9 @@ public class CalendarioSeleniumTest {
 
         expected = "http://" + url.toLowerCase() + ":8080/inserisciBando";
         assertEquals(expected, driver.getCurrentUrl());
+
+        //TODO: fix errore
+        System.out.println(driver.getPageSource());
     }
 
     @Test
@@ -160,7 +165,9 @@ public class CalendarioSeleniumTest {
 
         WebElement formAnnullaIscrizione = driver.findElement(By.cssSelector("form[action='/annullaIscrizione']"));
 
-        assertEquals(formAnnullaIscrizione.findElement(By.cssSelector("input[type='submit']")).isDisplayed(), true);
+        assertTrue(formAnnullaIscrizione.findElement(By.cssSelector("input[type='submit']")).isDisplayed());
+
+        System.out.println(driver.getPageSource());
     }
 
     @Test
@@ -182,6 +189,8 @@ public class CalendarioSeleniumTest {
         driver.findElement(By.id("numMaxIscritti")).sendKeys("2");
 
         formIns.findElement(By.cssSelector("input[type='submit']")).click();
+
+        System.out.println(driver.getPageSource());
     }
 
     @Test
@@ -196,6 +205,8 @@ public class CalendarioSeleniumTest {
 
         String expected = "http://" + url.toLowerCase() + ":8080/viewCalendario";
         assertEquals(expected, driver.getCurrentUrl());
+
+        System.out.println(driver.getPageSource());
     }
 
 

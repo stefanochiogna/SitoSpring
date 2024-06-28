@@ -164,8 +164,6 @@ class ProfiloTest {
         Part foto = Mockito.mock(Part.class);
         Part documenti = Mockito.mock(Part.class);
 
-        Boolean newsletterBool = Boolean.parseBoolean(newsletter);
-
         UtenteRegistratoDAOmySQL userDAO = Mockito.mock(UtenteRegistratoDAOmySQL.class);
         AmministratoreDAOmySQL adminDAO = Mockito.mock(AmministratoreDAOmySQL.class);
 
@@ -202,22 +200,17 @@ class ProfiloTest {
 
 
         if( cookieAdmin.equals("") && cookieUser.equals("")) {
-            assertThrows(RuntimeException.class, () -> new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletterBool));
+            assertThrows(RuntimeException.class, () -> new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletter));
         }
         else if( !cookieAdmin.equals("") && !cookieUser.equals("")) {
-            assertThrows(RuntimeException.class, () -> new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletterBool));
+            assertThrows(RuntimeException.class, () -> new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletter));
         }
         else if(mail.equals("") || password.equals("") || telefono.equals("")){
-            assertThrows(RuntimeException.class, () -> new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletterBool));
+            assertThrows(RuntimeException.class, () -> new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletter));
         }
         else {
-            if (cookieAdmin.equals("") && (IBAN.equals("") || indirizzo.equals("")))
-                assertThrows(RuntimeException.class, () -> new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletterBool));
-            else {
-                ModelAndView page = new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletterBool);
-                assertEquals(pageExpected.getViewName(), page.getViewName());
-
-            }
+            ModelAndView page = new Profilo().modificaProfilo(null, cookieUser, cookieAdmin, mail, password, telefono, IBAN, foto, documenti, indirizzo, newsletter);
+            assertEquals(pageExpected.getViewName(), page.getViewName());
         }
     }
 

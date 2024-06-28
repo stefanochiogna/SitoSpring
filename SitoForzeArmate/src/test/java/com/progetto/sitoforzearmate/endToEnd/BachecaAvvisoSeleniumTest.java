@@ -88,7 +88,7 @@ public class BachecaAvvisoSeleniumTest {
     }
     
     @Test
-    @Order(1)
+    @Order(3)
     public void testInviaAvviso(){
         String url = sito.getNetworkAliases().iterator().next();
         loginAdmin(url);
@@ -101,17 +101,17 @@ public class BachecaAvvisoSeleniumTest {
 
         WebElement formSend = driver.findElement(By.cssSelector("form[action='/inviaAvviso']"));
 
-        driver.findElement(By.id("Scelta")).sendKeys("Tutti");
+        driver.findElement(By.id("Tutti")).click();
         driver.findElement(By.id("Oggetto")).sendKeys("Avviso di test");
         driver.findElement(By.id("Testo")).sendKeys("Questo e' un avviso di test");
         
         formSend.findElement(By.cssSelector("input[type='submit']")).click();
         System.out.println(driver.getPageSource());
-        assertEquals("http://"+ url.toLowerCase() +":8080/inviaAvviso", driver.getCurrentUrl());
+        assertEquals("http://"+ url.toLowerCase() +":8080/viewBachecaAvviso", driver.getCurrentUrl());
     }
 
     @Test 
-    @Order(2)
+    @Order(1)
     public void testViewAvviso(){
         String url = sito.getNetworkAliases().iterator().next();
         loginUser(url);
@@ -127,11 +127,11 @@ public class BachecaAvvisoSeleniumTest {
         formView.findElement(By.cssSelector("input[type='submit']")).click();
         System.out.println(driver.getPageSource());
         assertEquals("http://"+ url.toLowerCase() +":8080/viewAvviso", driver.getCurrentUrl());
-        assertTrue(driver.findElements(By.cssSelector("a[href='/viewBachecaAvviso']")).isDisplayed());
+        assertTrue(driver.findElement(By.cssSelector("a[href='/viewBachecaAvviso']")).isDisplayed());
     }
 
     @Test 
-    @Order(3)
+    @Order(2)
     public void testDeleteAvviso(){
         String url = sito.getNetworkAliases().iterator().next();
         loginUser(url);
@@ -139,8 +139,8 @@ public class BachecaAvvisoSeleniumTest {
         driver.findElement(By.id("Bacheca")).click();
 
         driver.findElement(By.cssSelector("a[href='/viewBachecaNewsletter']")).isDisplayed();
-
-        WebElement formDelete = driver.findElement(By.cssSelector("form[name='/deleteAvviso1000000023']"));
+        System.out.println(driver.getPageSource());
+        WebElement formDelete = driver.findElement(By.cssSelector("form[name='avvisoDelete100000023']"));
         
         formDelete.findElement(By.cssSelector("input[type='submit']")).click();
         System.out.println(driver.getPageSource());

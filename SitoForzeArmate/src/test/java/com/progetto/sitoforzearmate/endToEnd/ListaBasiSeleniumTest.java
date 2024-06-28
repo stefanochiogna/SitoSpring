@@ -97,6 +97,7 @@ public class ListaBasiSeleniumTest {
         element.click();
 
         assertEquals("http://"+ url.toLowerCase() +":8080/viewListaBasi", driver.getCurrentUrl());
+        System.out.println(driver.getPageSource());
     }
 
     @Test
@@ -111,7 +112,8 @@ public class ListaBasiSeleniumTest {
         form.findElement(By.cssSelector("input[type='submit']")).click();
 
         assertEquals("http://"+ url.toLowerCase() +":8080/viewBase", driver.getCurrentUrl());
-        assertEquals(driver.findElement(By.cssSelector("a[href='/viewListaBasi']")).isDisplayed(), true);
+        assertTrue(driver.findElement(By.cssSelector("a[href='/viewListaBasi']")).isDisplayed());
+        System.out.println(driver.getPageSource());
     }
 
     @Test
@@ -127,6 +129,7 @@ public class ListaBasiSeleniumTest {
 
         assertEquals("http://"+ url.toLowerCase() +":8080/viewListaBasi", driver.getCurrentUrl());
         assertTrue(driver.findElements(By.cssSelector("form[name='baseViewPisa']")).isEmpty());
+        System.out.println(driver.getPageSource());
     }
 
     @Test
@@ -143,7 +146,7 @@ public class ListaBasiSeleniumTest {
 
         WebElement formInsert = driver.findElement(By.cssSelector("form[action='/newBase']"));
 
-        driver.findElement(By.id("Foto")).sendKeys("/home/raccolta_file/test/image_test.jpg");
+        driver.findElement(By.id("Foto")).sendKeys("/home/raccolta_file/test/immagine_test.jpg");
         driver.findElement(By.id("Email")).sendKeys("email@test.com");
         driver.findElement(By.id("Telefono")).sendKeys("1234567890");
         driver.findElement(By.id("Locazione")).sendKeys("SummonerRift");
@@ -154,8 +157,7 @@ public class ListaBasiSeleniumTest {
         driver.findElement(By.id("Longitudine")).sendKeys("0.0");
 
         formInsert.findElement(By.cssSelector("input[type='submit']")).click();
-        System.out.println(driver.getPageSource());
-        assertEquals("http://"+ url.toLowerCase() +":8080/newBase", driver.getCurrentUrl());
+        assertTrue(driver.findElement(By.cssSelector("form[name='baseViewSummonerRift']")).isDisplayed());
     }
 
     private void loginUser(String url){

@@ -88,7 +88,7 @@ public class BachecaNewsletterSeleniumTest {
     }
     
     @Test
-    @Order(1)
+    @Order(3)
     public void testInviaNewsletter(){
         String url = sito.getNetworkAliases().iterator().next();
         loginAdmin(url);
@@ -106,12 +106,11 @@ public class BachecaNewsletterSeleniumTest {
         driver.findElement(By.id("Testo")).sendKeys("Questa e' una newsletter di test");
         
         formSend.findElement(By.cssSelector("input[type='submit']")).click();
-        System.out.println(driver.getPageSource());
-        assertEquals("http://"+ url.toLowerCase() +":8080/inviaNewsletter", driver.getCurrentUrl());
+        assertEquals("http://"+ url.toLowerCase() +":8080/viewBachecaAvviso", driver.getCurrentUrl());
     }
 
     @Test 
-    @Order(2)
+    @Order(1)
     public void testViewNewsletter(){
         String url = sito.getNetworkAliases().iterator().next();
         loginUser(url);
@@ -126,13 +125,12 @@ public class BachecaNewsletterSeleniumTest {
         WebElement formView = driver.findElement(By.cssSelector("form[action='/viewNewsletter']"));
         
         formView.findElement(By.cssSelector("input[type='submit']")).click();
-        System.out.println(driver.getPageSource());
         assertEquals("http://"+ url.toLowerCase() +":8080/viewNewsletter", driver.getCurrentUrl());
-        assertTrue(driver.findElements(By.cssSelector("a[href='/viewBachecaNewsletter']")).isDisplayed());
+        assertTrue(driver.findElement(By.cssSelector("a[href='/viewBachecaNewsletter']")).isDisplayed());
     }
 
     @Test 
-    @Order(3)
+    @Order(2)
     public void testDeleteNewsletter(){
         String url = sito.getNetworkAliases().iterator().next();
         loginUser(url);
@@ -142,11 +140,12 @@ public class BachecaNewsletterSeleniumTest {
         driver.findElement(By.cssSelector("a[href='/viewBachecaNewsletter']")).click();
         driver.findElement(By.cssSelector("a[href='/viewBachecaAvviso']")).isDisplayed();
 
-        WebElement formDelete = driver.findElement(By.cssSelector("form[name='/newsletterDelete2000000006']"));
+        WebElement formDelete = driver.findElement(By.cssSelector("form[name='newsletterDelete200000006']"));
         
         formDelete.findElement(By.cssSelector("input[type='submit']")).click();
-        System.out.println(driver.getPageSource());
-        assertEquals("http://"+ url.toLowerCase() +":8080/viewBachecaNewsletter", driver.getCurrentUrl());
+
+        assertEquals("http://"+ url.toLowerCase() +":8080/viewBachecaAvviso", driver.getCurrentUrl());
+        driver.findElement(By.cssSelector("a[href='/viewBachecaNewsletter']")).click();
         assertTrue(driver.findElements(By.cssSelector("form[name='newsletterView2000000006']")).isEmpty());
     }
 
@@ -156,8 +155,8 @@ public class BachecaNewsletterSeleniumTest {
         WebElement usernameInput = driver.findElement(By.id("Email"));
         WebElement passwordInput = driver.findElement(By.id("Password"));
 
-        usernameInput.sendKeys("sara.tullini@edu.unife.it");
-        passwordInput.sendKeys("password");
+        usernameInput.sendKeys("davide.negri@edu.unife.it");
+        passwordInput.sendKeys("lost");
 
         // Invio del form
         WebElement submit = driver.findElement(By.id("login-button"));
