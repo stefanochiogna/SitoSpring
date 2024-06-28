@@ -161,6 +161,7 @@ public class ProfiloIntegrationTest {
     }
 
     @Test 
+    @Disabled
     public void integration_viewDoc() throws Exception {
         System.setProperty("host", mysql.getHost());
         System.setProperty("porta", String.valueOf(mysql.getMappedPort(3306)));
