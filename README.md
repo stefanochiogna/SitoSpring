@@ -1,7 +1,5 @@
 ## Riguardo il Progetto
 
-![Sito Forza Armate Screen Shot](img/SampleWebApp.png)
-
 Sito web non ufficiale dell'aeronautica militare svolto come progetto per l'esame di Ingegneria del Software Avanzata
 
 ## Specifiche:
