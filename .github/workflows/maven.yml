@@ -31,8 +31,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+        
     - name: Build with Maven
       run: mvn -B verify --file ./SitoForzeArmate/pom.xml
+
+    - name: Get Jacoco reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: reports
+        path: ./SitoForzeArmate/target/site
 
     - name: Docker login 
       uses: docker/login-action@v3
@@ -55,4 +62,25 @@ jobs:
         file: ./DockerfileSQL
         push: true
         tags: stefanochiogna/db:latest
+  
+  esecuzione:    
+    runs-on: self-hosted
+    needs: build
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: build docker compose
+      run: docker compose build
+
+    - name: avvio sito
+      run: docker compose up -d
+
+    - name: download report Jacoco
+      uses: actions/download-artifact@v4
+      with:
+        name: reports
+        path: ../../../../SitoSpring/reports
       
+
+  
