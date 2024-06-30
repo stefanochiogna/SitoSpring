@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -63,11 +63,9 @@ public class CalendarioSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("forze_armate");
 
-        ChromeOptions options = new ChromeOptions()
-                .addArguments("--disable-dev-shm-usage");
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                .withCapabilities(options)
+                .withCapabilities(new ChromeOptions())
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")

@@ -58,11 +58,8 @@ public class PrenotaPastoSeleniumTest {
                 .withNetworkAliases("forze_armate");
 
 
-        ChromeOptions options = new ChromeOptions()
-                .addArguments("--disable-dev-shm-usage");
-
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                .withCapabilities(options)
+                .withCapabilities(new ChromeOptions())
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
