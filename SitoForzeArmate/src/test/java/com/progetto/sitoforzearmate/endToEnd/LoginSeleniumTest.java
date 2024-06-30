@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 // import software.xdev.testcontainers.selenium.containers.browser.BrowserWebDriverContainer;
 // import software.xdev.testcontainers.selenium.containers.browser.CapabilitiesBrowserWebDriverContainer;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -58,9 +58,18 @@ public class LoginSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("forze_armate");
 
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--disable-dev-shm-usage");
+        chromeOptions.addArguments("--no-sandbox");
+        chromeOptions.addArguments("--headless");
+
+        // Create DesiredCapabilities and set chromeOptions as 'goog:chromeOptions'
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("goog:chromeOptions", chromeOptions);
+
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                .withCapabilities(new ChromeOptions())
+                .withCapabilities(capabilities)
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
