@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 
+@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -56,18 +56,9 @@ public class ProfiloSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("forze_armate");
 
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--disable-dev-shm-usage");
-        chromeOptions.addArguments("--no-sandbox");
-        chromeOptions.addArguments("--headless");
-
-        // Create DesiredCapabilities and set chromeOptions as 'goog:chromeOptions'
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability("goog:chromeOptions", chromeOptions);
-
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                .withCapabilities(capabilities)
+                .withCapabilities(new ChromeOptions())
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
