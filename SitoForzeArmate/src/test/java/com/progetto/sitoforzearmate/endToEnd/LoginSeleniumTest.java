@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 // import software.xdev.testcontainers.selenium.containers.browser.BrowserWebDriverContainer;
 // import software.xdev.testcontainers.selenium.containers.browser.CapabilitiesBrowserWebDriverContainer;
 
-@Disabled
+
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -58,9 +58,11 @@ public class LoginSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("forze_armate");
 
+        ChromeOptions options = new ChromeOptions()
+                .addArguments("--disable-dev-shm-usage");
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                .withCapabilities(new ChromeOptions())
+                .withCapabilities(options)
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")

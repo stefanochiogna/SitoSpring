@@ -18,12 +18,12 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 @Testcontainers
 @SpringBootTest
@@ -57,8 +57,11 @@ public class ProfiloSeleniumTest {
                 .withNetworkAliases("forze_armate");
 
 
+        ChromeOptions options = new ChromeOptions()
+                .addArguments("--disable-dev-shm-usage");
+
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                .withCapabilities(new ChromeOptions())
+                .withCapabilities(options)
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")

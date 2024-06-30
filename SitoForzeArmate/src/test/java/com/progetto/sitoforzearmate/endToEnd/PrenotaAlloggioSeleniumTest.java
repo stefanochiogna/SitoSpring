@@ -56,9 +56,11 @@ public class PrenotaAlloggioSeleniumTest {
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("forze_armate");
 
+        ChromeOptions options = new ChromeOptions()
+                .addArguments("--disable-dev-shm-usage");
 
         chrome = (BrowserWebDriverContainer) new BrowserWebDriverContainer()
-                .withCapabilities(new ChromeOptions())
+                .withCapabilities(options)
                 .dependsOn(sito)
                 .withNetwork(Network.SHARED)
                 .withNetworkAliases("chrome")
